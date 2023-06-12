@@ -32,6 +32,7 @@
     -->
     <resources>
       <code path="index.ts" order="1"/>
+      <css path="src/css/devops.css" order="1" />
       <!-- UNCOMMENT TO ADD MORE RESOURCES
       <css path="css/Devops.css" order="1" />
       <resx path="strings/Devops.1033.resx" version="1.0.0" />
