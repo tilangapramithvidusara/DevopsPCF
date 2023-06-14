@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import '../css/devops.css'
 export default function ConnectionContainer() {
   const [connectionName, setConnectionName] = useState('');
   const [devopsOrg, setDevopsOrg] = useState('');
@@ -47,7 +47,7 @@ export default function ConnectionContainer() {
             </tr>
             <tr>
               <td>
-                Connection name <br />
+                Connection name<span className="required-field">*</span> <br />
                 <input
                   type="text"
                   name="connection_name"
@@ -56,7 +56,7 @@ export default function ConnectionContainer() {
                 />
               </td>
               <td>
-                DevOps Project <br />
+                DevOps Project<span className="required-field">*</span> <br />
                 <input
                   type="text"
                   name="devops_project"
@@ -67,7 +67,7 @@ export default function ConnectionContainer() {
             </tr>
             <tr>
               <td>
-                DevOps Organisation <br />
+                DevOps Organisation<span className="required-field">*</span> <br />
                 <input
                   type="text"
                   name="devops_org"
@@ -76,7 +76,7 @@ export default function ConnectionContainer() {
                 />
               </td>
               <td>
-                Authentication Token <br />
+                Authentication Token<span className="required-field">*</span> <br />
                 <input
                   type="text"
                   name="authnAuth"
