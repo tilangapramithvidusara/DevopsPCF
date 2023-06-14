@@ -32,10 +32,15 @@
     -->
     <resources>
       <code path="index.ts" order="1"/>
+      <css path="src/Css/Devops.css" order="1" />
       <!-- UNCOMMENT TO ADD MORE RESOURCES
       <css path="css/Devops.css" order="1" />
       <resx path="strings/Devops.1033.resx" version="1.0.0" />
       -->
+      <!-- <webResources>
+        <webResource name="configProperties" displayName="Config Properties" description="Configuration properties file" path="config.properties" />
+      </webResources> -->
+
     </resources>
     <!-- UNCOMMENT TO ENABLE THE SPECIFIED API
     <feature-usage>

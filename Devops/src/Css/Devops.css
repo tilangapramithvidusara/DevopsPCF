@@ -1,0 +1,10 @@
+.button-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  height: 100%;
+}
+
+.button-form .ant-form-item:last-child {
+  margin-top: auto;
+}
