@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import TableComponent from '../Components/TableComponent';
 import PopupComponent from '../Components/PopupComponent';
 import ConnectionComponent from '../Components/ConnectionComponent';
+import { getReq, postReq } from '../Api/devopsApis';
 
 export default function ConnectionContainer() {
   const dataSource = [
@@ -16,6 +17,11 @@ export default function ConnectionContainer() {
     { title: 'Country', dataIndex: 'country', key: 'country', dropdownOptions: ['USA', 'Canada', 'UK'] },
     { title: 'Mapping', dataIndex: 'mapping', key: 'mapping' , buttonField: true}, // accordionContent: 'Additional info'
   ];
+
+  useEffect(() => {
+    postReq();
+    // getReq();
+  } ,[])
   return (
     <div>
       <h2>My Component</h2>

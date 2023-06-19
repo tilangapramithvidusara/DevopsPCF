@@ -7,6 +7,11 @@ export default function ConnectionComponent() {
 
   const onFinish = (values: any) => {
     console.log("onFinish", values); // You can handle the form submission here
+    // {
+    //     "organizationUri": "https://dev.azure.com/SEERTEST2",
+    //     "personalAccessToken": "yspdehntr5yx6jbbwkwnrzkiekea44k4trp2dq63lfjvdixilisa",
+    //     "projectName": "SEETTEST1"
+    // }
   };
 
   const handleFormSubmit = () => {
