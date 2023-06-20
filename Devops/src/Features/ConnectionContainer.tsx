@@ -35,11 +35,11 @@ export default function ConnectionContainer() {
     // getReq();
   } ,[])
   return (
-    <div>
-      <h1>DevOps Work Items</h1>
-      <h3><span>Connection Details</span><span> <h5> Survey Name - Business Name</h5></span></h3>
+    <div className="devops-container">
+      <h1 className='title'>DevOps Work Items</h1>
+      <h3 className='sub-title'><span>Connection Details</span><span> <h5 className='sub-title2'> Survey Name - Business Name</h5></span></h3>
       <ConnectionComponent/>
-      <h3>Mapping - Work Item Types</h3>
+      <h3 className='sub-title'>Mapping - Work Item Types</h3>
       <TableComponent dataSource={dataSource}  columns={columns} onMapping={() => {}}  changedData = {(data:any)=>setData(data)} size='small'scroll={{ y: 300 }}/>
       {/* <TableComponent dataSource={dataSource} columns={columns} />
       <PopupComponent 
@@ -51,7 +51,7 @@ export default function ConnectionContainer() {
         Content={ <TableComponent dataSource={dataSource} columns={columns} />} 
       /> */}
       <span>
-        <Button type="primary" htmlType="submit" onClick={()=>{}}>
+        <Button className='cancel-btn' type="primary" htmlType="submit" onClick={()=>{}}>
               Cancel
             </Button>
         <Button type="primary" htmlType="submit" onClick={()=>{}}>

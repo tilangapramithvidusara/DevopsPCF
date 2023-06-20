@@ -186,10 +186,10 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
   return (
     <div>
       {Object.entries(dropdownErrors).map(([dataIndex, error]) => (
-        <div key={dataIndex}>{error}<>qqqqqqqqqqq</></div>
+        <div key={dataIndex}>{error}<></></div>
 
       ))}
-      <Table dataSource={tableData} columns={updatedColumns} pagination={false} {...rest} />;
+      <Table dataSource={tableData} columns={updatedColumns} pagination={false} {...rest} />
     </div>
   )
 }
