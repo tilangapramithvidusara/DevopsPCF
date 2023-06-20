@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Table, Select, Input, Button, Collapse } from 'antd';
 import { TableProps } from 'antd/lib/table';
+import LinkOutLined from '@ant-design/icons';
 
 // interface CommonTableProps extends TableProps<any> {
 //   dataSource: any[];
@@ -14,6 +15,7 @@ interface CommonTableProps extends TableProps<any> {
   dataSource: any[];
   columns: TableColumn[];
   onMapping: any;
+  changedData:any;
 }
 
 interface TableColumn {
@@ -40,10 +42,10 @@ interface TableColumn {
 // ];
 
 
-const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMapping, ...rest }) => {
+const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMapping, changedData, ...rest }) => {
   const [tableData, setTableData] = useState(dataSource);
   const [dropdownErrors, setDropdownErrors] = useState<{ [key: string]: string | null }>({});
-
+  const [dropDownOptions, setDropDownOptions] = useState<any>([]);
   useEffect(() => {
     // Update the PCF control's context or notify changes here
     // Pass the updated tableData to the PCF framework
@@ -55,8 +57,9 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
   const renderDropdown = (options: string[], record: any, dataIndex: string, columnData: any) => {
     const error = dropdownErrors[dataIndex];
     const isError = !!error;
-
+    setDropDownOptions(options);
     console.log('pp======> ', record);
+    console.log('options======> ', options);
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
@@ -68,13 +71,14 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
               style={{ width: '100%', borderColor: isError ? 'red' : undefined }}
               value={record[dataIndex]}
               onChange={(value) => handleFieldChange(record.key, dataIndex, value)}
-              onBlur={() => handleDropdownBlur(dataIndex)}
+              // onBlur={() => handleDropdownBlur(dataIndex)}
             >
-              {options.map((option: string) => (
-                <Option key={option} value={option}>
-                  {option}
-                </Option>
-              ))}
+              {options.map((option: any) => (
+                  <Option key={option} value={option}>
+                    {option}
+                  </Option>
+                )
+              )}
             </Select>
             {isError && (
               <div style={{ color: 'red' }}>
@@ -95,12 +99,18 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
   );
 
   const renderButton = (text: string, record: any, dataIndex: string) => {
+    const isEnable = dropDownOptions?.some((item:any)=>item == record?.country);
+    const notNull = Boolean(record?.country);
+    console.log("isEnable",isEnable);
+    console.log("record",record);
+    // record?.enable
     return (
       <div>
         {record?.enable && (
           <Button type="primary" onClick={() => handleButtonClick(record)}>
             {record[dataIndex]}
           </Button>
+          //  <LinkOutLined onClick={() => handleButtonClick(record)}/> 
         )}
         
       </div>
@@ -126,14 +136,15 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
     
     const updatedData = tableData.map((item: any) => {
       if (item.key === key) {
-        return { ...item, [dataIndex]: value };
+        return value =="N/A" ? { ...item, [dataIndex]: value,enable:false }: {...item, [dataIndex]: value, enable:true};
       }
       return item;
     });
     console.log('update data ===> ', updatedData, tableData);
     
     setTableData(updatedData);
-    handleDropdownBlur(dataIndex);
+    changedData(updatedData);
+    // handleDropdownBlur(dataIndex);
   };
 
   const handleDropdownBlur = (dataIndex: string) => {

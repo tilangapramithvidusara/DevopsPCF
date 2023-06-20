@@ -564,7 +564,7 @@ const workItems = [
 ]
 
 // drop down - first table
-const workItemTypes = [
+export const workItemTypes = [
   "Issue",
   "Epic",
   "Task",
