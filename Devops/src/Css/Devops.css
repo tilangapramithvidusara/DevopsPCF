@@ -36,3 +36,8 @@
 .title {
   text-align: left;
 }
+
+/* Table component styles */
+:where(.css-dev-only-do-not-override-1wazalj).ant-table-wrapper .ant-table-thead >tr>th {
+  background: #f2f2f2;
+}
