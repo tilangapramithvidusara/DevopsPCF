@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Table, Select, Input, Button, Collapse } from 'antd';
 import { TableProps } from 'antd/lib/table';
 import LinkOutLined from '@ant-design/icons';
-
+// import * as Mapping from '../Images/mapping.png';
 // interface CommonTableProps extends TableProps<any> {
 //   dataSource: any[];
 //   columns: any[];
@@ -15,7 +15,6 @@ interface CommonTableProps extends TableProps<any> {
   dataSource: any[];
   columns: TableColumn[];
   onMapping: any;
-  changedData:any;
 }
 
 interface TableColumn {
@@ -42,7 +41,7 @@ interface TableColumn {
 // ];
 
 
-const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMapping, changedData, ...rest }) => {
+const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMapping, ...rest }) => {
   const [tableData, setTableData] = useState(dataSource);
   const [dropdownErrors, setDropdownErrors] = useState<{ [key: string]: string | null }>({});
   const [dropDownOptions, setDropDownOptions] = useState<any>([]);
@@ -58,8 +57,8 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
     const error = dropdownErrors[dataIndex];
     const isError = !!error;
     setDropDownOptions(options);
-    console.log('pp======> ', record);
-    console.log('options======> ', options);
+    // console.log('pp======> ', record);
+    // console.log('options======> ', options);
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
@@ -99,20 +98,15 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
   );
 
   const renderButton = (text: string, record: any, dataIndex: string) => {
-    const isEnable = dropDownOptions?.some((item:any)=>item == record?.country);
-    const notNull = Boolean(record?.country);
-    console.log("isEnable",isEnable);
-    console.log("record",record);
-    // record?.enable
     return (
       <div>
         {record?.enable && (
           <Button type="primary" onClick={() => handleButtonClick(record)}>
             {record[dataIndex]}
           </Button>
-          //  <LinkOutLined onClick={() => handleButtonClick(record)}/> 
-        )}
-        
+          // <img src={Mapping.default} width={50} height={50} alt="My Image"/>
+          //  <LinkOutLined /> 
+        )}       
       </div>
     )
   };
@@ -140,10 +134,10 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
       }
       return item;
     });
-    console.log('update data ===> ', updatedData, tableData);
+    // console.log('update data ===> ', updatedData, tableData);
     
     setTableData(updatedData);
-    changedData(updatedData);
+    // changedData(updatedData);
     // handleDropdownBlur(dataIndex);
   };
 
