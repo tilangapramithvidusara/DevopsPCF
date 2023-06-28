@@ -27,7 +27,7 @@ export const fetchDevopsFeildsData = async() => {
       // {headers: headers},
       {
         "organizationUri": "https://dev.azure.com/SEERTEST2",
-        "personalAccessToken": "tezq4ftgd4jnxysk6jxrzzrdiplwposgyoe3dh2sld5zokedq6nq",
+        "personalAccessToken": "5klq5asofuo6bxllhldy25xavs5cvw5obdvo4sxd7p7r76cv4nnq",
         "projectName": "SEETTEST1",
         "workItemType":"Task"
     }
@@ -68,7 +68,7 @@ export const fetchWorkItemTypesFromDevops = async() => {
       // {headers: headers},
       {
         "organizationUri": "https://dev.azure.com/SEERTEST2",
-        "personalAccessToken": "tezq4ftgd4jnxysk6jxrzzrdiplwposgyoe3dh2sld5zokedq6nq",
+        "personalAccessToken": "5klq5asofuo6bxllhldy25xavs5cvw5obdvo4sxd7p7r76cv4nnq",
         "projectName": "SEETTEST1"
       }
     );

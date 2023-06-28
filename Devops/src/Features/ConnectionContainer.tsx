@@ -1,49 +1,142 @@
-import React, { useEffect, useState } from 'react'
-import { Button,notification} from 'antd';
-import TableComponent from '../Components/TableComponent';
-import PopupComponent from '../Components/PopupComponent';
-import ConnectionComponent from '../Components/ConnectionComponent';
-import  {exampleCRMData, exampleDevOpsData, workItemTypes}  from '../Constants/Samples/sample';
-import SampleModel from '../Components/SampleMode';
-import { FetchCrmFields } from '../Api/crmApis';
-import { fetchWorkItemTypesFromCRM, fetchWorkItemTypesFromDevops, postReq4, postReq5, fetchDevopsFeildsData  } from '../Api/devopsApis';
+import React, { useEffect, useState } from "react";
+import { Button, notification, Spin } from "antd";
+import TableComponent from "../Components/TableComponent";
+import PopupComponent from "../Components/PopupComponent";
+import ConnectionComponent from "../Components/ConnectionComponent";
+import {
+  exampleCRMData,
+  exampleDevOpsData,
+  workItemTypes,
+} from "../Constants/Samples/sample";
+import SampleModel from "../Components/SampleMode";
+import { FetchCrmFields } from "../Api/crmApis";
+import {
+  fetchWorkItemTypesFromCRM,
+  fetchWorkItemTypesFromDevops,
+  postReq4,
+  postReq5,
+  fetchDevopsFeildsData,
+} from "../Api/devopsApis";
 export default function ConnectionContainer() {
   const dataSource = [
-    { key: '1', name: 'Issue', age: 32, gyde_name: 'N/A', mapping: "Mapping", enable: false  }, // info: 'Additional info for John Doe',
-    { key: '2', name: 'Epic', age: 28, gyde_name: 'Epic', mapping: "Mapping", enable: true }, // info: 'Additional info for Jane Smith'
-    { key: '3', name: 'Task', age: 38, gyde_name: 'Task', mapping: "Mapping", enable: true  }, //info: 'Additional info for Jhon Smith'
-    { key: '4', name: 'Test Case', age: 38, gyde_name: 'Test Case', mapping: "Mapping", enable: true  },
-    { key: '5', name: 'Test Plan', age: 38, gyde_name: 'Test Plan', mapping: "Mapping", enable: true  },
-    { key: '6', name: 'Test Suite', age: 38, gyde_name: '', mapping: "Mapping", enable: false  },
-    { key: '7', name: 'Shared Steps', age: 38, gyde_name: '', mapping: "Mapping", enable: false  },
-    { key: '8', name: 'Shared Parameter', age: 38, gyde_name: '', mapping: "Mapping", enable: false  },
-    { key: '9', name: 'Code Review Request', age: 38, gyde_name: '', mapping: "Mapping", enable: false  },
-    { key: '10', name: 'Code Review Response', age: 38, gyde_name: '', mapping: "Mapping", enable: false  },
-    { key: '11', name: 'Feedback Request', age: 38, gyde_name: '', mapping: "Mapping", enable: false  },
-    { key: '12', name: 'Feedback Response', age: 38, gyde_name: '', mapping: "Mapping", enable: false  },
+    {
+      key: "1",
+      name: "Issue",
+      age: 32,
+      gyde_name: "N/A",
+      mapping: "Mapping",
+      enable: false,
+    }, // info: 'Additional info for John Doe',
+    {
+      key: "2",
+      name: "Epic",
+      age: 28,
+      gyde_name: "Epic",
+      mapping: "Mapping",
+      enable: true,
+    }, // info: 'Additional info for Jane Smith'
+    {
+      key: "3",
+      name: "Task",
+      age: 38,
+      gyde_name: "Task",
+      mapping: "Mapping",
+      enable: true,
+    }, //info: 'Additional info for Jhon Smith'
+    {
+      key: "4",
+      name: "Test Case",
+      age: 38,
+      gyde_name: "Test Case",
+      mapping: "Mapping",
+      enable: true,
+    },
+    {
+      key: "5",
+      name: "Test Plan",
+      age: 38,
+      gyde_name: "Test Plan",
+      mapping: "Mapping",
+      enable: true,
+    },
+    {
+      key: "6",
+      name: "Test Suite",
+      age: 38,
+      gyde_name: "",
+      mapping: "Mapping",
+      enable: false,
+    },
+    {
+      key: "7",
+      name: "Shared Steps",
+      age: 38,
+      gyde_name: "",
+      mapping: "Mapping",
+      enable: false,
+    },
+    {
+      key: "8",
+      name: "Shared Parameter",
+      age: 38,
+      gyde_name: "",
+      mapping: "Mapping",
+      enable: false,
+    },
+    {
+      key: "9",
+      name: "Code Review Request",
+      age: 38,
+      gyde_name: "",
+      mapping: "Mapping",
+      enable: false,
+    },
+    {
+      key: "10",
+      name: "Code Review Response",
+      age: 38,
+      gyde_name: "",
+      mapping: "Mapping",
+      enable: false,
+    },
+    {
+      key: "11",
+      name: "Feedback Request",
+      age: 38,
+      gyde_name: "",
+      mapping: "Mapping",
+      enable: false,
+    },
+    {
+      key: "12",
+      name: "Feedback Response",
+      age: 38,
+      gyde_name: "",
+      mapping: "Mapping",
+      enable: false,
+    },
   ];
 
-  const [devopsWorkItemTypes , setDevopsWorkItemTypes] = useState<any>([]);
+  const [devopsWorkItemTypes, setDevopsWorkItemTypes] = useState<any>([]);
   // const [data , setData] = useState([dataSource]);
-  const [crmWorkItemTypes , setCrmWorkItemTypes] = useState<any>([]);
-  const options : any = [...devopsWorkItemTypes,"N/A"];
+  const [crmWorkItemTypes, setCrmWorkItemTypes] = useState<any>([]);
+  const options: any = [...devopsWorkItemTypes, "N/A"];
 
-  const dataSource1 = crmWorkItemTypes?.map((item:any,num:number)=> {
-    console.log("devopsWorkItemTypes[num] :",devopsWorkItemTypes[num]);
-    console.log("item?.gyde_name[num] :",item?.gyde_name);
-    return{
-      key:num,
-      name:devopsWorkItemTypes[num],
-      workItem:item?.gyde_name,
-      enable:devopsWorkItemTypes[num] == item?.gyde_name ? true : false 
-    }
+  const dataSource1 = crmWorkItemTypes?.map((item: any, num: number) => {
+    console.log("devopsWorkItemTypes[num] :", devopsWorkItemTypes[num]);
+    console.log("item?.gyde_name[num] :", item?.gyde_name);
+    return {
+      key: num,
+      name: devopsWorkItemTypes[num],
+      workItem: item?.gyde_name,
+      enable: devopsWorkItemTypes[num] == item?.gyde_name ? true : false,
+    };
   });
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [taskDataArr, setTaskDataArr] : any = useState([]);
-  const [tableColumn,setcolumns]  : any = useState([]);
-
+  const [taskDataArr, setTaskDataArr]: any = useState([]);
+  const [tableColumn, setcolumns]: any = useState([]);
+  const [isLoading, setisLoading]: any = useState(false);
   const showModal = () => {
-    setIsModalOpen(true);
     apiRequest();
   };
 
@@ -53,155 +146,316 @@ export default function ConnectionContainer() {
 
   const handleCancel = () => {
     console.log("clikkkkk");
-    
+
     setIsModalOpen(false);
   };
 
-   
   const columns = [
-    { title: 'SOURCE WORK ITEM TYPE', dataIndex: 'gyde_name', key: 'name' },
-    { title: 'DEVOPS TARGET WORK ITEM TYPE', dataIndex: 'gyde_name', key: 'country', dropdownOptions: options },
-    { title: 'FIELD MAPPINGS', dataIndex: 'mapping', key: 'mapping' , buttonField: true}, // accordionContent: 'Additional info'
+    { title: "SOURCE WORK ITEM TYPE", dataIndex: "gyde_name", key: "name" },
+    {
+      title: "DEVOPS TARGET WORK ITEM TYPE",
+      dataIndex: "gyde_name",
+      key: "country",
+      dropdownOptions: options,
+    },
+    {
+      title: "FIELD MAPPINGS",
+      dataIndex: "mapping",
+      key: "mapping",
+      buttonField: true,
+    }, // accordionContent: 'Additional info'
   ];
 
-  useEffect(() => {
 
-    //tempAPI();
-  //apiRequest();
-  } ,[])
 
-  const apiRequest = async()=>{
+//feth devop and crm api feilds data
+  const apiRequest = async () => {
+    const devopsData = await fetchDevopsFeildsData();
+    console.log("apiDara,", devopsData);
+    const crmData = await FetchCrmFields();
 
-     const devopsData = await fetchDevopsFeildsData();
-     console.log("apiDara,",devopsData);
-     const crmData =   await FetchCrmFields();
-     
-     if(devopsData.status === 'success' && crmData.status === 'success' ){
-      console.log("crm",crmData);
-    
+    if (devopsData.status === "success" && crmData.status === "success") {
+      console.log("crm", crmData);
 
-      let tableData = crmData?.data.map((crm:any,key:any) =>   {
-       
-        let dropdownArr:any  =devopsData?.data?.Value.filter((devOps:any) => crm.AttributeType === devOps.attributeType ).map((_data:any) => {
-       return   {dropdownValue:_data.fieldName,option:_data.hasPicklist && crm.hasPicklist ? _data.allowedValues : [],isPickList:_data.hasPicklist ? true: false}
-        })
-       
-       // console.log("x5555)
-         return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: "" }
-      })
-      console.log("devopsData",tableData);
-      setTaskDataArr(tableData)
-      
+      let tableData = crmData?.data.map((crm: any, key: any) => {
+        let dropdownArr: any = devopsData?.data?.Value.filter(
+          (devOps: any) => crm.AttributeType === devOps.attributeType
+        ).map((_data: any) => {
+          console.log("eeq", _data?.allowedValues.length, {
+            option: _data?.allowedValues.length ? _data?.allowedValues : [],
+            isPickList: _data?.allowedValues?.length ? true : false,
+          });
+
+          return {
+            dropdownValue: _data.fieldName,
+            option: _data?.allowedValues.length ? _data?.allowedValues : [],
+            isPickList: _data?.allowedValues?.length ? true : false,
+          };
+        });
+
+        // console.log("x5555)
+        return {
+          key: key,
+          sourceWorkItem: crm.SchemaName,
+          dropdown: [...dropdownArr],
+          mapping: "",
+          enable: "",
+        };
+      });
+      console.log("devopsData", tableData);
+      setTaskDataArr(tableData);
+
       const columns = [
-        { title: 'SOURCE WORK ITEM TYPE', dataIndex: 'sourceWorkItem', key: 'sourceWorkItem' },
-        { title: 'DEVOPS TARGET WORK ITEM TYPE', dataIndex: 'devopsWorkItem', key: 'devopsWorkItem', dropdownOptions: options },
-        { title: 'FIELD MAPPINGS', dataIndex: 'mapping', key: 'mapping' , buttonField: true}, // accordionContent: 'Additional info'
+        {
+          title: "SOURCE WORK ITEM TYPE",
+          dataIndex: "sourceWorkItem",
+          key: "sourceWorkItem",
+        },
+        {
+          title: "DEVOPS TARGET WORK ITEM TYPE",
+          dataIndex: "devopsWorkItem",
+          key: "devopsWorkItem",
+          dropdownOptions: options,
+        },
+        {
+          title: "FIELD MAPPINGS",
+          dataIndex: "mapping",
+          key: "mapping",
+          buttonField: true,
+        }, // accordionContent: 'Additional info'
       ];
-  
-      setcolumns(columns)
-     }else if(devopsData.status === 'error' || crmData.status === 'error'){
 
-  
-      notification.error({message:devopsData.data,type:'error'})
-       
-     }
-   
+      setcolumns(columns);
+      setIsModalOpen(true);
+    } else if (devopsData.status === "error" || crmData.status === "error") {
+      notification.error({ message: devopsData.data, type: "error" });
+      setIsModalOpen(false);
+    }
+  };
 
-   
-  }
-
-  const tempAPI = ()=> {
-
- 
-    const tempArr = [{name:'Issue',country: 'Epic1',AttributeType: "Lookup" ,hasPicklist:false ,option:[1,2,4] },
-    {name:'Epic',country: 'Epic', AttributeType: "Lookup",hasPicklist:true ,option:[1,2,4]},
-    {name:'Test Plan',country: 'Test Plan', AttributeType: "String",hasPicklist:true ,option:[1,2,4]}]
+  const tempAPI = () => {
+    const tempArr = [
+      {
+        name: "Issue",
+        country: "Epic1",
+        AttributeType: "Lookup",
+        hasPicklist: false,
+        option: [1, 2, 4],
+      },
+      {
+        name: "Epic",
+        country: "Epic",
+        AttributeType: "Lookup",
+        hasPicklist: true,
+        option: [1, 2, 4],
+      },
+      {
+        name: "Test Plan",
+        country: "Test Plan",
+        AttributeType: "String",
+        hasPicklist: true,
+        option: [1, 2, 4],
+      },
+    ];
     const dataSourcew = [
-      { key: '1', name: 'Issue', age: 32, country: 'N/A', mapping: "Mapping", enable: false ,AttributeType: "Lookup" }, // info: 'Additional info for John Doe',
-    { key: '2', name: 'Epic', age: 28, country: 'Epic', mapping: "Mapping", enable: true ,AttributeType: "Lookup"}, // info: 'Additional info for Jane Smith'
-    { key: '3', name: 'Epic', age: 38, country: 'Task', mapping: "Mapping", enable: true ,AttributeType: "a" }, //info: 'Additional info for Jhon Smith'
-    { key: '4', name: 'Test Case', age: 38, country: 'Test Case', mapping: "Mapping", enable: true  ,AttributeType: "String" },
-    { key: '5', name: 'Test Plan', age: 38, country: 'Test Plan', mapping: "Mapping", enable: true  ,AttributeType: "String" },
-    ] 
+      {
+        key: "1",
+        name: "Issue",
+        age: 32,
+        country: "N/A",
+        mapping: "Mapping",
+        enable: false,
+        AttributeType: "Lookup",
+      }, // info: 'Additional info for John Doe',
+      {
+        key: "2",
+        name: "Epic",
+        age: 28,
+        country: "Epic",
+        mapping: "Mapping",
+        enable: true,
+        AttributeType: "Lookup",
+      }, // info: 'Additional info for Jane Smith'
+      {
+        key: "3",
+        name: "Epic",
+        age: 38,
+        country: "Task",
+        mapping: "Mapping",
+        enable: true,
+        AttributeType: "a",
+      }, //info: 'Additional info for Jhon Smith'
+      {
+        key: "4",
+        name: "Test Case",
+        age: 38,
+        country: "Test Case",
+        mapping: "Mapping",
+        enable: true,
+        AttributeType: "String",
+      },
+      {
+        key: "5",
+        name: "Test Plan",
+        age: 38,
+        country: "Test Plan",
+        mapping: "Mapping",
+        enable: true,
+        AttributeType: "String",
+      },
+    ];
 
-    let tableData = exampleCRMData.map((crm,key) =>   {
-      let dropdownArr:any = []
-      let picklistArr:any = []
-      let x:any  =exampleDevOpsData.filter(devOps => crm.AttributeType === devOps.attributeType ).map(_data => {
-        dropdownArr.push({dropdownValue:_data.fieldName,option:_data.hasPicklist ? _data.allowedValues : [],isPickList:_data.hasPicklist ? true: false})
-      })
-     
-      console.log("x5555",x,crm.SchemaName)
-       return { key:key,name:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: "" }
-    })
+    let tableData = exampleCRMData.map((crm, key) => {
+      let dropdownArr: any = [];
+      let picklistArr: any = [];
+      let x: any = exampleDevOpsData
+        .filter((devOps) => crm.AttributeType === devOps.attributeType)
+        .map((_data) => {
+          dropdownArr.push({
+            dropdownValue: _data.fieldName,
+            option: _data.hasPicklist ? _data.allowedValues : [],
+            isPickList: _data.hasPicklist ? true : false,
+          });
+        });
 
+      console.log("x5555", x, crm.SchemaName);
+      return {
+        key: key,
+        name: crm.SchemaName,
+        dropdown: [...dropdownArr],
+        mapping: "",
+        enable: "",
+      };
+    });
 
-    let xx = dataSourcew.map((f,key) =>   {
-      let dropdownArr:any = []
-      let picklistArr:any = []
-      let x:any  =tempArr.filter(_f => f.AttributeType === _f.AttributeType ).map(_data => {
-       //dropdownArr.push({dropdownValue:_data.country,option:_data.hasPicklist ? _data.option : [],isPickList:_data.hasPicklist ? true: false})
-       return {dropdownValue:_data.country,option:_data.hasPicklist ? _data.option : [],isPickList:_data.hasPicklist ? true: false}
-      })
-     
-      console.log("x5555",x,f.name)
-       return { key:key,name:f.name,dropdown:[...x], mapping: "", enable: "" }
-    })
+    let xx = dataSourcew.map((f, key) => {
+      let dropdownArr: any = [];
+      let picklistArr: any = [];
+      let x: any = tempArr
+        .filter((_f) => f.AttributeType === _f.AttributeType)
+        .map((_data) => {
+          //dropdownArr.push({dropdownValue:_data.country,option:_data.hasPicklist ? _data.option : [],isPickList:_data.hasPicklist ? true: false})
+          return {
+            dropdownValue: _data.country,
+            option: _data.hasPicklist ? _data.option : [],
+            isPickList: _data.hasPicklist ? true : false,
+          };
+        });
 
+      console.log("x5555", x, f.name);
+      return {
+        key: key,
+        name: f.name,
+        dropdown: [...x],
+        mapping: "",
+        enable: "",
+      };
+    });
 
-  console.log("tableData",tableData);
-                   
+    console.log("tableData", tableData);
+
+    console.log("_tem1_tem14", xx);
+    setTaskDataArr(xx);
+  };
+
   
-     console.log("_tem1_tem14",xx); 
-    setTaskDataArr(xx)
-  }
-
   useEffect(() => {
+   
     // postReq();
     // postReq3();
-    fetchWorkItemTypesFromDevops().then((result:any)=>{
-      console.log(" result :", result);
-      setDevopsWorkItemTypes(result?.data?.Value);
-      
-    }).catch((err)=>{
-      console.log("error...", err);
-    });
-  } ,[])
+    fetchWorkItemTypesFromDevops()
+      .then((result: any) => {
+        console.log(" result :", result);
+        setDevopsWorkItemTypes(result?.data?.Value);
+      })
+      .catch((err) => {
+        console.log("error...", err);
+      });
+  }, []);
 
-  console.log(" devopsWorkItemTypes :", devopsWorkItemTypes);
-  console.log("dataSource",dataSource);
-  useEffect(()=>{
-    fetchWorkItemTypesFromCRM().then((result:any)=>{
-      console.log("crm work items :",result, result?.value);
+  useEffect(() => {
+    fetchWorkItemTypesFromCRM().then((result: any) => {
+      console.log("crm work items :", result, result?.value);
       setCrmWorkItemTypes(result?.value);
     });
-  },[])
+  }, []);
+
+  useEffect(() => {
 
   
+    isModalOpen && taskDataArr?.length ? setisLoading(true) : setisLoading(false) 
+    
+  }, [isModalOpen,taskDataArr]);
+
+
+  console.log(" devopsWorkItemTypes :", devopsWorkItemTypes);
+  console.log("dataSource", dataSource);
+  
+
   return (
     <div className="devops-container">
-      <h1 className='title'>DevOps Work Items</h1>
-      <h3 className='sub-title'><span>Connection Details</span><span> <h5 className='sub-title2'> Survey Name - Business Name</h5></span></h3>
-      <ConnectionComponent/>
-      <h3>Mapping - Work Item Types</h3>
-      <TableComponent dataSource={dataSource}  columns={columns} onMapping={() => {}}  size='small'scroll={{ y: 300 }} isModelopen= {false}
-     modelAction={showModal}
-      />
-      {/* <TableComponent dataSource={dataSource} columns={columns} /> */}
-      {isModalOpen  &&  <PopupComponent 
-        visible={isModalOpen} onOk={handleOk} onClose={handleCancel}
-         buttons={[{title: "Cancel", onClickHandler: ""}, {title: "Set as Default", onClickHandler: ""} ,{title: "Save", onClickHandler: ""}]} 
-         Content={ <TableComponent dataSource={taskDataArr}  columns={tableColumn} onMapping={() => {}}   size='small'scroll={{ y: 300 }} modelAction={showModal} isModelopen= {isModalOpen}/>} 
-      /> }
-     
-      <span>
-        <Button className='cancel-btn' type="primary" htmlType="submit" onClick={()=>{}}>
-              Cancel
-            </Button>
-        <Button type="primary" htmlType="submit" onClick={()=>{}}>
-              Save
-        </Button>
-      </span>
+      <Spin spinning={isLoading}>
+        {" "}
+        <h1 className="title">DevOps Work Items</h1>
+        <h3 className="sub-title">
+          <span>Connection Details</span>
+          <span>
+            {" "}
+            <h5 className="sub-title2"> Survey Name - Business Name</h5>
+          </span>
+        </h3>
+        <ConnectionComponent />
+        <h3>Mapping - Work Item Types</h3>
+        <TableComponent
+          dataSource={dataSource}
+          columns={columns}
+          onMapping={() => {}}
+          size="small"
+          scroll={{ y: 300 }}
+          isModelopen={false}
+          modelAction={showModal}
+          ispickListModelopen={false}
+        />
+        {/* <TableComponent dataSource={dataSource} columns={columns} /> */}
+        {}
+        {isModalOpen && taskDataArr?.length && (
+          <PopupComponent
+            visible={isModalOpen}
+            onOk={handleOk}
+            onClose={handleCancel}
+            buttons={[
+              { title: "Cancel", onClickHandler: "" },
+              { title: "Set as Default", onClickHandler: "" },
+              { title: "Save", onClickHandler: "" },
+            ]}
+            Content={
+              <TableComponent
+                dataSource={taskDataArr}
+                columns={tableColumn}
+                onMapping={() => {}}
+                size="small"
+                scroll={{ y: 300 }}
+                modelAction={showModal}
+                isModelopen={isModalOpen}
+                ispickListModelopen={false}
+              />
+            }
+          />
+        )}
+        <span>
+          <Button
+            className="cancel-btn"
+            type="primary"
+            htmlType="submit"
+            onClick={() => {}}
+          >
+            Cancel
+          </Button>
+          <Button type="primary" htmlType="submit" onClick={() => {}}>
+            Save
+          </Button>
+        </span>
+      </Spin>
     </div>
-  )
+  );
 }
