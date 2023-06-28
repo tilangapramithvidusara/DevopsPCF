@@ -17,6 +17,7 @@ interface CommonTableProps extends TableProps<any> {
   onMapping: any;
   modelAction:any;
   isModelopen:boolean;
+  setDropDownValue?:any;
 }
 
 interface TableColumn {
@@ -43,11 +44,10 @@ interface TableColumn {
 // ];
 
 
-const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMapping,modelAction,isModelopen, ...rest }) => {
+const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMapping,modelAction,isModelopen,setDropDownValue, ...rest }) => {
   const [tableData, setTableData] = useState(dataSource);
   const [dropdownErrors, setDropdownErrors] = useState<{ [key: string]: string | null }>({});
   const [dropDownOptions, setDropDownOptions] = useState<any>([]);
-
   useEffect(() => {
     // Update the PCF control's context or notify changes here
     // Pass the updated tableData to the PCF framework
@@ -88,11 +88,20 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
             >
               {isModelopen ?   record?.dropdown.map((_data: any,key :any) => (
                   
-                  <Option key={key} value={_data.dropdownValue}>
-                    {_data.dropdownValue}
-                  </Option>
+                  // <Option key={key} value={_data.dropdownValue}>
+                  //   {_data.dropdownValue}
+                  // </Option>
                   
-                  
+                  <Option
+                      key={key}
+                      value={JSON.stringify({
+                        value: _data.dropdownValue,
+                        isPicklist: _data.isPickList,
+                        option: _data.option
+                      })}
+                    >
+                      {_data.dropdownValue}
+                    </Option>
                   
                 )
               ) : <>
@@ -143,11 +152,10 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
           </Button>}
           
         {record?.enable && (
-          <Button type="primary" onClick={() => handleButtonClick(record)}>
-             Mapping
-          </Button>
-          // <img src={Mapping.default} width={50} height={50} alt="My Image"/>
-          //  <LinkOutLined /> 
+          // <Button type="primary" onClick={() => handleButtonClick(record)}>
+          //    Mapping
+          // </Button>
+          <img src="https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png" alt = "1" style={{marginLeft:100}} width={20} height={20} onClick={() => handleButtonClick(record)} />
         )}       
       </div>
     )
@@ -169,20 +177,35 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
 
   const handleFieldChange = (key: string, dataIndex: string, value: any) => {
     // handleDropdownBlur(dataIndex);
+    console.log("all params :", key, dataIndex, value);
     console.log("come field change =======> ", key, dataIndex, value);
-    
+    const changedField = tableData?.find((item:any)=>item?.key == key);
+    // const updatedData = tableData.map((item: any) => {
+    //   if (item.key === key) {
+    //     return value =="N/A" ? { ...item, [dataIndex]: value,enable:false }: 
+    //     console.log("item11",item.dropdown.isPickList),
+    //     {...item, [dataIndex]: value, enable:true};
+    //   }
+    //   return item;
+    // });
+    let currentValue = isModelopen && JSON.parse(value);
+    console.log("come field change =======> ", key, dataIndex, value);
+
     const updatedData = tableData.map((item: any) => {
       if (item.key === key) {
-        return value =="N/A" ? { ...item, [dataIndex]: value,enable:false }: 
-        console.log("item11",item.dropdown.isPickList),
-        {...item, [dataIndex]: value, enable:true};
+        return value == "N/A"
+          ? { ...item, [dataIndex]: value, enable: false }
+          : isModelopen
+          ? currentValue?.isPicklist
+            ? { ...item, [dataIndex]: currentValue.value, enable: true }
+            : { ...item, [dataIndex]: currentValue.value, enable: false }
+          : { ...item, [dataIndex]: value, enable: true };
       }
       return item;
     });
-    // console.log('update data ===> ', updatedData, tableData);
-    
+    console.log('changedField  ===> ', changedField);
+    setDropDownValue(changedField);
     setTableData(updatedData);
-    // changedData(updatedData);
     // handleDropdownBlur(dataIndex);
   };
 
