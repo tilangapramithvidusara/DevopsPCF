@@ -7,9 +7,12 @@ const headers = {
 }
 
 const data: any = {
-  organizationUri: "https://dev.azure.com/SEERTEST2",
-  personalAccessToken: "bkrgotkmcf7vjq6wdq6dmh26t5lt65klid66c7mcuztql3pyrlia",
-  projectName: "SEETTEST1",
+  
+    "organizationUri": "https://dev.azure.com/SEERTEST2",
+    "personalAccessToken": "bkrgotkmcf7vjq6wdq6dmh26t5lt65klid66c7mcuztql3pyrlia",
+    "projectName": "SEETTEST1",
+    "workItemType":"Task"
+
 }
 
 // {
@@ -17,19 +20,27 @@ const data: any = {
 //   personalAccessToken: "yspdehntr5yx6jbbwkwnrzkiekea44k4trp2dq63lfjvdixilisa",
 //   projectName: "SEETTEST1"
 // }
-export const postReq = async() => {
+//dvttsdit35edsgajqqwxipnobf7r6x5g2nr337cp5ovhmiylq3za
+export const fetchDevopsFeildsData = async() => {
   try {
-    const result = 
-    await axios.post('https://seerv2sample2.azurewebsites.net/api/GetWorkItemTypeFields?code=CaKwbNIEMdEd1QYrcg9gXEGYcmm0age5Pg1syECCr0a3AzFuIOW6EA==', 
+    const result = await axios.post('https://seerv2sample2.azurewebsites.net/api/GetWorkItemTypeFields?code=CaKwbNIEMdEd1QYrcg9gXEGYcmm0age5Pg1syECCr0a3AzFuIOW6EA==', 
       // {headers: headers},
       {
         "organizationUri": "https://dev.azure.com/SEERTEST2",
-        "personalAccessToken": "bkrgotkmcf7vjq6wdq6dmh26t5lt65klid66c7mcuztql3pyrlia",
+        "personalAccessToken": "dvttsdit35edsgajqqwxipnobf7r6x5g2nr337cp5ovhmiylq3za",
         "projectName": "SEETTEST1",
         "workItemType":"Task"
     }
+    
     );
-    console.log("GetWorkItemTypeFields =========> ", result);
+    console.log("post req =========> ", result);
+
+    if(result?.data?.StatusCode === 200){
+      return result.data;
+    }else{
+      return {status:"error", data:result?.data };
+  }  
+   
     
   } catch (error) {
     console.log("GetWorkItemTypeFields ===========", error);
@@ -82,6 +93,7 @@ export const getReqw = async() => {
       {headers: headers},
     );
     console.log("get req =========> ", result);
+    return result;
   } catch (error) {
     console.log("error postReq ===========", error);
     
