@@ -28,7 +28,7 @@ export const fetchDevopsFeildsData = async (workItem:any) => {
       // {headers: headers},
       {
         "organizationUri": "https://dev.azure.com/SEERTEST2",
-        "personalAccessToken": "qcxjjk2y6llgdthld5jfxwdjvda656fiw3s7yol35mrc3vwwih4a",
+        "personalAccessToken": "poan2hburgsmgwr3wv6pmqioijgzs2pqon5w45cqpbpvhck2tdea",
         "projectName": "SEETTEST1",
         "workItemType":`${workItem}`
     }   
@@ -42,10 +42,13 @@ export const fetchDevopsFeildsData = async (workItem:any) => {
         return {status:"error", data:result?.data?.Value };
       }
       else {
+        console.log("1111",result);
+        
          return  {status:"error", data:"no response"};
       }
     }
     else{
+      console.log("2222",result);
       return {status:"error", data:"no response"};
   }     
   } catch (error:any) {  
@@ -60,7 +63,7 @@ export const fetchWorkItemTypesFromDevops = async() => {
     await axios.post('https://seerv2sample2.azurewebsites.net/api/GetWorkItemTypes?code=eZ8HwfEwRhr3EMahUUgKUz44rtzwwtaHss-lHwReYpS2AzFuDdbXow==', 
       {
         "organizationUri": "https://dev.azure.com/SEERTEST2",
-        "personalAccessToken": "qcxjjk2y6llgdthld5jfxwdjvda656fiw3s7yol35mrc3vwwih4a",
+        "personalAccessToken": "poan2hburgsmgwr3wv6pmqioijgzs2pqon5w45cqpbpvhck2tdea",
         "projectName": "SEETTEST1"
       }
     );

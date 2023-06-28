@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button,notification} from 'antd';
+import { Button,notification, Spin} from 'antd';
 import TableComponent from '../Components/TableComponent';
 import PopupComponent from '../Components/PopupComponent';
 import ConnectionComponent from '../Components/ConnectionComponent';
@@ -31,6 +31,7 @@ export default function ConnectionContainer() {
   const [taskDataArr, setTaskDataArr] : any = useState([]);
   const [tableColumn, setColumns] = useState<any>([]);
   const [selectedWorkItem, setSelectedWorkItem] = useState<any>();
+  const [isLoading,setIsLoading] = useState<boolean>(false);
 
   const dataSource1 = crmWorkItemTypes?.map((item:any,num:number)=> {
     console.log("devopsWorkItemTypes[num] :",devopsWorkItemTypes[num]);
@@ -44,23 +45,26 @@ export default function ConnectionContainer() {
       enable:devopsWorkItemTypes?.find((res:any)=>res == item?.gyde_name)?.gyde_name == item ? true : false 
     }
   });
+
+  // useEffect(()=>{
+  //   apiRequest();
+  // },[selectedWorkItem])
   
   const showModal = () => {
-    setIsModalOpen(true);
-    apiRequest();
+    
+     apiRequest();
+     
   };
 
   const handleOk = () => {
     setIsModalOpen(false);
   };
 
-  const handleCancel = () => {
-    console.log("clikkkkk");
-    
+  const handleCancel = () => {    
     setIsModalOpen(false);
+    setSelectedWorkItem({});
   };
 
-   
   const workItemColumns = [
     { title: 'SOURCE WORK ITEM TYPE', dataIndex: 'name', key: 'name' },
     { title: 'DEVOPS TARGET WORK ITEM TYPE', dataIndex: 'gyde_name', key: 'country', dropdownOptions: options },
@@ -75,17 +79,19 @@ export default function ConnectionContainer() {
 
   const apiRequest = async()=>{
 
+    if(selectedWorkItem){
      const devopsData = await fetchDevopsFeildsData(selectedWorkItem?.name);
-     console.log("apiDara,",devopsData);
+     console.log("apiDara,",devopsData, selectedWorkItem);
      const crmData =   await FetchCrmFields();
      
      if(devopsData.status === 'success' && crmData.status === 'success' ){
+       
       console.log("crm",crmData);
     
 
       let tableData = crmData?.data.map((crm:any,key:any) =>   {
        
-        let dropdownArr:any  =devopsData?.data?.Value.filter((devOps:any) => crm.AttributeType === devOps.attributeType ).map((_data:any) => {
+        let dropdownArr:any  = devopsData?.data?.Value.filter((devOps:any) => crm.AttributeType === devOps.attributeType ).map((_data:any) => {
        return   {dropdownValue:_data.fieldName,option:_data.hasPicklist && crm.hasPicklist ? _data.allowedValues : [],isPickList:_data.hasPicklist ? true: false}
         })
        
@@ -102,17 +108,24 @@ export default function ConnectionContainer() {
       ];
   
       setColumns(columns);
+     
+      setIsModalOpen(true);
+      setIsLoading(false)
+
+      
      }else if(devopsData.status === 'error' || crmData.status === 'error'){
-
-  
       notification.error({message:devopsData.data,type:'error'})
-       
-     }
-   
-
-   
+      setIsLoading(false)
+      setIsModalOpen(false);
+     } 
+    }  
   }
 
+  useEffect(()=>{
+    isModalOpen && taskDataArr.length ? setIsLoading(true) :setIsLoading(false)
+    
+
+  },[isModalOpen,taskDataArr])
   const tempAPI = ()=> {
 
  
@@ -169,19 +182,21 @@ export default function ConnectionContainer() {
     });
   } ,[])
 
-  console.log(" devopsWorkItemTypes :", devopsWorkItemTypes);
-  console.log("dataSource",dataSource);
-  useEffect(()=>{
-    fetchWorkItemTypesFromCRM().then((result:any)=>{
-      console.log("crm work items :",result, result?.data?.value);
-      setCrmWorkItemTypes(result?.data?.value);
-    });
-  },[])
+  // console.log(" devopsWorkItemTypes :", devopsWorkItemTypes);
+  // console.log("dataSource",dataSource);
+  // useEffect(()=>{
+  //   fetchWorkItemTypesFromCRM().then((result:any)=>{
+  //     console.log("crm work items :",result, result?.data?.value);
+  //     setCrmWorkItemTypes(result?.data?.value);
+  //   });
+  // },[])
 
   
   return (
     <div className="devops-container">
-      <h1 className='title'>DevOps Work Items</h1>
+     <Spin spinning={isLoading}>
+
+     <h1 className='title'>DevOps Work Items</h1>
       <h3 className='sub-title'><span>Connection Details</span><span> <h5 className='sub-title2'> Survey Name - Business Name</h5></span></h3>
       <ConnectionComponent setWorkItemData={(res:any)=>setDevopsWorkItemTypes(res?.data?.Value)}/>
       {devopsWorkItemTypes?.length > 0 && (
@@ -220,6 +235,9 @@ export default function ConnectionContainer() {
               Save
         </Button>
       </span>
+    
+
+     </Spin>
     </div>
   )
 }

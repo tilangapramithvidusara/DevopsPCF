@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Table, Select, Input, Button, Collapse } from 'antd';
+import { Table, Select, Input, Button, Collapse, Form } from 'antd';
 import { TableProps } from 'antd/lib/table';
 import LinkOutLined from '@ant-design/icons';
 // import * as Mapping from '../Images/mapping.png';
@@ -77,11 +77,11 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
           <>{record[columnData.key]}</>
         ) : (
           <>
+          
             <Select
               style={{ width: '100%', borderColor: isError ? 'red' : undefined }}
               value={isModelopen ? currentValue?.dropdownValue : currentValue}
-              onChange={(value) => {
-          
+              onChange={(value) => {  
                 handleFieldChange(record.key, dataIndex, value)
               }}
               // onBlur={() => handleDropdownBlur(dataIndex)}
@@ -121,6 +121,7 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
                 {error}
               </div>
             )}
+          
           </>
         )}
       </div>
@@ -135,7 +136,6 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
   );
 
   const renderButton = (text: string, record: any, dataIndex: string) => {
-    
     const isEnable = dropDownOptions?.some((item:any)=>item == record?.country);
     const notNull = Boolean(record?.country);
     console.log("qqqqq",text);
@@ -164,6 +164,7 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
   const handleButtonClick = (record: any) => {
     // Handle button click logic here
     console.log('Button clicked for record:', record);
+    setDropDownValue(record);
     modelAction();
   };
 
@@ -204,7 +205,6 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
       return item;
     });
     console.log('changedField  ===> ', changedField);
-    setDropDownValue(changedField);
     setTableData(updatedData);
     // handleDropdownBlur(dataIndex);
   };
