@@ -6,13 +6,15 @@ export const FetchCrmFields = async() => {
     // {headers: headers},
       );
       if(result?.status === 200){
-        return result.data;
+        return {status:"success", data:result?.data };
+        
       }else{
         return {status:"error", data:result?.data };
     }  
       
-    } catch (error) {
+    } catch (error:any) {
       console.log("error postReq ===========", error);
+      return {status:"error", data:error?.message };
       
     }
   }

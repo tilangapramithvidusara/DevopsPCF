@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button,} from 'antd';
+import { Button,notification} from 'antd';
 import TableComponent from '../Components/TableComponent';
 import PopupComponent from '../Components/PopupComponent';
 import ConnectionComponent from '../Components/ConnectionComponent';
@@ -44,6 +44,7 @@ export default function ConnectionContainer() {
 
   const showModal = () => {
     setIsModalOpen(true);
+    apiRequest();
   };
 
   const handleOk = () => {
@@ -66,39 +67,47 @@ export default function ConnectionContainer() {
   useEffect(() => {
 
     //tempAPI();
-  apiRequest();
-  } ,[isModalOpen])
+  //apiRequest();
+  } ,[])
 
   const apiRequest = async()=>{
 
      const devopsData = await fetchDevopsFeildsData();
      console.log("apiDara,",devopsData);
+     const crmData =   await FetchCrmFields();
      
-
-    const crmData =   await FetchCrmFields();
-
-    console.log("crm",crmData);
+     if(devopsData.status === 'success' && crmData.status === 'success' ){
+      console.log("crm",crmData);
     
 
-    let tableData = crmData.map((crm:any,key:any) =>   {
-     
-      let dropdownArr:any  =devopsData.Value.filter((devOps:any) => crm.AttributeType === devOps.attributeType ).map((_data:any) => {
-     return   {dropdownValue:_data.fieldName,option:_data.hasPicklist && crm.hasPicklist ? _data.allowedValues : [],isPickList:_data.hasPicklist ? true: false}
+      let tableData = crmData?.data.map((crm:any,key:any) =>   {
+       
+        let dropdownArr:any  =devopsData?.data?.Value.filter((devOps:any) => crm.AttributeType === devOps.attributeType ).map((_data:any) => {
+       return   {dropdownValue:_data.fieldName,option:_data.hasPicklist && crm.hasPicklist ? _data.allowedValues : [],isPickList:_data.hasPicklist ? true: false}
+        })
+       
+       // console.log("x5555)
+         return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: "" }
       })
-     
-     // console.log("x5555)
-       return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: "" }
-    })
-    console.log("devopsData",tableData);
-    setTaskDataArr(tableData)
-    
-    const columns = [
-      { title: 'SOURCE WORK ITEM TYPE', dataIndex: 'sourceWorkItem', key: 'sourceWorkItem' },
-      { title: 'DEVOPS TARGET WORK ITEM TYPE', dataIndex: 'devopsWorkItem', key: 'devopsWorkItem', dropdownOptions: options },
-      { title: 'FIELD MAPPINGS', dataIndex: 'mapping', key: 'mapping' , buttonField: true}, // accordionContent: 'Additional info'
-    ];
+      console.log("devopsData",tableData);
+      setTaskDataArr(tableData)
+      
+      const columns = [
+        { title: 'SOURCE WORK ITEM TYPE', dataIndex: 'sourceWorkItem', key: 'sourceWorkItem' },
+        { title: 'DEVOPS TARGET WORK ITEM TYPE', dataIndex: 'devopsWorkItem', key: 'devopsWorkItem', dropdownOptions: options },
+        { title: 'FIELD MAPPINGS', dataIndex: 'mapping', key: 'mapping' , buttonField: true}, // accordionContent: 'Additional info'
+      ];
+  
+      setcolumns(columns)
+     }else if(devopsData.status === 'error' || crmData.status === 'error'){
 
-    setcolumns(columns)
+  
+      notification.error({message:devopsData.data,type:'error'})
+       
+     }
+   
+
+   
   }
 
   const tempAPI = ()=> {
@@ -168,6 +177,7 @@ export default function ConnectionContainer() {
     });
   },[])
 
+  
   return (
     <div className="devops-container">
       <h1 className='title'>DevOps Work Items</h1>

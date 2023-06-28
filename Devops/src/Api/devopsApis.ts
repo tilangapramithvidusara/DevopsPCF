@@ -27,7 +27,7 @@ export const fetchDevopsFeildsData = async() => {
       // {headers: headers},
       {
         "organizationUri": "https://dev.azure.com/SEERTEST2",
-        "personalAccessToken": "dvttsdit35edsgajqqwxipnobf7r6x5g2nr337cp5ovhmiylq3za",
+        "personalAccessToken": "tezq4ftgd4jnxysk6jxrzzrdiplwposgyoe3dh2sld5zokedq6nq",
         "projectName": "SEETTEST1",
         "workItemType":"Task"
     }
@@ -35,15 +35,28 @@ export const fetchDevopsFeildsData = async() => {
     );
     console.log("post req =========> ", result);
 
-    if(result?.data?.StatusCode === 200){
-      return result.data;
-    }else{
-      return {status:"error", data:result?.data };
+    if(result?.status === 200){
+
+      if(result?.data?.StatusCode === 200){
+        return {status:"success", data:result?.data };
+      }
+     
+      else if(result?.data?.StatusCode === 401){
+        return {status:"error", data:result?.data?.Value };
+      }
+      else {
+         return  {status:"error", data:"no response"};
+      }
+
+    }
+    else{
+      return {status:"error", data:"no response"};
   }  
-   
     
-  } catch (error) {
+  } catch (error:any) {
+    
     console.log("GetWorkItemTypeFields ===========", error);
+    return {status:"Error", data:error?.message};
     
   }
 }
@@ -55,7 +68,7 @@ export const fetchWorkItemTypesFromDevops = async() => {
       // {headers: headers},
       {
         "organizationUri": "https://dev.azure.com/SEERTEST2",
-        "personalAccessToken": "bkrgotkmcf7vjq6wdq6dmh26t5lt65klid66c7mcuztql3pyrlia",
+        "personalAccessToken": "tezq4ftgd4jnxysk6jxrzzrdiplwposgyoe3dh2sld5zokedq6nq",
         "projectName": "SEETTEST1"
       }
     );
