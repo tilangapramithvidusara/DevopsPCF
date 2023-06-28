@@ -46,3 +46,9 @@
 :where(.css-dev-only-do-not-override-1wazalj).ant-table-wrapper .ant-table-tbody >tr >td:last-child {
   text-align: center;
 }
+/*ant - table */
+
+.pop-up-Table .ant-table-body {
+   /* overflow-y: hidden !important; */
+  max-height: 190px !important;
+}

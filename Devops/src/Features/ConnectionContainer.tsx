@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Button,} from 'antd';
+import { Button,notification} from 'antd';
 import TableComponent from '../Components/TableComponent';
 import PopupComponent from '../Components/PopupComponent';
 import ConnectionComponent from '../Components/ConnectionComponent';
-import { fetchWorkItemTypesFromCRM, fetchWorkItemTypesFromDevops, postReq4, postReq5 } from '../Api/devopsApis';
-
+import  {exampleCRMData, exampleDevOpsData, workItemTypes}  from '../Constants/Samples/sample';
+import SampleModel from '../Components/SampleMode';
+import { FetchCrmFields } from '../Api/crmApis';
+import { fetchWorkItemTypesFromCRM, fetchWorkItemTypesFromDevops, postReq4, postReq5, fetchDevopsFeildsData  } from '../Api/devopsApis';
 export default function ConnectionContainer() {
   const dataSource = [
     { key: '1', name: 'Issue', age: 32, gyde_name: 'N/A', mapping: "Mapping", enable: false  }, // info: 'Additional info for John Doe',
@@ -36,12 +38,123 @@ export default function ConnectionContainer() {
       enable:devopsWorkItemTypes[num] == item?.gyde_name ? true : false 
     }
   });
- 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [taskDataArr, setTaskDataArr] : any = useState([]);
+  const [tableColumn,setcolumns]  : any = useState([]);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+    apiRequest();
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    console.log("clikkkkk");
+    
+    setIsModalOpen(false);
+  };
+
+   
   const columns = [
     { title: 'SOURCE WORK ITEM TYPE', dataIndex: 'gyde_name', key: 'name' },
     { title: 'DEVOPS TARGET WORK ITEM TYPE', dataIndex: 'gyde_name', key: 'country', dropdownOptions: options },
     { title: 'FIELD MAPPINGS', dataIndex: 'mapping', key: 'mapping' , buttonField: true}, // accordionContent: 'Additional info'
   ];
+
+  useEffect(() => {
+
+    //tempAPI();
+  //apiRequest();
+  } ,[])
+
+  const apiRequest = async()=>{
+
+     const devopsData = await fetchDevopsFeildsData();
+     console.log("apiDara,",devopsData);
+     const crmData =   await FetchCrmFields();
+     
+     if(devopsData.status === 'success' && crmData.status === 'success' ){
+      console.log("crm",crmData);
+    
+
+      let tableData = crmData?.data.map((crm:any,key:any) =>   {
+       
+        let dropdownArr:any  =devopsData?.data?.Value.filter((devOps:any) => crm.AttributeType === devOps.attributeType ).map((_data:any) => {
+       return   {dropdownValue:_data.fieldName,option:_data.hasPicklist && crm.hasPicklist ? _data.allowedValues : [],isPickList:_data.hasPicklist ? true: false}
+        })
+       
+       // console.log("x5555)
+         return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: "" }
+      })
+      console.log("devopsData",tableData);
+      setTaskDataArr(tableData)
+      
+      const columns = [
+        { title: 'SOURCE WORK ITEM TYPE', dataIndex: 'sourceWorkItem', key: 'sourceWorkItem' },
+        { title: 'DEVOPS TARGET WORK ITEM TYPE', dataIndex: 'devopsWorkItem', key: 'devopsWorkItem', dropdownOptions: options },
+        { title: 'FIELD MAPPINGS', dataIndex: 'mapping', key: 'mapping' , buttonField: true}, // accordionContent: 'Additional info'
+      ];
+  
+      setcolumns(columns)
+     }else if(devopsData.status === 'error' || crmData.status === 'error'){
+
+  
+      notification.error({message:devopsData.data,type:'error'})
+       
+     }
+   
+
+   
+  }
+
+  const tempAPI = ()=> {
+
+ 
+    const tempArr = [{name:'Issue',country: 'Epic1',AttributeType: "Lookup" ,hasPicklist:false ,option:[1,2,4] },
+    {name:'Epic',country: 'Epic', AttributeType: "Lookup",hasPicklist:true ,option:[1,2,4]},
+    {name:'Test Plan',country: 'Test Plan', AttributeType: "String",hasPicklist:true ,option:[1,2,4]}]
+    const dataSourcew = [
+      { key: '1', name: 'Issue', age: 32, country: 'N/A', mapping: "Mapping", enable: false ,AttributeType: "Lookup" }, // info: 'Additional info for John Doe',
+    { key: '2', name: 'Epic', age: 28, country: 'Epic', mapping: "Mapping", enable: true ,AttributeType: "Lookup"}, // info: 'Additional info for Jane Smith'
+    { key: '3', name: 'Epic', age: 38, country: 'Task', mapping: "Mapping", enable: true ,AttributeType: "a" }, //info: 'Additional info for Jhon Smith'
+    { key: '4', name: 'Test Case', age: 38, country: 'Test Case', mapping: "Mapping", enable: true  ,AttributeType: "String" },
+    { key: '5', name: 'Test Plan', age: 38, country: 'Test Plan', mapping: "Mapping", enable: true  ,AttributeType: "String" },
+    ] 
+
+    let tableData = exampleCRMData.map((crm,key) =>   {
+      let dropdownArr:any = []
+      let picklistArr:any = []
+      let x:any  =exampleDevOpsData.filter(devOps => crm.AttributeType === devOps.attributeType ).map(_data => {
+        dropdownArr.push({dropdownValue:_data.fieldName,option:_data.hasPicklist ? _data.allowedValues : [],isPickList:_data.hasPicklist ? true: false})
+      })
+     
+      console.log("x5555",x,crm.SchemaName)
+       return { key:key,name:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: "" }
+    })
+
+
+    let xx = dataSourcew.map((f,key) =>   {
+      let dropdownArr:any = []
+      let picklistArr:any = []
+      let x:any  =tempArr.filter(_f => f.AttributeType === _f.AttributeType ).map(_data => {
+       //dropdownArr.push({dropdownValue:_data.country,option:_data.hasPicklist ? _data.option : [],isPickList:_data.hasPicklist ? true: false})
+       return {dropdownValue:_data.country,option:_data.hasPicklist ? _data.option : [],isPickList:_data.hasPicklist ? true: false}
+      })
+     
+      console.log("x5555",x,f.name)
+       return { key:key,name:f.name,dropdown:[...x], mapping: "", enable: "" }
+    })
+
+
+  console.log("tableData",tableData);
+                   
+  
+     console.log("_tem1_tem14",xx); 
+    setTaskDataArr(xx)
+  }
 
   useEffect(() => {
     // postReq();
@@ -54,6 +167,7 @@ export default function ConnectionContainer() {
       console.log("error...", err);
     });
   } ,[])
+
   console.log(" devopsWorkItemTypes :", devopsWorkItemTypes);
   console.log("dataSource",dataSource);
   useEffect(()=>{
@@ -63,22 +177,23 @@ export default function ConnectionContainer() {
     });
   },[])
 
+  
   return (
     <div className="devops-container">
       <h1 className='title'>DevOps Work Items</h1>
       <h3 className='sub-title'><span>Connection Details</span><span> <h5 className='sub-title2'> Survey Name - Business Name</h5></span></h3>
       <ConnectionComponent/>
-      <h3 className='sub-title'>Mapping - Work Item Types</h3>
-      <TableComponent dataSource={dataSource}  columns={columns} onMapping={() => {}}   size='small'scroll={{ y: 300 }}/>
-      {/* <TableComponent dataSource={dataSource} columns={columns} />
-      <PopupComponent 
-        visible={true} 
-        onClose={function (): void {
-          throw new Error('Function not implemented.');
-        } } 
-        buttons={[{title: "Cancel", onClickHandler: ""}, {title: "Save", onClickHandler: ""}]} 
-        Content={ <TableComponent dataSource={dataSource} columns={columns} />} 
-      /> */}
+      <h3>Mapping - Work Item Types</h3>
+      <TableComponent dataSource={dataSource}  columns={columns} onMapping={() => {}}  size='small'scroll={{ y: 300 }} isModelopen= {false}
+     modelAction={showModal}
+      />
+      {/* <TableComponent dataSource={dataSource} columns={columns} /> */}
+      {isModalOpen  &&  <PopupComponent 
+        visible={isModalOpen} onOk={handleOk} onClose={handleCancel}
+         buttons={[{title: "Cancel", onClickHandler: ""}, {title: "Set as Default", onClickHandler: ""} ,{title: "Save", onClickHandler: ""}]} 
+         Content={ <TableComponent dataSource={taskDataArr}  columns={tableColumn} onMapping={() => {}}   size='small'scroll={{ y: 300 }} modelAction={showModal} isModelopen= {isModalOpen}/>} 
+      /> }
+     
       <span>
         <Button className='cancel-btn' type="primary" htmlType="submit" onClick={()=>{}}>
               Cancel
