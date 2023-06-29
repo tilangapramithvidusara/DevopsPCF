@@ -28,7 +28,7 @@ export const fetchDevopsFeildsData = async (workItem:any) => {
       // {headers: headers},
       {
         "organizationUri": "https://dev.azure.com/SEERTEST2",
-        "personalAccessToken": "szzhee257hx6quogpcttzjh4uvzjqyfvnnmofjl5vzx2k2xb36ha",
+        "personalAccessToken": "tg5m4fsvl27ldih4a62i5o2cbpccnggnkxstgqkrfvumupacm66q",
         "projectName": "SEETTEST1",
         "workItemType":`${workItem}`
     }   
