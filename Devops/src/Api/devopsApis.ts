@@ -9,7 +9,7 @@ const headers = {
 const data: any = {
   
     "organizationUri": "https://dev.azure.com/SEERTEST2",
-    "personalAccessToken": "bkrgotkmcf7vjq6wdq6dmh26t5lt65klid66c7mcuztql3pyrlia",
+    "personalAccessToken": "szzhee257hx6quogpcttzjh4uvzjqyfvnnmofjl5vzx2k2xb36ha",
     "projectName": "SEETTEST1",
     "workItemType":"Task"
 
@@ -17,7 +17,7 @@ const data: any = {
 
 // {
 //   organizationUri: "https://dev.azure.com/SEERTEST2",
-//   personalAccessToken: "yspdehntr5yx6jbbwkwnrzkiekea44k4trp2dq63lfjvdixilisa",
+//   personalAccessToken: "5klq5asofuo6bxllhldy25xavs5cvw5obdvo4sxd7p7r76cv4nnq",
 //   projectName: "SEETTEST1"
 // }
 //dvttsdit35edsgajqqwxipnobf7r6x5g2nr337cp5ovhmiylq3za
@@ -28,7 +28,7 @@ export const fetchDevopsFeildsData = async (workItem:any) => {
       // {headers: headers},
       {
         "organizationUri": "https://dev.azure.com/SEERTEST2",
-        "personalAccessToken": "poan2hburgsmgwr3wv6pmqioijgzs2pqon5w45cqpbpvhck2tdea",
+        "personalAccessToken": "szzhee257hx6quogpcttzjh4uvzjqyfvnnmofjl5vzx2k2xb36ha",
         "projectName": "SEETTEST1",
         "workItemType":`${workItem}`
     }   
@@ -44,12 +44,12 @@ export const fetchDevopsFeildsData = async (workItem:any) => {
       else {
         console.log("1111",result);
         
-         return  {status:"error", data:"no response"};
+         return  {status:"error", data:""};
       }
     }
     else{
       console.log("2222",result);
-      return {status:"error", data:"no response"};
+      return {status:"error", data:""};
   }     
   } catch (error:any) {  
     console.log("GetWorkItemTypeFields ===========", error);
@@ -57,15 +57,16 @@ export const fetchDevopsFeildsData = async (workItem:any) => {
   }
 }
 
-export const fetchWorkItemTypesFromDevops = async() => {
+export const fetchWorkItemTypesFromDevops = async(value:any) => {
   try {
     const result = 
     await axios.post('https://seerv2sample2.azurewebsites.net/api/GetWorkItemTypes?code=eZ8HwfEwRhr3EMahUUgKUz44rtzwwtaHss-lHwReYpS2AzFuDdbXow==', 
-      {
-        "organizationUri": "https://dev.azure.com/SEERTEST2",
-        "personalAccessToken": "poan2hburgsmgwr3wv6pmqioijgzs2pqon5w45cqpbpvhck2tdea",
-        "projectName": "SEETTEST1"
-      }
+      // {
+      //   "organizationUri": "https://dev.azure.com/SEERTEST2",
+      //   "personalAccessToken": "5klq5asofuo6bxllhldy25xavs5cvw5obdvo4sxd7p7r76cv4nnq",
+      //   "projectName": "SEETTEST1"
+      // }
+      value
     );
       console.log("GetWorkItemTypes =========> ", result);
       if(result?.status === 200){

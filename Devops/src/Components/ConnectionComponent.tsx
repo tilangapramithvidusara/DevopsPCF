@@ -1,30 +1,42 @@
 import React, { useState } from 'react';
-import { Form, Input, Button, message, Row, Col, notification, } from 'antd';
+import { Form, Input, Button, Row, Col, notification, } from 'antd';
 import { fetchWorkItemTypesFromDevops } from '../Api/devopsApis';
 
- const ConnectionComponent = (setWorkItemData:any)=> {
+interface ConnectionProps {
+  setWorkItemData:any
+}
+
+ const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData})=> {
   const [form] = Form.useForm();
   const [error, setError] = useState<boolean>(false);
-  // const [workItemData, setWorkItemData] = useState<any>([]);
 
   const obj = {
     "organizationUri": "https://dev.azure.com/SEERTEST2",
-    "personalAccessToken": "tezq4ftgd4jnxysk6jxrzzrdiplwposgyoe3dh2sld5zokedq6nq",
+    "personalAccessToken": "szzhee257hx6quogpcttzjh4uvzjqyfvnnmofjl5vzx2k2xb36ha",
     "projectName": "SEETTEST1"
 }
   const onFinish = (values: any) => {
     console.log("onFinish", values); // You can handle the form submission here
-   fetchWorkItemTypesFromDevops().then((res:any)=>{
+   fetchWorkItemTypesFromDevops(values).then((res:any)=>{
     if(res?.status=="success"){
-      notification.success({
+       notification.success({
         message:"Success",
         description:"Successfully connected..!"
-      });
+      }); 
+      console.log("res........!!!", res);
       setWorkItemData(res);
     }else{
-      notification.error({
-        message:res?.Value
-      })
+      if(res?.data?.StatusCode==500){
+        notification.success({
+          message:"Error",
+          description:"Connection Failed. Try again.."
+        });
+      }else{
+       notification.error({
+        message:"Error",
+        description:res?.data?.Value
+      }) 
+      } 
     }
    })
   };
@@ -41,7 +53,7 @@ import { fetchWorkItemTypesFromDevops } from '../Api/devopsApis';
   };
 
   return (
-    <Form form={form} onFinish={onFinish} initialValues={obj} className='connection-form'>
+    <Form form={form} initialValues={obj} className='connection-form'>
       <Row gutter={16}>
         <Col span={12}>
           <Form.Item name="organizationUri" label="Organization URL" rules={[{ required: true, message: 'Please enter Organization URL' }]}>

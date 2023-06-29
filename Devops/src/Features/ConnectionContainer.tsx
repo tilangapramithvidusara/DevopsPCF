@@ -9,7 +9,7 @@ import { FetchCrmFields } from '../Api/crmApis';
 import { fetchWorkItemTypesFromCRM, fetchWorkItemTypesFromDevops, fetchDevopsFeildsData  } from '../Api/devopsApis';
 
 export default function ConnectionContainer() {
-  const dataSource = [
+  const dataSource1 = [
     { key: '1', name: 'Issue', gyde_name: 'N/A', mapping: "Mapping", enable: false  }, // info: 'Additional info for John Doe',
     { key: '2', name: 'Epic', gyde_name: 'Epic', mapping: "Mapping", enable: true }, // info: 'Additional info for Jane Smith'
     { key: '3', name: 'Task', gyde_name: 'Task', mapping: "Mapping", enable: true  }, //info: 'Additional info for Jhon Smith'
@@ -31,29 +31,24 @@ export default function ConnectionContainer() {
   const [taskDataArr, setTaskDataArr] : any = useState([]);
   const [tableColumn, setColumns] = useState<any>([]);
   const [selectedWorkItem, setSelectedWorkItem] = useState<any>();
+  const [devopsResult,setDevopsResult] = useState<any>();
   const [isLoading,setIsLoading] = useState<boolean>(false);
 
-  const dataSource1 = crmWorkItemTypes?.map((item:any,num:number)=> {
+  const dataSource = crmWorkItemTypes?.map((item:any,num:number)=> {
     console.log("devopsWorkItemTypes[num] :",devopsWorkItemTypes[num]);
     console.log("item?.gyde_name[num] :",item?.gyde_name);
-    console.log("logic build :",devopsWorkItemTypes?.find((res:any)=>res == item?.gyde_name)?.gyde_name);
+    console.log("logic build :",devopsWorkItemTypes?.find((res:any)=>res == "Epic"));
     return{
       key:num,
-      name:item,
-      gyde_name:devopsWorkItemTypes?.find((res:any)=>res == item?.gyde_name)?.gyde_name,
+      name:item?.gyde_name,
+      gyde_name:devopsWorkItemTypes?.find((res:any)=>res == item?.gyde_name),
       mapping:"Mapping",
-      enable:devopsWorkItemTypes?.find((res:any)=>res == item?.gyde_name)?.gyde_name == item ? true : false 
+      enable:devopsWorkItemTypes?.find((res:any)=>res == item?.gyde_name) == item?.gyde_name ? true : false 
     }
   });
-
-  // useEffect(()=>{
-  //   apiRequest();
-  // },[selectedWorkItem])
   
-  const showModal = () => {
-    
+  const showModal = () => { 
      apiRequest();
-     
   };
 
   const handleOk = () => {
@@ -84,12 +79,12 @@ export default function ConnectionContainer() {
      console.log("apiDara,",devopsData, selectedWorkItem);
      const crmData =   await FetchCrmFields();
      
-     if(devopsData.status === 'success' && crmData.status === 'success' ){
+     if(devopsData.status === 'success' ){
        
       console.log("crm",crmData);
     
 
-      let tableData = crmData?.data.map((crm:any,key:any) =>   {
+      let tableData = exampleCRMData?.map((crm:any,key:any) =>   {
        
         let dropdownArr:any  = devopsData?.data?.Value.filter((devOps:any) => crm.AttributeType === devOps.attributeType ).map((_data:any) => {
        return   {dropdownValue:_data.fieldName,option:_data.hasPicklist && crm.hasPicklist ? _data.allowedValues : [],isPickList:_data.hasPicklist ? true: false}
@@ -102,20 +97,19 @@ export default function ConnectionContainer() {
       setTaskDataArr(tableData)
       
       const columns = [
-        { title: 'SOURCE WORK ITEM TYPE', dataIndex: 'sourceWorkItem', key: 'sourceWorkItem' },
-        { title: 'DEVOPS TARGET WORK ITEM TYPE', dataIndex: 'devopsWorkItem', key: 'devopsWorkItem', dropdownOptions: options },
+        { title: 'SOURCE WORK ITEM FIELD', dataIndex: 'sourceWorkItem', key: 'sourceWorkItem' },
+        { title: 'DEVOPS TARGET WORK ITEM FIELD', dataIndex: 'devopsWorkItem', key: 'devopsWorkItem', dropdownOptions: options },
         { title: 'FIELD MAPPINGS', dataIndex: 'mapping', key: 'mapping' , buttonField: true}, // accordionContent: 'Additional info'
       ];
   
       setColumns(columns);
      
       setIsModalOpen(true);
-      setIsLoading(false)
-
+      setIsLoading(false);
       
-     }else if(devopsData.status === 'error' || crmData.status === 'error'){
+     }else if(devopsData.status === 'error'){
       notification.error({message:devopsData.data,type:'error'})
-      setIsLoading(false)
+      setIsLoading(false);
       setIsModalOpen(false);
      } 
     }  
@@ -164,32 +158,19 @@ export default function ConnectionContainer() {
        return { key:key,name:f.name,dropdown:[...x], mapping: "", enable: "" }
     })
 
-
   console.log("tableData",tableData);
-                   
-  
      console.log("_tem1_tem14",xx); 
     setTaskDataArr(xx)
   }
 
-  useEffect(() => {
-    fetchWorkItemTypesFromDevops().then((result:any)=>{
-      console.log(" result :", result);
-      setDevopsWorkItemTypes(result?.data?.Value);
-      
-    }).catch((err)=>{
-      console.log("error...", err);
-    });
-  } ,[])
-
   // console.log(" devopsWorkItemTypes :", devopsWorkItemTypes);
   // console.log("dataSource",dataSource);
-  // useEffect(()=>{
-  //   fetchWorkItemTypesFromCRM().then((result:any)=>{
-  //     console.log("crm work items :",result, result?.data?.value);
-  //     setCrmWorkItemTypes(result?.data?.value);
-  //   });
-  // },[])
+  useEffect(()=>{
+    fetchWorkItemTypesFromCRM().then((result:any)=>{
+      console.log("crm work items :",result, result?.data?.value);
+      setCrmWorkItemTypes(result?.data?.value);
+    });
+  },[])
 
   
   return (
@@ -198,8 +179,8 @@ export default function ConnectionContainer() {
 
      <h1 className='title'>DevOps Work Items</h1>
       <h3 className='sub-title'><span>Connection Details</span><span> <h5 className='sub-title2'> Survey Name - Business Name</h5></span></h3>
-      <ConnectionComponent setWorkItemData={(res:any)=>setDevopsWorkItemTypes(res?.data?.Value)}/>
-      {devopsWorkItemTypes?.length > 0 && (
+      <ConnectionComponent setWorkItemData={(res:any)=>{setDevopsWorkItemTypes(res?.data?.Value), setDevopsResult(res)}}/>
+      {devopsResult?.status && (
         <>
           <h3 className='sub-title'>Mapping - Work Item Types</h3>
           <TableComponent 
