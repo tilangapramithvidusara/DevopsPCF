@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import { Table, Select, Input, Button, Collapse, Form } from 'antd';
-import { TableProps } from 'antd/lib/table';
-import LinkOutLined from '@ant-design/icons';
+import React, { useEffect, useState } from "react";
+import { Table, Select, Input, Button, Collapse, Form } from "antd";
+import { TableProps } from "antd/lib/table";
+import LinkOutLined from "@ant-design/icons";
 // import * as Mapping from '../Images/mapping.png';
 // interface CommonTableProps extends TableProps<any> {
 //   dataSource: any[];
@@ -15,9 +15,9 @@ interface CommonTableProps extends TableProps<any> {
   dataSource: any[];
   columns: TableColumn[];
   onMapping: any;
-  modelAction:any;
-  isModelopen:boolean;
-  setDropDownValue?:any;
+  modelAction: any;
+  isModelopen: boolean;
+  setDropDownValue?: any;
 }
 
 interface TableColumn {
@@ -29,7 +29,6 @@ interface TableColumn {
   buttonField?: boolean;
   accordionContent?: string;
 }
-
 
 // const dataSource = [
 //   { key: '1', name: 'John Doe', age: 32, country: 'USA', info: 'Additional info for John Doe' },
@@ -43,85 +42,113 @@ interface TableColumn {
 //   { title: 'Info', dataIndex: 'info', key: 'info', accordionContent: 'Additional info' },
 // ];
 
-
-const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMapping,modelAction,isModelopen,setDropDownValue, ...rest }) => {
+const TableComponent: React.FC<CommonTableProps> = ({
+  dataSource,
+  columns,
+  onMapping,
+  modelAction,
+  isModelopen,
+  setDropDownValue,
+  ...rest
+}) => {
   const [tableData, setTableData] = useState(dataSource);
-  const [dropdownErrors, setDropdownErrors] = useState<{ [key: string]: string | null }>({});
+  const [dropdownErrors, setDropdownErrors] = useState<{
+    [key: string]: string | null;
+  }>({});
   const [dropDownOptions, setDropDownOptions] = useState<any>([]);
   useEffect(() => {
     // Update the PCF control's context or notify changes here
     // Pass the updated tableData to the PCF framework
     // You may need to use specific PCF methods or update the control's properties/state
-    console.log('data ===> ', tableData);
-    
+    console.log("data ===> ", tableData);
   }, [tableData]);
 
-  const renderDropdown = (options: string[], record: any, dataIndex: string, columnData: any) => {
+  const renderDropdown = (
+    options: string[],
+    record: any,
+    dataIndex: string,
+    columnData: any
+  ) => {
     const error = dropdownErrors[dataIndex];
     const isError = !!error;
     setDropDownOptions(options);
-
-    console.log("XXX1",isModelopen && record?.dropdown.map((key:any) =>  key.isPickList));
-    
-    console.log("isModelopen Now", isModelopen ? record: "");
-
-    let  currentValue = isModelopen ? record?.dropdown.find( (dropDownData:any) =>  record.name === dropDownData.dropdownValue) :record[dataIndex]
-     console.log("currentValuecurrentValue",currentValue);
-     
-    console.log('pp======> ', isModelopen&& record?.dropdown.find( (dropDownData:any) =>  record.name === dropDownData.dropdownValue));
-    console.log('options======> ', options);
+    console.log("isModelopen Now", isModelopen ? record : "");
+    let currentValue = isModelopen
+      ? record?.dropdown.find(
+          (dropDownData: any) =>
+            record.sourceWorkItem === dropDownData.dropdownValue
+        )
+      : record[dataIndex];
+    console.log("currentValuecurrentValue", currentValue);
+    console.log("options======> ", options);
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "flex-start",
+        }}
+      >
         {record?.fixed ? (
           <>{record[columnData.key]}</>
         ) : (
           <>
-          
-            <Select
-              style={{ width: '100%', borderColor: isError ? 'red' : undefined }}
-              value={isModelopen ? currentValue?.dropdownValue : currentValue}
-              onChange={(value) => {  
-                handleFieldChange(record.key, dataIndex, value)
-              }}
-              // onBlur={() => handleDropdownBlur(dataIndex)}
-            >
-              {isModelopen ?   record?.dropdown.map((_data: any,key :any) => (
-                  
-                  // <Option key={key} value={_data.dropdownValue}>
-                  //   {_data.dropdownValue}
-                  // </Option>
-                  
-                  <Option
+            {isModelopen ? (
+              <>
+                <Select
+                  style={{
+                    width: "100%",
+                    borderColor: isError ? "red" : undefined,
+                  }}
+                  defaultValue={isModelopen && currentValue?.dropdownValue}
+                  onChange={(value) => {
+                    handleFieldChange(record.key, dataIndex, value);
+                  }}
+                  // onBlur={() => handleDropdownBlur(dataIndex)}
+                >
+                  {record?.dropdown.map((_data: any, key: any) => (
+                    <Option
                       key={key}
                       value={JSON.stringify({
                         value: _data.dropdownValue,
                         isPicklist: _data.isPickList,
-                        option: _data.option
+                        option: _data.option,
                       })}
                     >
                       {_data.dropdownValue}
                     </Option>
-                  
-                )
-              ) : <>
-                {options.map((option: any) => (
-                  <Option key={option} value={option}>
-                    {option}
-                  </Option>
-                )
-              )}
-              </>} 
+                  ))}
+                   <Option key={"NA"} value={"N/A"}>
+                N/A
+              </Option>
+                </Select>
+              </>
+            ) : (
+              <Select
+              style={{
+                width: "100%",
+                borderColor: isError ? "red" : undefined,
+              }}
+              value={isModelopen ? currentValue?.dropdownValue : currentValue}
+              onChange={(value) => {
+                handleFieldChange(record.key, dataIndex, value);
+              }}
+              // onBlur={() => handleDropdownBlur(dataIndex)}
+            >
+              {options.map((option: any) => (
+                <Option key={option} value={option}>
+                  {option}
+                </Option>
+              ))}
+
               <Option key={"NA"} value={"N/A"}>
-                    N/A
-                  </Option>
+                N/A
+              </Option>
             </Select>
-            {isError && (
-              <div style={{ color: 'red' }}>
-                {error}
-              </div>
             )}
-          
+            
+            {isError && <div style={{ color: "red" }}>{error}</div>}
           </>
         )}
       </div>
@@ -136,34 +163,33 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
   );
 
   const renderButton = (text: string, record: any, dataIndex: string) => {
-    const isEnable = dropDownOptions?.some((item:any)=>item == record?.country);
+    const isEnable = dropDownOptions?.some(
+      (item: any) => item == record?.country
+    );
     const notNull = Boolean(record?.country);
-    console.log("qqqqq",text);
-    console.log("recordBTN",record);
-    let isEnableMapping:any =  isModelopen && record?.dropdown.some( (dropDownData:any) =>  record.name === dropDownData.dropdownValue && dropDownData.isPickList === true)
-    // record?.enable
-  
+    console.log("qqqqq", text);
+    console.log("recordBTN", record);
+   
+
     return (
       <div>
-       
-        
-        {isEnableMapping  && <Button type="primary" onClick={() => handleButtonClick(record)}>
-           Mapping
-          </Button>}
-          
         {record?.enable && (
-          // <Button type="primary" onClick={() => handleButtonClick(record)}>
-          //    Mapping
-          // </Button>
-          <img src="https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png" alt = "1" style={{marginLeft:100}} width={20} height={20} onClick={() => handleButtonClick(record)} />
-        )}       
+          <img
+            src="https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png"
+            alt="1"
+            style={{ marginLeft: 100 }}
+            width={20}
+            height={20}
+            onClick={() => handleButtonClick(record)}
+          />
+        )}
       </div>
-    )
+    );
   };
 
   const handleButtonClick = (record: any) => {
     // Handle button click logic here
-    console.log('Button clicked for record:', record);
+    console.log("Button clicked for record:", record);
     setDropDownValue(record);
     modelAction();
   };
@@ -180,10 +206,10 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
     // handleDropdownBlur(dataIndex);
     console.log("all params :", key, dataIndex, value);
     console.log("come field change =======> ", key, dataIndex, value);
-    const changedField = tableData?.find((item:any)=>item?.key == key);
+    const changedField = tableData?.find((item: any) => item?.key == key);
     // const updatedData = tableData.map((item: any) => {
     //   if (item.key === key) {
-    //     return value =="N/A" ? { ...item, [dataIndex]: value,enable:false }: 
+    //     return value =="N/A" ? { ...item, [dataIndex]: value,enable:false }:
     //     console.log("item11",item.dropdown.isPickList),
     //     {...item, [dataIndex]: value, enable:true};
     //   }
@@ -204,7 +230,7 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
       }
       return item;
     });
-    console.log('changedField  ===> ', changedField);
+    console.log("changedField  ===> ", changedField);
     setTableData(updatedData);
     // handleDropdownBlur(dataIndex);
   };
@@ -212,11 +238,14 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
   const handleDropdownBlur = (dataIndex: string) => {
     const updatedErrors = { ...dropdownErrors };
     const columnData = tableData.map((item: any) => item[dataIndex]);
-    console.log('cococococ ===> ', columnData, new Set(columnData).size !== columnData.length);
-    
+    console.log(
+      "cococococ ===> ",
+      columnData,
+      new Set(columnData).size !== columnData.length
+    );
 
     if (new Set(columnData).size !== columnData.length) {
-      updatedErrors[dataIndex] = 'Duplicate values are not allowed';
+      updatedErrors[dataIndex] = "Duplicate values are not allowed";
     } else {
       updatedErrors[dataIndex] = null;
     }
@@ -226,22 +255,30 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
 
   // ADD TYPE ACCRODING TO TYPES
   let updatedColumns = columns.map((column: any) => {
-  
-    const { dataIndex, dropdownOptions, textField, buttonField, accordionContent, ...restColumn } = column;
-
+    const {
+      dataIndex,
+      dropdownOptions,
+      textField,
+      buttonField,
+      accordionContent,
+      ...restColumn
+    } = column;
 
     let renderCell;
     if (dropdownOptions) {
-      renderCell = (text: string, record: any) => renderDropdown(dropdownOptions, record, dataIndex, column);
+      renderCell = (text: string, record: any) =>
+        renderDropdown(dropdownOptions, record, dataIndex, column);
     } else if (textField) {
-      renderCell = (text: string, record: any) => renderTextField(record, dataIndex);
+      renderCell = (text: string, record: any) =>
+        renderTextField(record, dataIndex);
     } else if (accordionContent) {
       renderCell = (text: string) => renderAccordion(accordionContent);
     } else if (buttonField) {
-      renderCell = (text: string, record: any) => renderButton(text, record, dataIndex);
+      renderCell = (text: string, record: any) =>
+        renderButton(text, record, dataIndex);
     }
- console.log("aq",dataIndex,renderCell);
- 
+    console.log("aq", dataIndex, renderCell);
+
     return {
       dataIndex,
       render: renderCell,
@@ -249,17 +286,23 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
     };
   });
 
-  console.log("eeeeeeeeeeeeeeeeee",isModelopen &&updatedColumns,tableData);
-  
   return (
     <div>
       {Object.entries(dropdownErrors).map(([dataIndex, error]) => (
-        <div key={dataIndex}>{error}<></></div>
-
+        <div key={dataIndex}>
+          {error}
+          <></>
+        </div>
       ))}
-      <Table className = {isModelopen ?'pop-up-Table' : ''} dataSource={tableData} columns={updatedColumns} pagination={false} {...rest} />
+      <Table
+        className={isModelopen ? "pop-up-Table" : ""}
+        dataSource={tableData}
+        columns={updatedColumns}
+        pagination={false}
+        {...rest}
+      />
     </div>
-  )
-}
+  );
+};
 
 export default TableComponent;

@@ -73,37 +73,28 @@ export default function ConnectionContainer() {
   } ,[])
 
   const apiRequest = async()=>{
-
     if(selectedWorkItem){
      const devopsData = await fetchDevopsFeildsData(selectedWorkItem?.name);
      console.log("apiDara,",devopsData, selectedWorkItem);
      const crmData =   await FetchCrmFields();
-     
+     let sameDropdownFeild :any= []; 
      if(devopsData.status === 'success' ){
-       
       console.log("crm",crmData);
-    
-
       let tableData = exampleCRMData?.map((crm:any,key:any) =>   {
-       
-        let dropdownArr:any  = devopsData?.data?.Value.filter((devOps:any) => crm.AttributeType === devOps.attributeType ).map((_data:any) => {
-       return   {dropdownValue:_data.fieldName,option:_data.hasPicklist && crm.hasPicklist ? _data.allowedValues : [],isPickList:_data.hasPicklist ? true: false}
+        let dropdownArr:any  = exampleDevOpsData?.filter((devOps:any) => crm.AttributeType === devOps.attributeType ).map((_data:any,key:any) => {
+          if(crm.SchemaName ===_data.fieldName)  sameDropdownFeild.push(_data.fieldName)
+       return   {key:key,dropdownValue:_data.fieldName,option:_data.allowedValues?.length ? _data.allowedValues : [],isPickList:_data.allowedValues?.length   ? true: false}
         })
-       
-       // console.log("x5555)
-         return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: "" }
+         return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: sameDropdownFeild.some((f:any) =>f === crm.SchemaName)  ? true : false }
       })
       console.log("devopsData",tableData);
       setTaskDataArr(tableData)
-      
       const columns = [
         { title: 'SOURCE WORK ITEM FIELD', dataIndex: 'sourceWorkItem', key: 'sourceWorkItem' },
         { title: 'DEVOPS TARGET WORK ITEM FIELD', dataIndex: 'devopsWorkItem', key: 'devopsWorkItem', dropdownOptions: options },
         { title: 'FIELD MAPPINGS', dataIndex: 'mapping', key: 'mapping' , buttonField: true}, // accordionContent: 'Additional info'
       ];
-  
       setColumns(columns);
-     
       setIsModalOpen(true);
       setIsLoading(false);
       
@@ -216,8 +207,6 @@ export default function ConnectionContainer() {
               Save
         </Button>
       </span>
-    
-
      </Spin>
     </div>
   )
