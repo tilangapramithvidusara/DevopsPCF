@@ -1,3 +1,12 @@
+body {
+  background-color: #F5F8FA;
+}
+
+.control-container {
+  border: none;
+  background-color: #ffffff !important;
+}
+
 .button-form {
   display: flex;
   flex-direction: column;
@@ -9,6 +18,13 @@
   margin-top: auto;
 }
 
+.modal-title {
+ font-size: 20px;
+ font-weight: 600;
+ color:  #292D32;
+ margin-top: 0;
+}
+
 .cancel-btn {
   margin-right: 20px;
   margin-top: 20px;
@@ -16,6 +32,7 @@
 
 .control-pane {
   text-align: right;
+  padding: 20px 30px;
 }
 
 .devops-container {
@@ -36,14 +53,15 @@
 
 .title {
   text-align: left;
+  margin-top: 0;
 }
 
 /* Table component styles */
-:where(.css-dev-only-do-not-override-1wazalj).ant-table-wrapper .ant-table-thead >tr>th {
+.ant-table-wrapper .ant-table-thead >tr>th {
   background: #f2f2f2;
 }
 
-:where(.css-dev-only-do-not-override-1wazalj).ant-table-wrapper .ant-table-tbody >tr >td:last-child {
+.ant-table-wrapper .ant-table-tbody >tr >td:last-child {
   text-align: center;
 }
 /*ant - table */
@@ -51,4 +69,65 @@
 .pop-up-Table .ant-table-body {
    /* overflow-y: hidden !important; */
   max-height: 190px !important;
+}
+
+.ant-btn-primary {
+  height: 35px;
+  background-color: #00AEA7;
+  border-radius: 5px;
+  border: 1px solid #00AEA7;
+  color: #ffffff;
+  box-shadow: none;
+  outline: none;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 100px;
+}
+
+.ant-btn-primary:hover, .ant-btn-primary:active {
+  background-color: transparent !important;
+}
+
+.cancel-btn {
+  height: 35px;
+  background-color: transparent !important;
+  border-radius: 5px;
+  border: 1px solid #00AEA7;
+  color: #00AEA7 !important;
+  box-shadow: none;
+  outline: none;
+  font-size: 14px;
+  font-weight: 500;
+  min-width: 100px;
+}
+
+.ant-input, .ant-select-selector{
+  background: #ffffff;
+  box-shadow: none;
+  border-radius: 5px;
+  border: 0.5px solid #C1BDBD;
+  color: #2E2E2E;
+  font-size: 14px;
+  height: 35px;
+}
+
+.ant-form-item {
+  margin-bottom: 20px !important;
+}
+
+.ant-table tbody>tr:nth-of-type(odd) {
+  background-color: #F6F8FA;
+}
+
+.ant-table th {
+  background-color: transparent !important;
+  color: #292D32;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.ant-table td {
+  background-color: transparent !important;
+  color: #292D32;
+  font-size: 14px;
 }

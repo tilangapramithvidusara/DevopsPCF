@@ -31,14 +31,14 @@ const PopupComponent: React.FC<PopupProps> = ({ visible, onClose, buttons, Conte
       <div style={{ overflowY: 'hidden', maxHeight: '300px' }}>
         {/* Content */}
         {/* ... */}
-        <p>Work Item Field Mapping</p>
+        <p className='modal-title'>Work Item Field Mapping</p>
         {Content}
       </div>
 
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
         {/* Dynamic Buttons */}
         {buttons.map((button, index) => (
-          <Button key={index} onClick={() => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
+          <Button className='ant-btn-primary' key={index} onClick={() => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
             {button?.title}
           </Button>
         ))}
