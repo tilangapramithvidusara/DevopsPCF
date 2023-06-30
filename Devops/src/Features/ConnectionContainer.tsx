@@ -88,12 +88,7 @@ export default function ConnectionContainer() {
        return   {key:key,dropdownValue:_data.fieldName,option:_data.allowedValues?.length  && crm.Options?.length?[{crmOption: crm.Options,devOpsOption:_data.allowedValues}] : [],isPickList:_data.allowedValues?.length   ? true: false}
         })
        
-        let isOptionList = sameDropdownFeild.some((f:any) =>f.mappingName === crm.SchemaName) 
-        console.log("sameDropdownFeild.some((f:any) =>f.mappingName === crm.SchemaName) ",sameDropdownFeild,sameDropdownFeild.some((f:any) =>{
-          console.log( "xXA",f.mappingName , crm.SchemaName);
-          f.mappingName === crm.SchemaName
-        }) );
-        
+        let isOptionList = sameDropdownFeild.some((f:any) =>f.mappingName === crm.SchemaName)  
          return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: isOptionList ? true : false , defaultOptionList:isOptionList ? sameDropdownFeild.find((f:any) => f.defaultOptionList )  :[] }
       })
       console.log("devopsData",tableData);
@@ -184,7 +179,7 @@ export default function ConnectionContainer() {
         <>
           <h3 className='sub-title'>Mapping - Work Item Types</h3>
           <TableComponent 
-            dataSource={dataSource}  
+            dataSource={dataSource1}  
             columns={workItemColumns} 
             onMapping={() => {}}  
             size='small'

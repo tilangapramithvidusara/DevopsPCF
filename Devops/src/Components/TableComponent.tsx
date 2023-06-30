@@ -295,50 +295,41 @@ const TableComponent: React.FC<CommonTableProps> = ({
   });
 
   /** picklist popup model */
-
-  const dataSource1 = [
-    { key: '1', name: 'Issue', gyde_name: 'N/A', mapping: "Mapping", enable: false  }, // info: 'Additional info for John Doe',
-    { key: '2', name: 'Epic', gyde_name: 'Epic', mapping: "Mapping", enable: true }, // info: 'Additional info for Jane Smith'
-    { key: '3', name: 'Task', gyde_name: 'Task', mapping: "Mapping", enable: true  }, //info: 'Additional info for Jhon Smith'
-    { key: '4', name: 'Test Case', gyde_name: 'Test Case', mapping: "Mapping", enable: true  },
-    { key: '5', name: 'Test Plan', gyde_name: 'Test Plan', mapping: "Mapping", enable: true  },
-    { key: '6', name: 'Test Suite', gyde_name: '', mapping: "Mapping", enable: false  },
-    { key: '7', name: 'Shared Steps', gyde_name: '', mapping: "Mapping", enable: false  },
-    { key: '8', name: 'Shared Parameter', gyde_name: '', mapping: "Mapping", enable: false  },
-    { key: '9', name: 'Code Review Request', gyde_name: '', mapping: "Mapping", enable: false  },
-    { key: '10', name: 'Code Review Response', gyde_name: '', mapping: "Mapping", enable: false  },
-    { key: '11', name: 'Feedback Request', gyde_name: '', mapping: "Mapping", enable: false  },
-    { key: '12', name: 'Feedback Response', gyde_name: '', mapping: "Mapping", enable: false  },
-  ];
-const option1 = [ "A","B","C","D"]
   const workItemColumns = [
     { title: 'SOURCE OPTION', dataIndex: 'souruceOption', key: 'souruceOption' },
     { title: 'DEVOPS TARGET OPTION', dataIndex: 'devopsOption', key: 'devopsOption', dropdownOptions: pickListColoumn },
-    
   ];
   const showPickListModal = (record:any) => { 
     console.log("11222");
-
-    const found = record?.defaultOptionList.defaultOptionList.map((option:any) => {
-  
-      return option.crmOption.map((crmoption:any,key:any) => {
-        return {key:key,souruceOption:crmoption,option:option.devOpsOption}
+    if(record.devopsWorkItem){
+       const _optionDataSource = record.dropdown.filter((option:any)=> option.dropdownValue === record?.devopsWorkItem).map((item:any,key:any)=> {
+       let crm =   item.option[0].crmOption.map((crmoption:any,key:any) => {
+          return {key:key,souruceOption:crmoption}
+        } )
+        let devops =   item.option[0].devOpsOption.map((devOpsoption:any) => {
+          return devOpsoption;
+        } )
+        return  {tableDataSource:crm,optionList:devops}
       })
-   
-  } );
-  console.log("11222",found);
-  setPickListData(found[0])
-  const found2 = record?.defaultOptionList.defaultOptionList.map((option:any) => {
-  
-    return option.devOpsOption.map((devOpsOption:any) => {
-      return devOpsOption;
-    })
- 
-} );
-setPickListColoumn(found2[0])
-  
-  console.log("q250",found2[0]);
-    setIsPickLisModalOpen(true);
+      console.log("_optionataSource",_optionDataSource);
+      setPickListData(_optionDataSource[0].tableDataSource)
+      setPickListColoumn(_optionDataSource[0].optionList)
+      setIsPickLisModalOpen(true);
+    }else{
+      const _defaultOptionDataSource = record?.defaultOptionList.defaultOptionList.map((option:any) => {
+        let crm =     option.crmOption.map((crmoption:any,key:any) => {
+          return {key:key,souruceOption:crmoption,option:option.devOpsOption}
+        })
+        let devops =     option.devOpsOption.map((devOpsOption:any) => {
+          return devOpsOption;
+        })
+        return  {tableDataSource:crm,optionList:devops}
+    } );
+    console.log("11222",_defaultOptionDataSource);
+    setPickListData(_defaultOptionDataSource[0].tableDataSource)
+  setPickListColoumn(_defaultOptionDataSource[0].optionList)
+      setIsPickLisModalOpen(true);
+    } 
     
   };
 
