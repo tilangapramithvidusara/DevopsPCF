@@ -70,15 +70,12 @@ export default function ConnectionContainer() {
   ];
 
   useEffect(() => {
-
-    //tempAPI();
-  //apiRequest();
-  } ,[])
+  //tempAPI();
+  apiRequest();
+  } ,[selectedWorkItem])
 
   const apiRequest = async()=>{
-    console.log("selectedWorkItemselectedWorkItem",selectedWorkItem);
-    
-    if(selectedWorkItem){
+    if(selectedWorkItem?.name != undefined && selectedWorkItem?.name != null){
      const devopsData = await fetchDevopsFeildsData(selectedWorkItem?.name);
      console.log("apiDara,",devopsData, selectedWorkItem);
      const crmData =   await FetchCrmFields();
@@ -111,7 +108,7 @@ export default function ConnectionContainer() {
       setIsLoading(false);
       
      }else if(devopsData.status === 'error'){
-      notification.error({message:devopsData.data,type:'error'})
+      // notification.error({message:devopsData.data,type:'error'})
       setIsLoading(false);
       setIsModalOpen(false);
      } 

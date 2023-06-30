@@ -12,7 +12,7 @@ interface ConnectionProps {
 
   const obj = {
     "organizationUri": "https://dev.azure.com/SEERTEST2",
-    "personalAccessToken": "szzhee257hx6quogpcttzjh4uvzjqyfvnnmofjl5vzx2k2xb36ha",
+    "personalAccessToken": "lvmhgetigpx3k77b6pv2yhtc26tkpigvk7nvvkiq7b76rjykgkcq",
     "projectName": "SEETTEST1"
 }
   const onFinish = (values: any) => {
@@ -54,21 +54,21 @@ interface ConnectionProps {
 
   return (
     <Form form={form} initialValues={obj} className='connection-form'>
-      <Row gutter={16}>
+      <Row gutter={20}>
         <Col span={12}>
-          <Form.Item name="organizationUri" label="Organization URL" rules={[{ required: true, message: 'Please enter Organization URL' }]}>
+          <Form.Item className="custom-form-wrap" name="organizationUri" label="Organization URL" rules={[{ required: true, message: 'Please enter Organization URL' }]}>
             <Input />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item name="projectName" label="DevOps Project" rules={[{ required: true, message: 'Please enter Devops Project' }]}>
+          <Form.Item className="custom-form-wrap" name="projectName" label="DevOps Project" rules={[{ required: true, message: 'Please enter Devops Project' }]}>
             <Input />
           </Form.Item>
         </Col>
       </Row>
       <Row gutter={16}>
         <Col span={12}>
-          <Form.Item name="personalAccessToken" label="Authorization Token" rules={[{ required: true, message: 'Please enter Authorization Token' }]}>
+          <Form.Item className="custom-form-wrap mt-20" name="personalAccessToken" label="Authorization Token" rules={[{ required: true, message: 'Please enter Authorization Token' }]}>
             <Input />
           </Form.Item>
         </Col>
