@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table, Select, Input, Button, Collapse, Form } from "antd";
 import { TableProps } from "antd/lib/table";
 import LinkOutLined from "@ant-design/icons";
+import PopupComponent from "./PopupComponent";
 // import * as Mapping from '../Images/mapping.png';
 // interface CommonTableProps extends TableProps<any> {
 //   dataSource: any[];
@@ -18,6 +19,7 @@ interface CommonTableProps extends TableProps<any> {
   modelAction: any;
   isModelopen: boolean;
   setDropDownValue?: any;
+  isPicklistModel?:boolean;
 }
 
 interface TableColumn {
@@ -49,6 +51,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   modelAction,
   isModelopen,
   setDropDownValue,
+  isPicklistModel,
   ...rest
 }) => {
   const [tableData, setTableData] = useState(dataSource);
@@ -56,11 +59,16 @@ const TableComponent: React.FC<CommonTableProps> = ({
     [key: string]: string | null;
   }>({});
   const [dropDownOptions, setDropDownOptions] = useState<any>([]);
+  const [isPickListModelOpen,setIsPickLisModalOpen] = useState<boolean>(false);
+  const [pickListColoumn,setPickListColoumn] = useState<any>([]);
+  const [pickListData,setPickListData] = useState<any>([]);
   useEffect(() => {
     // Update the PCF control's context or notify changes here
     // Pass the updated tableData to the PCF framework
     // You may need to use specific PCF methods or update the control's properties/state
     console.log("data ===> ", tableData);
+    console.log("isPicklist",isPickListModelOpen);
+    
   }, [tableData]);
 
   const renderDropdown = (
@@ -188,10 +196,8 @@ const TableComponent: React.FC<CommonTableProps> = ({
   };
 
   const handleButtonClick = (record: any) => {
-    // Handle button click logic here
     console.log("Button clicked for record:", record);
-    setDropDownValue(record);
-    modelAction();
+    isModelopen ?  showPickListModal(record) :  setDropDownValue(record);  modelAction()
   };
 
   const renderAccordion = (content: string) => (
@@ -215,22 +221,24 @@ const TableComponent: React.FC<CommonTableProps> = ({
     //   }
     //   return item;
     // });
-    let currentValue = isModelopen && JSON.parse(value);
+    let currentValue = isModelopen && value !== "N/A" && JSON.parse(value);
     console.log("come field change =======> ", key, dataIndex, value);
 
     const updatedData = tableData.map((item: any) => {
       if (item.key === key) {
         return value == "N/A"
-          ? { ...item, [dataIndex]: value, enable: false }
+          ? { ...item, [dataIndex]: value, enable: false,isSelected:true }
           : isModelopen
           ? currentValue?.isPicklist
-            ? { ...item, [dataIndex]: currentValue.value, enable: true }
-            : { ...item, [dataIndex]: currentValue.value, enable: false }
-          : { ...item, [dataIndex]: value, enable: true };
+            ? { ...item, [dataIndex]: currentValue.value, enable: true, isSelected:true }
+            : { ...item, [dataIndex]: currentValue.value, enable: false,isSelected:true }
+          : { ...item, [dataIndex]: value, enable: true ,isSelected:true};
       }
       return item;
     });
     console.log("changedField  ===> ", changedField);
+    console.log("updatedDataupdatedData",updatedData);
+    
     setTableData(updatedData);
     // handleDropdownBlur(dataIndex);
   };
@@ -286,8 +294,78 @@ const TableComponent: React.FC<CommonTableProps> = ({
     };
   });
 
+  /** picklist popup model */
+
+  const dataSource1 = [
+    { key: '1', name: 'Issue', gyde_name: 'N/A', mapping: "Mapping", enable: false  }, // info: 'Additional info for John Doe',
+    { key: '2', name: 'Epic', gyde_name: 'Epic', mapping: "Mapping", enable: true }, // info: 'Additional info for Jane Smith'
+    { key: '3', name: 'Task', gyde_name: 'Task', mapping: "Mapping", enable: true  }, //info: 'Additional info for Jhon Smith'
+    { key: '4', name: 'Test Case', gyde_name: 'Test Case', mapping: "Mapping", enable: true  },
+    { key: '5', name: 'Test Plan', gyde_name: 'Test Plan', mapping: "Mapping", enable: true  },
+    { key: '6', name: 'Test Suite', gyde_name: '', mapping: "Mapping", enable: false  },
+    { key: '7', name: 'Shared Steps', gyde_name: '', mapping: "Mapping", enable: false  },
+    { key: '8', name: 'Shared Parameter', gyde_name: '', mapping: "Mapping", enable: false  },
+    { key: '9', name: 'Code Review Request', gyde_name: '', mapping: "Mapping", enable: false  },
+    { key: '10', name: 'Code Review Response', gyde_name: '', mapping: "Mapping", enable: false  },
+    { key: '11', name: 'Feedback Request', gyde_name: '', mapping: "Mapping", enable: false  },
+    { key: '12', name: 'Feedback Response', gyde_name: '', mapping: "Mapping", enable: false  },
+  ];
+const option1 = [ "A","B","C","D"]
+  const workItemColumns = [
+    { title: 'SOURCE OPTION', dataIndex: 'souruceOption', key: 'souruceOption' },
+    { title: 'DEVOPS TARGET OPTION', dataIndex: 'devopsOption', key: 'devopsOption', dropdownOptions: pickListColoumn },
+    
+  ];
+  const showPickListModal = (record:any) => { 
+    console.log("11222");
+
+    const found = record?.defaultOptionList.defaultOptionList.map((option:any) => {
+  
+      return option.crmOption.map((crmoption:any,key:any) => {
+        return {key:key,souruceOption:crmoption,option:option.devOpsOption}
+      })
+   
+  } );
+  console.log("11222",found);
+  setPickListData(found[0])
+  const found2 = record?.defaultOptionList.defaultOptionList.map((option:any) => {
+  
+    return option.devOpsOption.map((devOpsOption:any) => {
+      return devOpsOption;
+    })
+ 
+} );
+setPickListColoumn(found2[0])
+  
+  console.log("q250",found2[0]);
+    setIsPickLisModalOpen(true);
+    
+  };
+
+  const handleOk = () => {
+    setIsPickLisModalOpen(false);
+  };
+
+  const handleCancel = () => {    
+    setIsPickLisModalOpen(false);
+    
+  };
+
   return (
     <div>
+       {isPickListModelOpen  &&  <PopupComponent 
+        visible={isPickListModelOpen} onOk={handleOk} onClose={handleCancel}
+         buttons={[{title: "Cancel", onClickHandler: ""}, {title: "Set as Default", onClickHandler: ""} ,{title: "Save", onClickHandler: ""}]} 
+         Content={ <TableComponent 
+                    dataSource={pickListData}  
+                    columns={workItemColumns} 
+                    onMapping={() => {}}   
+                    size='small'scroll={{ y: 300 }} 
+                    modelAction={showPickListModal} 
+                    isModelopen= {false}
+                    isPicklistModel ={true}
+                  />} 
+      /> }
       {Object.entries(dropdownErrors).map(([dataIndex, error]) => (
         <div key={dataIndex}>
           {error}

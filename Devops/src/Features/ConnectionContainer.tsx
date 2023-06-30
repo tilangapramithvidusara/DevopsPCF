@@ -24,6 +24,7 @@ export default function ConnectionContainer() {
     { key: '12', name: 'Feedback Response', gyde_name: '', mapping: "Mapping", enable: false  },
   ];
 
+  
   const [devopsWorkItemTypes , setDevopsWorkItemTypes] = useState<any>([]);
   const [crmWorkItemTypes , setCrmWorkItemTypes] = useState<any>([]);
   const options : any = [...devopsWorkItemTypes];  //"N/A"
@@ -48,6 +49,8 @@ export default function ConnectionContainer() {
   });
   
   const showModal = () => { 
+    console.log("shooo");
+  
      apiRequest();
   };
 
@@ -73,6 +76,8 @@ export default function ConnectionContainer() {
   } ,[])
 
   const apiRequest = async()=>{
+    console.log("selectedWorkItemselectedWorkItem",selectedWorkItem);
+    
     if(selectedWorkItem){
      const devopsData = await fetchDevopsFeildsData(selectedWorkItem?.name);
      console.log("apiDara,",devopsData, selectedWorkItem);
@@ -82,10 +87,17 @@ export default function ConnectionContainer() {
       console.log("crm",crmData);
       let tableData = exampleCRMData?.map((crm:any,key:any) =>   {
         let dropdownArr:any  = exampleDevOpsData?.filter((devOps:any) => crm.AttributeType === devOps.attributeType ).map((_data:any,key:any) => {
-          if(crm.SchemaName ===_data.fieldName)  sameDropdownFeild.push(_data.fieldName)
-       return   {key:key,dropdownValue:_data.fieldName,option:_data.allowedValues?.length ? _data.allowedValues : [],isPickList:_data.allowedValues?.length   ? true: false}
+          if(crm.SchemaName ===_data.fieldName &&  _data.allowedValues?.length && crm.Options?.length)  sameDropdownFeild.push({mappingName:_data.fieldName,defaultOptionList:[{crmOption: crm.Options,devOpsOption:_data.allowedValues}]})
+       return   {key:key,dropdownValue:_data.fieldName,option:_data.allowedValues?.length  && crm.Options?.length?[{crmOption: crm.Options,devOpsOption:_data.allowedValues}] : [],isPickList:_data.allowedValues?.length   ? true: false}
         })
-         return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: sameDropdownFeild.some((f:any) =>f === crm.SchemaName)  ? true : false }
+       
+        let isOptionList = sameDropdownFeild.some((f:any) =>f.mappingName === crm.SchemaName) 
+        console.log("sameDropdownFeild.some((f:any) =>f.mappingName === crm.SchemaName) ",sameDropdownFeild,sameDropdownFeild.some((f:any) =>{
+          console.log( "xXA",f.mappingName , crm.SchemaName);
+          f.mappingName === crm.SchemaName
+        }) );
+        
+         return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: isOptionList ? true : false , defaultOptionList:isOptionList ? sameDropdownFeild.find((f:any) => f.defaultOptionList )  :[] }
       })
       console.log("devopsData",tableData);
       setTaskDataArr(tableData)
