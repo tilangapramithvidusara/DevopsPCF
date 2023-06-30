@@ -85,7 +85,7 @@ body {
 }
 
 .ant-btn-primary:hover, .ant-btn-primary:active {
-  background-color: transparent !important;
+  background-color: #00AEA7 !important;
 }
 
 .cancel-btn {
