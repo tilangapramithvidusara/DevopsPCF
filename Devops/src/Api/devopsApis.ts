@@ -9,7 +9,7 @@ const headers = {
 const data: any = {
   
     "organizationUri": "https://dev.azure.com/SEERTEST2",
-    "personalAccessToken": "szzhee257hx6quogpcttzjh4uvzjqyfvnnmofjl5vzx2k2xb36ha",
+    "personalAccessToken": "cf4sfpitc7d4swlwy6pmpwse5kp6rjz3swalf65u2mzfm2qa2o3q",
     "projectName": "SEETTEST1",
     "workItemType":"Task"
 
@@ -28,7 +28,7 @@ export const fetchDevopsFeildsData = async (workItem:any) => {
       // {headers: headers},
       {
         "organizationUri": "https://dev.azure.com/SEERTEST2",
-        "personalAccessToken": "szzhee257hx6quogpcttzjh4uvzjqyfvnnmofjl5vzx2k2xb36ha",
+        "personalAccessToken": "cf4sfpitc7d4swlwy6pmpwse5kp6rjz3swalf65u2mzfm2qa2o3q",
         "projectName": "SEETTEST1",
         "workItemType":`${workItem}`
     }   

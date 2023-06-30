@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button,notification, Spin} from 'antd';
+import { Button,Form,notification, Spin} from 'antd';
 import TableComponent from '../Components/TableComponent';
 import PopupComponent from '../Components/PopupComponent';
 import ConnectionComponent from '../Components/ConnectionComponent';
@@ -9,7 +9,7 @@ import { FetchCrmFields } from '../Api/crmApis';
 import { fetchWorkItemTypesFromCRM, fetchWorkItemTypesFromDevops, fetchDevopsFeildsData  } from '../Api/devopsApis';
 
 export default function ConnectionContainer() {
-  const dataSource1 = [
+  const dataSource = [
     { key: '1', name: 'Issue', gyde_name: 'N/A', mapping: "Mapping", enable: false  }, // info: 'Additional info for John Doe',
     { key: '2', name: 'Epic', gyde_name: 'Epic', mapping: "Mapping", enable: true }, // info: 'Additional info for Jane Smith'
     { key: '3', name: 'Task', gyde_name: 'Task', mapping: "Mapping", enable: true  }, //info: 'Additional info for Jhon Smith'
@@ -24,6 +24,7 @@ export default function ConnectionContainer() {
     { key: '12', name: 'Feedback Response', gyde_name: '', mapping: "Mapping", enable: false  },
   ];
 
+  const [form] = Form.useForm();
   const [devopsWorkItemTypes , setDevopsWorkItemTypes] = useState<any>([]);
   const [crmWorkItemTypes , setCrmWorkItemTypes] = useState<any>([]);
   const options : any = [...devopsWorkItemTypes];  //"N/A"
@@ -34,7 +35,7 @@ export default function ConnectionContainer() {
   const [devopsResult,setDevopsResult] = useState<any>();
   const [isLoading,setIsLoading] = useState<boolean>(false);
 
-  const dataSource = crmWorkItemTypes?.map((item:any,num:number)=> {
+  const dataSource1 = crmWorkItemTypes?.map((item:any,num:number)=> {
     console.log("devopsWorkItemTypes[num] :",devopsWorkItemTypes[num]);
     console.log("item?.gyde_name[num] :",item?.gyde_name);
     console.log("logic build :",devopsWorkItemTypes?.find((res:any)=>res == "Epic"));
@@ -172,27 +173,47 @@ export default function ConnectionContainer() {
     });
   },[])
 
+  const handleSaveMapping = () => {
+    form.validateFields();
+  }
+
+  const handleReset = () => {
+    form.resetFields();
+  }
+
   
   return (
     <div className="devops-container">
      <Spin spinning={isLoading}>
-
+     
      <h1 className='title'>DevOps Work Items</h1>
       <h3 className='sub-title'><span>Connection Details</span><span> <h5 className='sub-title2'> Survey Name - Business Name</h5></span></h3>
       <ConnectionComponent setWorkItemData={(res:any)=>{setDevopsWorkItemTypes(res?.data?.Value), setDevopsResult(res)}}/>
       {devopsResult?.status && (
         <>
+        <Form form={form}>
           <h3 className='sub-title'>Mapping - Work Item Types</h3>
-          <TableComponent 
-            dataSource={dataSource}  
-            columns={workItemColumns} 
-            onMapping={() => {}}  
-            size='small'
-            scroll={{ y: 300 }} 
-            isModelopen= {false} 
-            modelAction={showModal}
-            setDropDownValue={(data:any)=>setSelectedWorkItem(data)}
-          />
+          
+            <TableComponent 
+              dataSource={dataSource}  
+              columns={workItemColumns} 
+              onMapping={() => {}}  
+              size='small'
+              scroll={{ y: 300 }} 
+              isModelopen= {false} 
+              modelAction={showModal}
+              setDropDownValue={(data:any)=>setSelectedWorkItem(data)}
+            />
+
+          <Form.Item>
+            <Button className='cancel-btn' type="primary" htmlType="submit" onClick={()=>handleReset}>
+                  Cancel
+                </Button>
+            <Button type="primary" htmlType="submit" onClick={()=>handleSaveMapping}>
+                  Save
+            </Button>
+          </Form.Item>
+        </Form>   
         </>
       )}
       {/* <TableComponent dataSource={dataSource} columns={columns} /> */}
@@ -208,16 +229,8 @@ export default function ConnectionContainer() {
                     isModelopen= {isModalOpen}
                   />} 
       /> }
-      <span>
-        <Button className='cancel-btn' type="primary" htmlType="submit" onClick={()=>{}}>
-              Cancel
-            </Button>
-        <Button type="primary" htmlType="submit" onClick={()=>{}}>
-              Save
-        </Button>
+        <span>     
       </span>
-    
-
      </Spin>
     </div>
   )

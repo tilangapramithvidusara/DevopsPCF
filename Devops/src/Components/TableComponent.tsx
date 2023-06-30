@@ -63,7 +63,7 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
 
     console.log("XXX1",isModelopen && record?.dropdown.map((key:any) =>  key.isPickList));
     
-    console.log("isModelopen Now", isModelopen ? record: "");
+    console.log("isModelopen Now", record ,isModelopen ? record: "");
 
     let  currentValue = isModelopen ? record?.dropdown.find( (dropDownData:any) =>  record.name === dropDownData.dropdownValue) :record[dataIndex]
      console.log("currentValuecurrentValue",currentValue);
@@ -77,7 +77,12 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
           <>{record[columnData.key]}</>
         ) : (
           <>
-          
+           <Form.Item
+            style={{width:"100%"}}
+            name={[record?.name]}
+            initialValue={record?.gyde_name}
+            rules={[{ required: true, message: 'Required Field' }]}
+          > 
             <Select
               style={{ width: '100%', borderColor: isError ? 'red' : undefined }}
               value={isModelopen ? currentValue?.dropdownValue : currentValue}
@@ -121,7 +126,7 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
                 {error}
               </div>
             )}
-          
+          </Form.Item>
           </>
         )}
       </div>
@@ -181,16 +186,12 @@ const  TableComponent: React.FC<CommonTableProps> = ({ dataSource, columns, onMa
     console.log("all params :", key, dataIndex, value);
     console.log("come field change =======> ", key, dataIndex, value);
     const changedField = tableData?.find((item:any)=>item?.key == key);
-    // const updatedData = tableData.map((item: any) => {
-    //   if (item.key === key) {
-    //     return value =="N/A" ? { ...item, [dataIndex]: value,enable:false }: 
-    //     console.log("item11",item.dropdown.isPickList),
-    //     {...item, [dataIndex]: value, enable:true};
-    //   }
-    //   return item;
-    // });
+
     let currentValue = isModelopen && JSON.parse(value);
     console.log("come field change =======> ", key, dataIndex, value);
+
+    const correctlyMapped = tableData?.every((item:any)=> item[dataIndex] != null && item[dataIndex] != undefined);
+    console.log("mapping flag when all mapped: ", correctlyMapped);
 
     const updatedData = tableData.map((item: any) => {
       if (item.key === key) {
