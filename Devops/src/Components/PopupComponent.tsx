@@ -16,7 +16,7 @@ const PopupComponent: React.FC<PopupProps> = ({ visible, onClose, buttons, Conte
   useEffect(()=>{
 
     console.log("onOk",onOk);
-    
+
   },[])
   return (
     <Modal
@@ -28,23 +28,27 @@ const PopupComponent: React.FC<PopupProps> = ({ visible, onClose, buttons, Conte
       //destroyOnClose
       width={800}
     >
-      <div style={{ overflowY: 'hidden', maxHeight: '300px' }}>
+      <div style={{ overflowY: 'hidden', maxHeight: '360px' }}>
         {/* Content */}
         {/* ... */}
         <p className='modal-title'>Work Item Field Mapping</p>
         {Content}
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-        {/* Dynamic Buttons */}
-        {buttons.map((button, index) => (
-          <Button className='ant-btn-primary' key={index} onClick={() => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
-            {button?.title}
-          </Button>
-        ))}
-      </div>
+
     </Modal>
   );
 };
 
 export default PopupComponent;
+
+{/* <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+{/* Dynamic Buttons  */}
+
+//</div> 
+// {buttons.map((button, index) => (
+//   <Button className='ant-btn-primary' key={index} onClick={(e) => { button.onClickHandler()/* Handle button click */ }} style={{marginLeft:'5px'}}>
+//     {button?.title}
+//   </Button>
+// ))}
+
