@@ -89,10 +89,14 @@ export default function ConnectionContainer() {
         })
        
         let isOptionList = sameDropdownFeild.some((f:any) =>f.mappingName === crm.SchemaName)  
-         return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: isOptionList ? true : false , defaultOptionList:isOptionList ? sameDropdownFeild.find((f:any) => f.defaultOptionList )  :[] }
+         return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: isOptionList ? true : false , defaultOptionList:isOptionList ? sameDropdownFeild.find((f:any) => f.defaultOptionList )  :[],isText:false }
       })
-      console.log("devopsData",tableData);
-      setTaskDataArr(tableData)
+      let currentLength = tableData.length +1
+      let _tableData = [{key:currentLength,sourceWorkItem:"Title",devopsWorkItem: "Title",dropdown:[],mapping: "", enable:  false , defaultOptionList:[],isText:true },
+      {key:currentLength,sourceWorkItem:"Work item type",devopsWorkItem: "Work item type",dropdown:[],mapping: "", enable:  false , defaultOptionList:[],isText:true },
+      {key:currentLength,sourceWorkItem:"partner work item",devopsWorkItem: "partner work item",dropdown:[],mapping: "", enable:  false , defaultOptionList:[],isText:true },...tableData]
+      console.log("devopsData",_tableData);
+      setTaskDataArr(_tableData)
       const columns = [
         { title: 'SOURCE WORK ITEM FIELD', dataIndex: 'sourceWorkItem', key: 'sourceWorkItem' },
         { title: 'DEVOPS TARGET WORK ITEM FIELD', dataIndex: 'devopsWorkItem', key: 'devopsWorkItem', dropdownOptions: options },
@@ -167,6 +171,9 @@ export default function ConnectionContainer() {
     });
   },[])
 
+  const savePopupModelData = (data:any)=>{
+    console.log("963",data);
+  }
   
   return (
     <div className="devops-container">
@@ -193,7 +200,7 @@ export default function ConnectionContainer() {
       {/* <TableComponent dataSource={dataSource} columns={columns} /> */}
       {isModalOpen  &&  <PopupComponent 
         visible={isModalOpen} onOk={handleOk} onClose={handleCancel}
-         buttons={[{title: "Cancel", onClickHandler: ""}, {title: "Set as Default", onClickHandler: ""} ,{title: "Save", onClickHandler: ""}]} 
+         buttons={[{title: "Cancel", onClickHandler: ""}, {title: "Set as Default", onClickHandler: savePopupModelData} ,{title: "Save", onClickHandler: ""}]} 
          Content={ <TableComponent 
                     dataSource={taskDataArr}  
                     columns={tableColumn} 
