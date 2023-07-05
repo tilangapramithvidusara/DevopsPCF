@@ -89,7 +89,7 @@ export default function ConnectionContainer() {
         })
        
         let isOptionList = sameDropdownFeild.some((f:any) =>f.mappingName === crm.SchemaName)  
-         return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: isOptionList ? true : false , defaultOptionList:isOptionList ? sameDropdownFeild.find((f:any) => f.defaultOptionList )  :[],isText:false }
+         return { key:key,sourceWorkItem:crm.SchemaName,dropdown:[...dropdownArr], mapping: "", enable: isOptionList ? true : false , defaultOptionList:isOptionList ? sameDropdownFeild.find((f:any) => f.defaultOptionList )  :[],isText:false ,isSelected:false }
       })
       let currentLength = tableData.length +1
       let _tableData = [{key:currentLength,sourceWorkItem:"Title",devopsWorkItem: "Title",dropdown:[],mapping: "", enable:  false , defaultOptionList:[],isText:true },
@@ -171,10 +171,21 @@ export default function ConnectionContainer() {
     });
   },[])
 
-  const savePopupModelData = (data:any)=>{
+  const savePopupModelData = (data:any = [])=>{
     console.log("963",data);
+    
+    if(data?.length){
+       let _data = data.filter((f:any) => f.isText === false);
+
+       console.log("12345",_data);
+      console.log("cvc", _data.every((_f:any)=> _f.isSelected === true));
+      
+       
+    }
+    
+
+    
   }
-  
   return (
     <div className="devops-container">
      <Spin spinning={isLoading}>
@@ -200,15 +211,32 @@ export default function ConnectionContainer() {
       {/* <TableComponent dataSource={dataSource} columns={columns} /> */}
       {isModalOpen  &&  <PopupComponent 
         visible={isModalOpen} onOk={handleOk} onClose={handleCancel}
-         buttons={[{title: "Cancel", onClickHandler: ""}, {title: "Set as Default", onClickHandler: savePopupModelData} ,{title: "Save", onClickHandler: ""}]} 
-         Content={ <TableComponent 
+         buttons={[{title: "Cancel", onClickHandler: ""}, {title: "Set as Default", onClickHandler: savePopupModelData} ,{title: "Save", onClickHandler: savePopupModelData}]} 
+         Content={ <div>
+
+<TableComponent 
                     dataSource={taskDataArr}  
                     columns={tableColumn} 
                     onMapping={() => {}}   
                     size='small'scroll={{ y: 300 }} 
                     modelAction={showModal} 
                     isModelopen= {isModalOpen}
-                  />} 
+                    savePopupModelData ={savePopupModelData}
+                  />
+
+<div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+<Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
+Cancel
+  </Button>
+  <Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
+  Set as Default
+  </Button>
+  <Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
+  Save
+  </Button>
+  </div>
+         </div>}
+
       /> }
       <span>
         <Button className='cancel-btn' type="primary" htmlType="submit" onClick={()=>{}}>
