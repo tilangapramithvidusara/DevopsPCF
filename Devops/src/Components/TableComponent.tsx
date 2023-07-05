@@ -23,6 +23,7 @@ interface CommonTableProps extends TableProps<any> {
   setDropDownValue?: any;
   isPicklistModel?:boolean;
   savePopupModelData?:any;
+  disabled?:boolean;
 }
 
 interface TableColumn {
@@ -57,6 +58,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   setDropDownValue,
   isPicklistModel,
   savePopupModelData,
+  disabled,
   ...rest
 }) => {
   const [tableData, setTableData] = useState(dataSource);
@@ -73,9 +75,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
     // You may need to use specific PCF methods or update the control's properties/state
     console.log("data ===> ", tableData);
     console.log("isPicklist",isPickListModelOpen);
-
-    
-    
   }, [tableData]);
 
   const renderDropdown = (
@@ -153,6 +152,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
               onChange={(value) => {
                 handleFieldChange(record.key, dataIndex, value);
               }}
+              disabled={disabled}
               // onBlur={() => handleDropdownBlur(dataIndex)}
             >
               {options.map((option: any) => (
@@ -209,7 +209,10 @@ const TableComponent: React.FC<CommonTableProps> = ({
 
   const handleButtonClick = (record: any) => {
     console.log("Button clicked for record:", record);
-    isModelopen ?  showPickListModal(record) :  setDropDownValue(record);  modelAction()
+    if(!disabled){
+        isModelopen ?  showPickListModal(record) :  setDropDownValue(record);  modelAction()
+    }
+
   };
 
   const renderAccordion = (content: string) => (
@@ -345,7 +348,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
     } );
     console.log("11222",_defaultOptionDataSource);
     setPickListData(_defaultOptionDataSource[0].tableDataSource)
-  setPickListColoumn(_defaultOptionDataSource[0].optionList)
+    setPickListColoumn(_defaultOptionDataSource[0].optionList)
       setIsPickLisModalOpen(true);
     } 
     

@@ -9,7 +9,7 @@ const headers = {
 const data: any = {
   
     "organizationUri": "https://dev.azure.com/SEERTEST2",
-    "personalAccessToken": "lvmhgetigpx3k77b6pv2yhtc26tkpigvk7nvvkiq7b76rjykgkcq",
+    "personalAccessToken": "3pqupxh5t33cupraelsj6aemtox5r5nqyvdlgpvlfhckihnx6bhq",
     "projectName": "SEETTEST1",
     "workItemType":"Task"
 
@@ -21,17 +21,18 @@ const data: any = {
 //   projectName: "SEETTEST1"
 // }
 //dvttsdit35edsgajqqwxipnobf7r6x5g2nr337cp5ovhmiylq3za
-export const fetchDevopsFeildsData = async (workItem:any) => {
-  console.log("selected work item :",workItem);
+export const fetchDevopsFeildsData = async (auth:any) => {
+  console.log("selected work item :",auth);
   try {
     const result = await axios.post('https://seerv2sample2.azurewebsites.net/api/GetWorkItemTypeFields?code=CaKwbNIEMdEd1QYrcg9gXEGYcmm0age5Pg1syECCr0a3AzFuIOW6EA==', 
       // {headers: headers},
-      {
-        "organizationUri": "https://dev.azure.com/SEERTEST2",
-        "personalAccessToken": "yzmhi4wugtvxusijonhp5bwowm44hvfx6mscznrzx2fhddhb6skq",
-        "projectName": "SEETTEST1",
-        "workItemType":`${workItem}`
-    }   
+    //   {
+    //     "organizationUri": "https://dev.azure.com/SEERTEST2",
+    //     "personalAccessToken": "3pqupxh5t33cupraelsj6aemtox5r5nqyvdlgpvlfhckihnx6bhq",
+    //     "projectName": "SEETTEST1",
+    //     "workItemType":`${workItem}`
+    // }   
+    auth
     );
     console.log("post req =========> ", result);
     if(result?.status === 200){

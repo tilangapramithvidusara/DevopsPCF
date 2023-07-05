@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Button,notification, Spin} from 'antd';
+import { Button,notification, Radio, RadioChangeEvent, Spin} from 'antd';
 import TableComponent from '../Components/TableComponent';
 import PopupComponent from '../Components/PopupComponent';
 import ConnectionComponent from '../Components/ConnectionComponent';
@@ -34,6 +34,7 @@ export default function ConnectionContainer() {
   const [selectedWorkItem, setSelectedWorkItem] = useState<any>();
   const [devopsResult,setDevopsResult] = useState<any>();
   const [isLoading,setIsLoading] = useState<boolean>(false);
+  const [configureSettings,setConfigureSettings] = useState<any>("configureMapping");
 
   const dataSource = crmWorkItemTypes?.map((item:any,num:number)=> {
     console.log("devopsWorkItemTypes[num] :",devopsWorkItemTypes[num]);
@@ -50,8 +51,9 @@ export default function ConnectionContainer() {
   
   const showModal = () => { 
     console.log("shooo");
-  
-     apiRequest();
+    const data: string | null = localStorage.getItem('items');
+    const authData: any = data ? JSON.parse(data) : null;
+     apiRequest(authData);
   };
 
   const handleOk = () => {
@@ -64,19 +66,28 @@ export default function ConnectionContainer() {
   };
 
   const workItemColumns = [
-    { title: 'SOURCE WORK ITEM TYPE', dataIndex: 'name', key: 'name' },
+    { title: 'SOURCE WORK ITEM TYPE', dataIndex: 'name', key: 'name',disabled:true },
     { title: 'DEVOPS TARGET WORK ITEM TYPE', dataIndex: 'gyde_name', key: 'country', dropdownOptions: options },
     { title: 'FIELD MAPPINGS', dataIndex: 'mapping', key: 'mapping' , buttonField: true}, // accordionContent: 'Additional info'
   ];
 
   useEffect(() => {
   //tempAPI();
-  apiRequest();
+  const data: string | null = localStorage.getItem('items');
+  const authData: any = data ? JSON.parse(data) : null;
+  console.log("authData... parse",authData);
+  apiRequest(authData);
   } ,[selectedWorkItem])
 
-  const apiRequest = async()=>{
+  const apiRequest = async(authData:any)=>{
+    const authObj = {
+      organizationUri: authData?.organizationUri,
+      personalAccessToken: authData?.personalAccessToken,
+      projectName: authData?.projectName,
+      workItemType:selectedWorkItem?.name
+    }
     if(selectedWorkItem?.name != undefined && selectedWorkItem?.name != null){
-     const devopsData = await fetchDevopsFeildsData(selectedWorkItem?.name);
+     const devopsData = await fetchDevopsFeildsData(authObj);
      console.log("apiDara,",devopsData, selectedWorkItem);
      const crmData =   await FetchCrmFields();
      let sameDropdownFeild :any= []; 
@@ -116,12 +127,9 @@ export default function ConnectionContainer() {
 
   useEffect(()=>{
     isModalOpen && taskDataArr.length ? setIsLoading(true) :setIsLoading(false)
-    
-
   },[isModalOpen,taskDataArr])
   const tempAPI = ()=> {
 
- 
     const tempArr = [{name:'Issue',country: 'Epic1',AttributeType: "Lookup" ,hasPicklist:false ,option:[1,2,4] },
     {name:'Epic',country: 'Epic', AttributeType: "Lookup",hasPicklist:true ,option:[1,2,4]},
     {name:'Test Plan',country: 'Test Plan', AttributeType: "String",hasPicklist:true ,option:[1,2,4]}]
@@ -172,20 +180,17 @@ export default function ConnectionContainer() {
   },[])
 
   const savePopupModelData = (data:any = [])=>{
-    console.log("963",data);
-    
+    console.log("963",data);   
     if(data?.length){
        let _data = data.filter((f:any) => f.isText === false);
-
        console.log("12345",_data);
-      console.log("cvc", _data.every((_f:any)=> _f.isSelected === true));
-      
-       
-    }
-    
-
-    
+      console.log("cvc", _data.every((_f:any)=> _f.isSelected === true));  
+    }  
   }
+  const handleConfigure = ({ target: { value } }: RadioChangeEvent) => {
+    setConfigureSettings(value);
+  };
+
   return (
     <div className="devops-container">
      <Spin spinning={isLoading}>
@@ -193,19 +198,40 @@ export default function ConnectionContainer() {
      <h1 className='title'>DevOps Work Items</h1>
       <h3 className='sub-title'><span>Connection Details</span><span> <h5 className='sub-title2'> Survey Name - Business Name</h5></span></h3>
       <ConnectionComponent setWorkItemData={(res:any)=>{setDevopsWorkItemTypes(res?.data?.Value), setDevopsResult(res)}}/>
+
+      <Radio.Group
+        options={[{ label: 'DevOps Generator', value: 'devopsGenerator' },
+        { label: 'Configure Mapping', value: 'configureMapping' }]}
+        onChange={handleConfigure}
+        value={configureSettings}
+        optionType="button"
+        buttonStyle="solid"
+      />
       {devopsResult?.status && (
         <>
           <h3 className='sub-title'>Mapping - Work Item Types</h3>
           <TableComponent 
-            dataSource={dataSource1}  
+            dataSource={dataSource}  
             columns={workItemColumns} 
             onMapping={() => {}}  
             size='small'
             scroll={{ y: 300 }} 
             isModelopen= {false} 
             modelAction={showModal}
+            className={configureSettings == "devopsGenerator" ? "disable-table" : ""}
             setDropDownValue={(data:any)=>setSelectedWorkItem(data)}
+            rowClassName={configureSettings == "devopsGenerator" ? "disable-table" : ""}
+            disabled={configureSettings == "devopsGenerator" ? true: false}
           />
+
+      <span>
+        <Button className='cancel-btn' type="primary" htmlType="submit" onClick={()=>{}}>
+              Cancel
+            </Button>
+        <Button type="primary" htmlType="submit" onClick={()=>{}}>
+              Save
+        </Button>
+      </span>
         </>
       )}
       {/* <TableComponent dataSource={dataSource} columns={columns} /> */}
@@ -238,14 +264,6 @@ Cancel
          </div>}
 
       /> }
-      <span>
-        <Button className='cancel-btn' type="primary" htmlType="submit" onClick={()=>{}}>
-              Cancel
-            </Button>
-        <Button type="primary" htmlType="submit" onClick={()=>{}}>
-              Save
-        </Button>
-      </span>
      </Spin>
     </div>
   )

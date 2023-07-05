@@ -12,7 +12,7 @@ interface ConnectionProps {
 
   const obj = {
     "organizationUri": "https://dev.azure.com/SEERTEST2",
-    "personalAccessToken": "lvmhgetigpx3k77b6pv2yhtc26tkpigvk7nvvkiq7b76rjykgkcq",
+    "personalAccessToken": "3pqupxh5t33cupraelsj6aemtox5r5nqyvdlgpvlfhckihnx6bhq",
     "projectName": "SEETTEST1"
 }
   const onFinish = (values: any) => {
@@ -23,6 +23,7 @@ interface ConnectionProps {
         message:"Success",
         description:"Successfully connected..!"
       }); 
+      localStorage.setItem('items',JSON.stringify(values));
       console.log("res........!!!", res);
       setWorkItemData(res);
     }else{
