@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Table, Select, Input, Button, Collapse, Form } from "antd";
+import { Table, Select, Input, Button, Collapse, Form ,Typography} from "antd";
 import { TableProps } from "antd/lib/table";
 import LinkOutLined from "@ant-design/icons";
 import PopupComponent from "./PopupComponent";
+
+const { Text } = Typography;
 // import * as Mapping from '../Images/mapping.png';
 // interface CommonTableProps extends TableProps<any> {
 //   dataSource: any[];
@@ -20,6 +22,7 @@ interface CommonTableProps extends TableProps<any> {
   isModelopen: boolean;
   setDropDownValue?: any;
   isPicklistModel?:boolean;
+  savePopupModelData?:any;
 }
 
 interface TableColumn {
@@ -30,6 +33,7 @@ interface TableColumn {
   textField?: boolean;
   buttonField?: boolean;
   accordionContent?: string;
+  
 }
 
 // const dataSource = [
@@ -52,6 +56,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   isModelopen,
   setDropDownValue,
   isPicklistModel,
+  savePopupModelData,
   ...rest
 }) => {
   const [tableData, setTableData] = useState(dataSource);
@@ -68,6 +73,8 @@ const TableComponent: React.FC<CommonTableProps> = ({
     // You may need to use specific PCF methods or update the control's properties/state
     console.log("data ===> ", tableData);
     console.log("isPicklist",isPickListModelOpen);
+
+    
     
   }, [tableData]);
 
@@ -90,7 +97,11 @@ const TableComponent: React.FC<CommonTableProps> = ({
     console.log("currentValuecurrentValue", currentValue);
     console.log("options======> ", options);
 
-    return (
+    return isModelopen && record?.isText  ?  <div>
+   <Text>{record?.devopsWorkItem}</Text>
+    
+    </div>   :(
+
       <div
         style={{
           display: "flex",
@@ -160,6 +171,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
           </>
         )}
       </div>
+     
     );
   };
 
@@ -273,6 +285,12 @@ const TableComponent: React.FC<CommonTableProps> = ({
     } = column;
 
     let renderCell;
+    console.log("xxcccc",dataIndex,
+    dropdownOptions,
+    textField,
+    buttonField,
+    accordionContent,);
+    
     if (dropdownOptions) {
       renderCell = (text: string, record: any) =>
         renderDropdown(dropdownOptions, record, dataIndex, column);
@@ -301,7 +319,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   ];
   const showPickListModal = (record:any) => { 
     console.log("11222");
-    if(record.devopsWorkItem){
+    if(record.devopsWorkItem && record.isText === false){
        const _optionDataSource = record.dropdown.filter((option:any)=> option.dropdownValue === record?.devopsWorkItem).map((item:any,key:any)=> {
        let crm =   item.option[0].crmOption.map((crmoption:any,key:any) => {
           return {key:key,souruceOption:crmoption}
