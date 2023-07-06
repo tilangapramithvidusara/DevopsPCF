@@ -183,7 +183,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   );
 
   const renderButton = (text: string, record: any, dataIndex: string) => {
-    const isEnable = dropDownOptions?.some(
+    const isEnableFlag = dropDownOptions?.some(
       (item: any) => item == record?.country
     );
     const notNull = Boolean(record?.country);
@@ -236,6 +236,13 @@ const TableComponent: React.FC<CommonTableProps> = ({
     //   }
     //   return item;
     // });
+    const mappingFlag = tableData?.map((data:any)=>{
+      return {
+          ...data,
+          isCorrectlyMapped: data?.[dataIndex] ? true : false
+      }
+    })
+    console.log("check mapping..",mappingFlag);
     let currentValue = isModelopen && value !== "N/A" && JSON.parse(value);
     console.log("come field change =======> ", key, dataIndex, value);
 

@@ -1156,3 +1156,86 @@ export const exampleCRMData = [
   },
   { SchemaName: "Resource", AttributeType: "Lookup", Options: null },
 ];
+
+export const savedMappedData = [
+  {
+      key: 1,
+      name: "Issue",
+      gyde_name: "N/A",
+      mapping: "Mapping",
+      enable: false,
+      isCorrectlyMapped: true
+  },
+  {
+      key: 2,
+      name: "Epic",
+      gyde_name: "Epic",
+      mapping: "Mapping",
+      enable: true,
+      isCorrectlyMapped: true
+  },
+  {
+      key: 3,
+      name: "Task",
+      gyde_name: "Task",
+      mapping: "Mapping",
+      enable: true,
+      isCorrectlyMapped: true
+  },
+  {
+      key: 4,
+      name: "Test Case",
+      gyde_name: "Test Case",
+      mapping: "Mapping",
+      enable: true,
+      isCorrectlyMapped: true
+  },
+  {
+      key: 5,
+      name: "Test Plan",
+      gyde_name: "Test Plan",
+      mapping: "Mapping",
+      enable: true,
+      isCorrectlyMapped: true
+  },
+  {
+      key: 6,
+      name: "Test Suite",
+      gyde_name: "",
+      mapping: "Mapping",
+      enable: false,
+      isCorrectlyMapped: false
+  },
+  {
+      key: 7,
+      name: "Shared Steps",
+      gyde_name: "",
+      mapping: "Mapping",
+      enable: false,
+      isCorrectlyMapped: false
+  },
+  {
+      key: 8,
+      name: "Shared Parameter",
+      gyde_name: "",
+      mapping: "Mapping",
+      enable: false,
+      isCorrectlyMapped: false
+  },
+  {
+      key: 9,
+      name: "Code Review Request",
+      gyde_name: "",
+      mapping: "Mapping",
+      enable: false,
+      isCorrectlyMapped: false
+  },
+  {
+      key: 10,
+      name: "Code Review Response",
+      gyde_name: "",
+      mapping: "Mapping",
+      enable: false,
+      isCorrectlyMapped: false
+  }
+]

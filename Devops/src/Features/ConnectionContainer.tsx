@@ -3,7 +3,7 @@ import { Button,notification, Radio, RadioChangeEvent, Spin} from 'antd';
 import TableComponent from '../Components/TableComponent';
 import PopupComponent from '../Components/PopupComponent';
 import ConnectionComponent from '../Components/ConnectionComponent';
-import  {exampleCRMData, exampleDevOpsData, workItemTypes}  from '../Constants/Samples/sample';
+import  {exampleCRMData, exampleDevOpsData, savedMappedData, workItemTypes}  from '../Constants/Samples/sample';
 import SampleModel from '../Components/SampleMode';
 import { FetchCrmFields } from '../Api/crmApis';
 import { fetchWorkItemTypesFromCRM, fetchWorkItemTypesFromDevops, fetchDevopsFeildsData  } from '../Api/devopsApis';
@@ -34,7 +34,9 @@ export default function ConnectionContainer() {
   const [selectedWorkItem, setSelectedWorkItem] = useState<any>();
   const [devopsResult,setDevopsResult] = useState<any>();
   const [isLoading,setIsLoading] = useState<boolean>(false);
+  const [isMappedSaved,setIsMappedSaved] = useState<boolean>(false);
   const [configureSettings,setConfigureSettings] = useState<any>("configureMapping");
+  const [savedFilteredData, setSavedFilteredData] : any = useState([]);
 
   const dataSource = crmWorkItemTypes?.map((item:any,num:number)=> {
     console.log("devopsWorkItemTypes[num] :",devopsWorkItemTypes[num]);
@@ -174,10 +176,26 @@ export default function ConnectionContainer() {
   // console.log("dataSource",dataSource);
   useEffect(()=>{
     fetchWorkItemTypesFromCRM().then((result:any)=>{
-      console.log("crm work items :",result, result?.data?.value);
+      console.log("crm work items :" ,  result, result?.data?.value);
       setCrmWorkItemTypes(result?.data?.value);
     });
   },[])
+
+  // useEffect(()=>{
+  //   // when saved data retrieved this will used...
+  //   const comparedData = savedMappedData?.map((data:any)=> {
+  //     console.log("options: saved data", options?.find((item:any)=> item), data?.gyde_name)
+  //     return {
+  //       key: data?.key,
+  //       name:data?.name,
+  //       gyde_name:options?.find((item:any)=> item == data?.gyde_name),
+  //       mapping:data?.mapping,
+  //       enable: options?.find((item:any)=> item == data?.gyde_name) ? true : false
+  //     }
+  //   });
+  //   setSavedFilteredData(comparedData);
+  //   console.log("comparedData...!@#", comparedData);
+  // },[devopsWorkItemTypes])
 
   const savePopupModelData = (data:any = [])=>{
     console.log("963",data);   
@@ -197,27 +215,30 @@ export default function ConnectionContainer() {
 
      <h1 className='title'>DevOps Work Items</h1>
       <h3 className='sub-title'><span>Connection Details</span><span> <h5 className='sub-title2'> Survey Name - Business Name</h5></span></h3>
-      <ConnectionComponent setWorkItemData={(res:any)=>{setDevopsWorkItemTypes(res?.data?.Value), setDevopsResult(res)}}/>
+      <ConnectionComponent setWorkItemData={(res:any)=>{setDevopsWorkItemTypes(res?.data?.Value?.filter((item:any)=>item !="Epic")), setDevopsResult(res)}}/>
 
+     {isMappedSaved && 
       <Radio.Group
-        options={[{ label: 'DevOps Generator', value: 'devopsGenerator' },
-        { label: 'Configure Mapping', value: 'configureMapping' }]}
-        onChange={handleConfigure}
-        value={configureSettings}
-        optionType="button"
-        buttonStyle="solid"
-      />
+          options={[{ label: 'DevOps Generator', value: 'devopsGenerator' },
+          { label: 'Configure Mapping', value: 'configureMapping' }]}
+          onChange={handleConfigure}
+          value={configureSettings}
+          optionType="button"
+          buttonStyle="solid"
+        />
+      }
       {devopsResult?.status && (
         <>
           <h3 className='sub-title'>Mapping - Work Item Types</h3>
           <TableComponent 
-            dataSource={dataSource}  
+            dataSource={savedFilteredData}  
             columns={workItemColumns} 
             onMapping={() => {}}  
             size='small'
             scroll={{ y: 300 }} 
             isModelopen= {false} 
             modelAction={showModal}
+            // loading={devopsResult?.status}
             className={configureSettings == "devopsGenerator" ? "disable-table" : ""}
             setDropDownValue={(data:any)=>setSelectedWorkItem(data)}
             rowClassName={configureSettings == "devopsGenerator" ? "disable-table" : ""}
@@ -240,7 +261,7 @@ export default function ConnectionContainer() {
          buttons={[{title: "Cancel", onClickHandler: ""}, {title: "Set as Default", onClickHandler: savePopupModelData} ,{title: "Save", onClickHandler: savePopupModelData}]} 
          Content={ <div>
 
-<TableComponent 
+                  <TableComponent 
                     dataSource={taskDataArr}  
                     columns={tableColumn} 
                     onMapping={() => {}}   
@@ -250,15 +271,15 @@ export default function ConnectionContainer() {
                     savePopupModelData ={savePopupModelData}
                   />
 
-<div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-<Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
-Cancel
+  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+  <Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
+    Cancel
   </Button>
   <Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
-  Set as Default
+    Set as Default
   </Button>
   <Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
-  Save
+    Save
   </Button>
   </div>
          </div>}
