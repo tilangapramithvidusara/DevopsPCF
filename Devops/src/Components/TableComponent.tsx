@@ -253,6 +253,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
     });
     console.log("changedField  ===> ", changedField);
     console.log("updatedDataupdatedData",updatedData);
+    savePopupModelData(updatedData)
     
     setTableData(updatedData);
     // handleDropdownBlur(dataIndex);
@@ -368,7 +369,8 @@ const TableComponent: React.FC<CommonTableProps> = ({
        {isPickListModelOpen  &&  <PopupComponent 
         visible={isPickListModelOpen} onOk={handleOk} onClose={handleCancel}
          buttons={[{title: "Cancel", onClickHandler: ""}, {title: "Set as Default", onClickHandler: ""} ,{title: "Save", onClickHandler: ""}]} 
-         Content={ <TableComponent 
+         Content={ <>
+         <TableComponent 
                     dataSource={pickListData}  
                     columns={workItemColumns} 
                     onMapping={() => {}}   
@@ -376,7 +378,19 @@ const TableComponent: React.FC<CommonTableProps> = ({
                     modelAction={showPickListModal} 
                     isModelopen= {false}
                     isPicklistModel ={true}
-                  />} 
+                  />
+                
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
+                  <Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
+                  Cancel
+                    </Button>
+                    <Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
+                    Save
+                    </Button>
+                    </div>
+         
+         </>}
+                  Ispicklist={400}
       /> }
       {Object.entries(dropdownErrors).map(([dataIndex, error]) => (
         <div key={dataIndex}>
