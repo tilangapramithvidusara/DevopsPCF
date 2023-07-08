@@ -103,7 +103,8 @@ export default function ConnectionContainer() {
       enable: false,
     },
   ];
-
+  const [dataArr, setDataArr] = useState<any>([]);
+  const [dataFieldArr, setFieldDataArr] = useState<any>([]);
   const [devopsWorkItemTypes, setDevopsWorkItemTypes] = useState<any>([]);
   const [crmWorkItemTypes, setCrmWorkItemTypes] = useState<any>([]);
   const options: any = [...devopsWorkItemTypes]; //"N/A"
@@ -198,8 +199,8 @@ export default function ConnectionContainer() {
       if (devopsData.status === "success") {
         console.log("crm", crmData);
         let tableData = exampleCRMData?.map((crm: any, key: any) => {
-          let dropdownArr: any = devopsData.data.Value
-            ?.filter(
+          let dropdownArr: any = exampleDevOpsData
+            .filter(
               (devOps: any) =>
                 ((crm.AttributeType === "Memo" ||
                   crm.AttributeType === "String" ||
@@ -255,7 +256,10 @@ export default function ConnectionContainer() {
                         },
                       ]
                     : [],
-                isPickList: _data.allowedValues?.length ? true : false,
+                isPickList:
+                  _data.allowedValues?.length && crm.Options?.length
+                    ? true
+                    : false,
               };
             });
 
@@ -273,6 +277,7 @@ export default function ConnectionContainer() {
               : [],
             isText: false,
             isSelected: isOptionList ? true : false,
+            isPickListComplete:false
           };
         });
         let currentLength = tableData.length + 1;
@@ -479,16 +484,54 @@ export default function ConnectionContainer() {
     });
   }, []);
 
-  const savePopupModelData = (data: any = []) => {
-    console.log("963", data);
-    if (data?.length) {
-      let _data = data.filter((f: any) => f.isText === false);
-      console.log("12345", _data);
-      console.log(
-        "cvc",
-        _data.every((_f: any) => _f.isSelected === true)
-      );
-    }
+  const savePopupModelData = () => {
+
+    console.log("SavedMainData",dataFieldArr,taskDataArr);
+    
+    // if (Object.keys(dataArr).length && dataFieldArr.length) {
+    //   console.log("both Select");
+
+    //   let devopsPickListData = dataArr.updatedData.map(
+    //     (f: any) => f.devopsOption
+    //   );
+    //   let crmPickListData = dataArr.updatedData.map(
+    //     (f: any) => f.souruceOption
+    //   );
+    //   console.log("336", devopsPickListData);
+    //   let pickListItems = [
+    //     {
+    //       crmOption: crmPickListData,
+    //       devOpsOption: devopsPickListData,
+    //     },
+    //   ];
+    //   let updateditems = dataFieldArr?.map((field: any) => {
+    //     if (field.key == dataArr?.key) {
+    //       return {
+    //         ...field,
+    //         ["defaultOptionList"]: { defaultOptionList: pickListItems },
+    //       };
+    //     }
+    //     console.log("field", field);
+
+    //     return field;
+    //   });
+    //   console.log("9631111", dataArr, ":", dataFieldArr, updateditems);
+    // } else if (dataFieldArr.length) {
+    //   console.log(" Select source field");
+    //   console.log("963", dataArr, dataFieldArr);
+    // } else {
+    //   console.log("default Data");
+    //   console.log("dataSourceArr", taskDataArr);
+    // }
+    // console.log("963", dataArr, dataFieldArr);
+    // // if (data?.length) {
+    // //   let _data = data.filter((f: any) => f.isText === false);
+    // //   console.log("12345", _data);
+    // //   console.log(
+    // //     "cvc",
+    // //     _data.every((_f: any) => _f.isSelected === true)
+    // //   );
+    // // }
   };
   const handleConfigure = ({ target: { value } }: RadioChangeEvent) => {
     setConfigureSettings(value);
@@ -578,7 +621,10 @@ export default function ConnectionContainer() {
                   scroll={{ y: 300 }}
                   modelAction={showModal}
                   isModelopen={isModalOpen}
-                  savePopupModelData={savePopupModelData}
+                  setDataArr={setDataArr}
+                  setFieldDataArr={setFieldDataArr}
+                  isPicklistModel={false}
+                  currentPickListData ={dataArr}
                 />
 
                 <div
