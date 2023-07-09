@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Table, Select, Input, Button, Collapse, Form ,Typography} from "antd";
+import { Table, Select, Input, Button, Collapse, Form ,Typography, Result} from "antd";
 import { TableProps } from "antd/lib/table";
 import LinkOutLined from "@ant-design/icons";
 import PopupComponent from "./PopupComponent";
@@ -29,6 +29,7 @@ interface CommonTableProps extends TableProps<any> {
   currentRecordKey?:any;
   pickListDataSource?:any
   currentPickListData?:any;
+  defaultPickListData?:any;
 }
 
 interface TableColumn {
@@ -68,6 +69,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   setFieldDataArr,
   currentPickListData,
   pickListDataSource,
+  defaultPickListData,
   disabled,
   
   ...rest
@@ -83,6 +85,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   const [pickListData,setPickListData] = useState<any>([]);
   const [pickListFlag,setPickListFlag] = useState<any>([]);
   const [currentRecord,setCurrentRecord] = useState<any>([]);
+  const [defaultPickListRecord,setDefaultPickListRecord] = useState<any>([]);
   
   useEffect(() => {
     // Update the PCF control's context or notify changes here
@@ -114,14 +117,10 @@ const TableComponent: React.FC<CommonTableProps> = ({
     console.log("currentValuecurrentValue", currentValue);
     console.log("options======> ", options);
 
-    let   defaultData = record?.defaultOptionList &&  Object.keys(record?.defaultOptionList).length && record?.defaultOptionList.defaultOptionList.map((option:any) => {
-      let devops =     option.devOpsOption.map((devOpsOption:any) => {
-        return devOpsOption;
-      })
-      return  {optionList:devops}
-  } );
-   console.log("defaultData1:",defaultData);
-   
+  
+    isPicklistModel && console.log("defaultData1:",record,":|",defaultPickListData);
+     let currentRecordValue =  isPicklistModel  && defaultPickListData.length ? defaultPickListData.filter((items:any) => items.crmOption === record.souruceOption).map((_data:any) => _data.devOpsOption ) : []
+console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
 
     return isModelopen && record?.isText  ?  <div>
    <Text>{record?.devopsWorkItem}</Text>
@@ -175,7 +174,8 @@ const TableComponent: React.FC<CommonTableProps> = ({
                 width: "100%",
                 borderColor: isError ? "red" : undefined,
               }}
-              value={isModelopen ? currentValue?.dropdownValue : currentValue}
+               value={isModelopen ? currentValue?.dropdownValue : currentValue}
+              defaultValue= {isPicklistModel ? currentRecordValue[0]:""}
               onChange={(value) => {
                 handleFieldChange(record.key, dataIndex, value);
               }}
@@ -184,11 +184,12 @@ const TableComponent: React.FC<CommonTableProps> = ({
             >
               {options.map((option: any) => {
                
-                let _value =  defaultData?.length && defaultData.find((defaultValue:any) => defaultValue=== option) 
-         console.log("CCCCCCCCC",_value);
+              // console.log("CCCCC",record?.souruceOption)
+          //      let _value =  defaultPickListData?.length && defaultPickListData.find((defaultValue:any) => defaultValue=== option) 
+          //  console.log("_value1",_value);
          
                 return (
-                  <Option key={option} value={option}>
+                  <Option key={option} value={option} >
                   {option}
                 </Option>
                 )
@@ -269,17 +270,17 @@ const TableComponent: React.FC<CommonTableProps> = ({
  if(isPicklistModel){
   let currentValue = isModelopen && value !== "N/A" && JSON.parse(value);
   const updatedData = tablePickListData.map((item: any) => {
+    console.log("OTem,",item);
+    
     if (item.key === key) {
       return value == "N/A"
         ? { ...item, [dataIndex]: value, enable: false,isSelected:true }
-        : isModelopen
-        ? currentValue?.isPicklist
-          ? { ...item, [dataIndex]: currentValue.value, enable: true, isSelected:true }
-          : { ...item, [dataIndex]: currentValue.value, enable: false,isSelected:true }
-        : { ...item, [dataIndex]: value, enable: true ,isSelected:true};
+        : { ...item, [dataIndex]:value, enable: true ,isSelected:true};
     }
     return item;
+    
   });
+  
 
   console.log("updatedData PickList",updatedData);
   console.log("qqqwq",FieldDataSource,currentRecordKey,updatedData,isPicklistModel)
@@ -302,8 +303,8 @@ const TableComponent: React.FC<CommonTableProps> = ({
         ? { ...item, [dataIndex]: value, enable: false,isSelected:true }
         : isModelopen
         ? currentValue?.isPicklist
-          ? { ...item, [dataIndex]: currentValue.value, enable: true, isSelected:true }
-          : { ...item, [dataIndex]: currentValue.value, enable: false,isSelected:true }
+          ? { ...item, [dataIndex]: currentValue.value,  ["defaultOptionList"]: [],enable: true, isSelected:true }
+          : { ...item, [dataIndex]: currentValue.value, ["defaultOptionList"]: [],enable: false,isSelected:true }
         : { ...item, [dataIndex]: value, enable: true ,isSelected:true};
     }
     return item;
@@ -411,7 +412,20 @@ const TableComponent: React.FC<CommonTableProps> = ({
       console.log("_optionataSource",_optionDataSource);
       setPickListData(_optionDataSource[0].tableDataSource)
       setPickListColoumn(_optionDataSource[0].optionList)
+
+      
+
+      const { crmOption =[], devOpsOption =[] } =  Object.keys(record.defaultOptionList).length && record.defaultOptionList.defaultOptionList[0];
+     const result =crmOption.length && crmOption.map((value:any, index:any) => ({ crmOption: value, devOpsOption: devOpsOption[index] === undefined ? null: devOpsOption[index]}));
+     
+     console.log(result);
+     
+      
+        console.log("defaultRecord",result);
+        setDefaultPickListRecord(result)
       setIsPickLisModalOpen(true);
+
+
     }
     //else{
     //   const _defaultOptionDataSource = record?.defaultOptionList.defaultOptionList.map((option:any) => {
@@ -457,19 +471,55 @@ const TableComponent: React.FC<CommonTableProps> = ({
       );
       console.log("devopsPickListData", devopsPickListData);
       console.log("devopsPickListData", _picklistFlag);
+    
+      const _result = tableData.filter((_data)=> _data.key === currentRecord
+      ).map((_field)=>{
+            if(Object.keys(_field.defaultOptionList).length){
+              const { crmOption, devOpsOption } =   _field.defaultOptionList.defaultOptionList[0]    
+              const result = crmOption.map((value:any, index:any) => ({ crmOption: value, devOpsOption: devOpsOption[index] }));
+       return result;
+      
+            } else {
+              return [];
+            }     
+      })
+      console.log("RRRRR",_result);
+      
+if(_result[0].length){
+        const updatedR = currentPickListData.map((xObj:any) => {
+          const rObj = _result[0].find((rObj:any) => rObj.crmOption === xObj.souruceOption);
+          if (rObj && xObj.devopsOption !== undefined) {
+              return { ...rObj, devOpsOption: xObj.devopsOption };
+          }
+          return rObj;
+      });
+
+      console.log("updatedR",currentRecord,currentPickListData,_result,updatedR);
+
+
+      let _matchDevopsPickListData = updatedR.map(
+        (f: any) => f.devOpsOption
+      );
+      let _updatedpicklistFlag = updatedR.every(
+        (f: any) => f.devOpsOption !== undefined
+      );
+      let matchCrmPickListData = updatedR.map(
+        (f: any) => f.crmOption
+      );
 
       let pickListItems = [
         {
-          crmOption: crmPickListData,
-          devOpsOption: devopsPickListData,
+          crmOption: matchCrmPickListData,
+          devOpsOption: _matchDevopsPickListData,
         },
       ];
+
       let updateditems = tableData?.map((field: any) => {
         if (field.key == currentRecord) {
           return {
             ...field,
             ["defaultOptionList"]: { defaultOptionList: pickListItems },
-            ["isPickListComplete"]:_picklistFlag
+            ["isPickListComplete"]:_updatedpicklistFlag
           };
         }
         console.log("field", field);
@@ -481,10 +531,39 @@ const TableComponent: React.FC<CommonTableProps> = ({
       setTableData(updateditems)
       setFieldDataArr(updateditems)
       setPickListFlag(_picklistFlag)
+}else {
+  console.log(" default");
+  
+          let pickListItems = [
+            {
+              crmOption: crmPickListData,
+              devOpsOption: devopsPickListData,
+            },
+          ];
+          
+          let updateditems = tableData?.map((field: any) => {
+            if (field.key == currentRecord) {
+              return {
+                ...field,
+                ["defaultOptionList"]: { defaultOptionList: pickListItems },
+                ["isPickListComplete"]:_picklistFlag
+              };
+            }
+            console.log("field", field);
+
+            return field;
+          });
+          console.log("picklistSave",updateditems);
+
+          setTableData(updateditems)
+          setFieldDataArr(updateditems)
+          setPickListFlag(_picklistFlag)
+}
+  
 
      // setDataArr({key:currentRecordKey,updatedData})
     }else{
-
+      console.log("not default");
       let updateditems = tableData?.map((field: any) => {
         if (field.key == currentRecord) {
           return {
@@ -526,6 +605,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
                      currentRecordKey ={currentRecord}
                      setDataArr={setDataArr}
                      currentPickListData={currentPickListData}
+                     defaultPickListData={defaultPickListRecord}
                      
                   />
                 
