@@ -235,7 +235,7 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
       <div>
         {record?.enable && (
           <img
-            src="https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png"
+            src= {isModelopen && record?.isPickListComplete ? "https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png":"https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1"}
             alt="1"
             style={{ marginLeft: 100 }}
             width={20}
@@ -243,7 +243,7 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
             onClick={() => handleButtonClick(record)}
           />
         )}
-        {isModelopen && record?.isPickListComplete&& <h1>hiii</h1>}
+        {/* {isModelopen && record?.isPickListComplete&& <h1>hiii</h1>} */}
       </div>
     );
   };
