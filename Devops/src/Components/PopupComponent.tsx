@@ -7,11 +7,12 @@ interface PopupProps {
   buttons: any[];
   Content: any;
   onOk: () => void;
+  Ispicklist?:any
 }
 
 // button = {title: "", onClickHandler(params), visible, onClose, styles: {width, height, color, fontColor, fontSize, fontWeight}}
 
-const PopupComponent: React.FC<PopupProps> = ({ visible, onClose, buttons, Content,onOk }) => {
+const PopupComponent: React.FC<PopupProps> = ({ visible, onClose, buttons, Content,onOk,Ispicklist }) => {
 
   useEffect(()=>{
 
@@ -26,9 +27,11 @@ const PopupComponent: React.FC<PopupProps> = ({ visible, onClose, buttons, Conte
       footer={null}
       centered
       //destroyOnClose
+      bodyStyle={{height:Ispicklist ? 335 : 600}}
       width={800}
+    
     >
-      <div style={{ overflowY: 'hidden', maxHeight: '360px' }}>
+      <div style={{ overflowY: 'hidden', }}>
         {/* Content */}
         {/* ... */}
         <p className='modal-title'>Work Item Field Mapping</p>

@@ -1118,7 +1118,7 @@ export const exampleCRMData = [
   },
   {
     SchemaName: "Complexity",
-    AttributeType: "Picklist",
+    AttributeType: "String",
     Options: [
       "1 - Very Low",
       "2 - Low",

@@ -12,7 +12,7 @@ interface ConnectionProps {
 
   const obj = {
     "organizationUri": "https://dev.azure.com/SEERTEST2",
-    "personalAccessToken": "hpg5z3krtoq2mfzearpbcydidh3hpmsnaucqtlazngufu6wjatlq",
+    "personalAccessToken": "doqpkiixedmytbyu55nmptq2fckyjpcmztt7i4ga3jkjdnwr5j7a",
     "projectName": "SEETTEST1"
 }
   const onFinish = (values: any) => {
