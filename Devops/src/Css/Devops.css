@@ -25,9 +25,8 @@ body {
  margin-top: 0;
 }
 
-.cancel-btn {
-  margin-right: 10px;
-  margin-top: 20px;
+.ant-table-wrapper {
+  margin-bottom: 10px;
 }
 
 .control-pane {
@@ -97,7 +96,7 @@ body {
   height: 35px;
   background-color: transparent !important;
   border-radius: 5px;
-  border: 1px solid #00AEA7;
+  border: 1px solid #00AEA7 !important;
   color: #00AEA7 !important;
   box-shadow: none;
   outline: none;
@@ -123,6 +122,10 @@ body {
 
 .ant-form-item {
   margin-bottom: 20px !important;
+}
+
+.mr-10 {
+  margin-right: 10px;
 }
 
 .ant-table tbody>tr:nth-of-type(odd) {
@@ -177,4 +180,8 @@ body {
 
 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
   background-color: #00AEA7;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
 }

@@ -510,7 +510,7 @@ export default function ConnectionContainer() {
             setDevopsWorkItemTypes(res?.data?.Value), setDevopsResult(res);
           }}
         />
-       <div className="text-left">
+       <div className="text-left mb-20">
           <Radio.Group
             options={[
               { label: "DevOps Generator", value: "devopsGenerator" },
@@ -545,7 +545,7 @@ export default function ConnectionContainer() {
 
             <span>
               <Button
-                className="cancel-btn"
+                className="cancel-btn mr-10"
                 type="primary"
                 htmlType="submit"
                 onClick={() => {}}
@@ -590,11 +590,11 @@ export default function ConnectionContainer() {
                   }}
                 >
                   <Button
-                    className="ant-btn-primary"
+                    className="ant-btn-default cancel-btn"
                     onClick={(e) => {
                       /* Handle button click */
                     }}
-                    style={{ marginLeft: "5px" }}
+                    style={{ marginRight: "10px" }}
                   >
                     Cancel
                   </Button>
@@ -603,14 +603,13 @@ export default function ConnectionContainer() {
                     onClick={(e) => {
                       /* Handle button click */
                     }}
-                    style={{ marginLeft: "5px" }}
+                    style={{ marginRight: "10px" }}
                   >
                     Set as Default
                   </Button>
                   <Button
                     className="ant-btn-primary"
                     onClick={savePopupModelData}
-                    style={{ marginLeft: "5px" }}
                   >
                     Save
                   </Button>

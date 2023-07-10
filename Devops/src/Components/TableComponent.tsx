@@ -381,10 +381,10 @@ const TableComponent: React.FC<CommonTableProps> = ({
                   />
                 
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-                  <Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
+                  <Button className='cancel-btn mr-10'  onClick={(e) => { /* Handle button click */ }}>
                   Cancel
                     </Button>
-                    <Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
+                    <Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }}>
                     Save
                     </Button>
                     </div>
