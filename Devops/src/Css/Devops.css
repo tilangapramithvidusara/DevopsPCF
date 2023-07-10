@@ -156,3 +156,25 @@ body {
 .custom-form-wrap .ant-form-item-control {
   width: 100%;
 }
+
+.text-left {
+  text-align: left;
+}
+
+.ant-radio-button {
+  color: #00AEA7;
+}
+
+.ant-radio-button-wrapper:hover {
+  color: #00AEA7;
+}
+
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+  color: #00AEA7;
+  border-color:#00AEA7 !important;
+  background-color: #00AEA7 !important;
+}
+
+.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+  background-color: #00AEA7;
+}

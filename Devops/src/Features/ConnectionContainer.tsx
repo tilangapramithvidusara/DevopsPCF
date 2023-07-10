@@ -510,17 +510,18 @@ export default function ConnectionContainer() {
             setDevopsWorkItemTypes(res?.data?.Value), setDevopsResult(res);
           }}
         />
-
-        <Radio.Group
-          options={[
-            { label: "DevOps Generator", value: "devopsGenerator" },
-            { label: "Configure Mapping", value: "configureMapping" },
-          ]}
-          onChange={handleConfigure}
-          value={configureSettings}
-          optionType="button"
-          buttonStyle="solid"
-        />
+       <div className="text-left">
+          <Radio.Group
+            options={[
+              { label: "DevOps Generator", value: "devopsGenerator" },
+              { label: "Configure Mapping", value: "configureMapping" },
+            ]}
+            onChange={handleConfigure}
+            value={configureSettings}
+            optionType="button"
+            buttonStyle="solid"
+          />
+        </div>
         {devopsResult?.status && (
           <>
             <h3 className="sub-title">Mapping - Work Item Types</h3>
