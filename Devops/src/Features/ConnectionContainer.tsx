@@ -103,7 +103,9 @@ export default function ConnectionContainer() {
       enable: false,
     },
   ];
+
   const [dataArr, setDataArr] = useState<any>([]);
+  const [isSaveddataArr, setIsSaveddataArr] = useState<any>([]);
   const [dataFieldArr, setFieldDataArr] = useState<any>([]);
   const [devopsWorkItemTypes, setDevopsWorkItemTypes] = useState<any>([]);
   const [crmWorkItemTypes, setCrmWorkItemTypes] = useState<any>([]);
@@ -272,18 +274,21 @@ export default function ConnectionContainer() {
             dropdown: [...dropdownArr],
             mapping: "",
             enable: isOptionList ? true : false,
-            defaultOptionList: isOptionList
-              ? sameDropdownFeild.find((f: any) => f.defaultOptionList)
-              : [],
+            defaultOptionList: [],
             isText: false,
             isSelected: isOptionList ? true : false,
-            isPickListComplete:false
+            isPickListComplete:false,
+            isSavedType: "default"
           };
+
+          // defaultOptionList: isOptionList
+          // ? sameDropdownFeild.find((f: any) => f.defaultOptionList)
+          // : [],
         });
         let currentLength = tableData.length + 1;
         let _tableData = [
           {
-            key: currentLength,
+            key: currentLength+1,
             sourceWorkItem: "Title",
             devopsWorkItem: "Title",
             dropdown: [],
@@ -293,7 +298,7 @@ export default function ConnectionContainer() {
             isText: true,
           },
           {
-            key: currentLength,
+            key: currentLength+2,
             sourceWorkItem: "Work item type",
             devopsWorkItem: "Work item type",
             dropdown: [],
@@ -303,7 +308,7 @@ export default function ConnectionContainer() {
             isText: true,
           },
           {
-            key: currentLength,
+            key: currentLength+3,
             sourceWorkItem: "partner work item",
             devopsWorkItem: "partner work item",
             dropdown: [],
@@ -316,6 +321,21 @@ export default function ConnectionContainer() {
         ];
         console.log("devopsData", _tableData);
         setTaskDataArr(_tableData);
+
+        if(isSaveddataArr.length){
+
+        const _savedTableData:any =  isSaveddataArr.filter((f:any) =>  _tableData.filter((_savedData:any)=>{
+            f.sourceWorkItem === _savedData.sourceWorkItem
+
+          }))
+
+          console.log("*****_savedTableData",_savedTableData);
+          
+          setTaskDataArr(_savedTableData);
+        }else {
+          setTaskDataArr(_tableData);
+        }
+       
         const columns = [
           {
             title: "SOURCE WORK ITEM FIELD",
@@ -487,6 +507,24 @@ export default function ConnectionContainer() {
   const savePopupModelData = () => {
 
     console.log("SavedMainData",dataFieldArr,taskDataArr);
+
+    if(dataFieldArr.length){
+ console.log("API SAved");
+ 
+    }else if (taskDataArr.length){
+        console.log("API Default");
+    }
+
+    // const updatedArray = dataFieldArr.map((item:any) => {
+    //     return {
+    //       ...item,
+    //       ["isSavedType"]: "saved"
+    //     };
+    //   });
+      
+    //   console.log(updatedArray);
+
+    // setIsSaveddataArr(updatedArray)
     
     // if (Object.keys(dataArr).length && dataFieldArr.length) {
     //   console.log("both Select");

@@ -145,7 +145,7 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
                     width: "100%",
                     borderColor: isError ? "red" : undefined,
                   }}
-                  defaultValue={isModelopen && currentValue?.dropdownValue}
+                  defaultValue={isModelopen && record.isSavedType === "saved" ? record?.devopsWorkItem :record.isSavedType === "default"? currentValue?.dropdownValue : currentValue}
                   onChange={(value) => {
                     handleFieldChange(record.key, dataIndex, value);
                   }}
@@ -582,7 +582,7 @@ if(_result[0].length){
 
     }
     //console.log("pickListSavedData",pickListSavedData);
-    
+    setIsPickLisModalOpen(false)
   }
 
 
