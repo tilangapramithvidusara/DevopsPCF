@@ -30,6 +30,7 @@ interface CommonTableProps extends TableProps<any> {
   pickListDataSource?:any
   currentPickListData?:any;
   defaultPickListData?:any;
+  saveMappingItems?:any
 }
 
 interface TableColumn {
@@ -71,7 +72,8 @@ const TableComponent: React.FC<CommonTableProps> = ({
   pickListDataSource,
   defaultPickListData,
   disabled,
-  
+  saveMappingItems,
+
   ...rest
 }) => {
   const [tableData, setTableData] = useState(dataSource);
@@ -97,6 +99,19 @@ const TableComponent: React.FC<CommonTableProps> = ({
   
     console.log("isPicklist",isPickListModelOpen);
   }, [tableData]);
+
+  useEffect(()=>{
+    if(tableData && !isModelopen){
+      const mappingFlag = tableData?.map((data:any)=>{
+      return {
+          ...data,
+          isCorrectlyMapped: data?.gyde_name ? true : false
+      }
+    })
+    saveMappingItems(mappingFlag);
+    console.log("check mapping..",mappingFlag);
+    }
+  },[tableData])
 
   const renderDropdown = (
     options: string[],
@@ -581,6 +596,7 @@ if(_result[0].length){
       setFieldDataArr(updateditems)
 
     }
+    setIsPickLisModalOpen(false)
     //console.log("pickListSavedData",pickListSavedData);
     setIsPickLisModalOpen(false)
   }
@@ -606,7 +622,7 @@ if(_result[0].length){
                      setDataArr={setDataArr}
                      currentPickListData={currentPickListData}
                      defaultPickListData={defaultPickListRecord}
-                     
+                     saveMappingItems={()=>{}}                  
                   />
                 
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
