@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { encodeJSONToBase64 } from '../Helper/Helper';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -21,6 +22,13 @@ const data: any = {
 //   projectName: "SEETTEST1"
 // }
 //dvttsdit35edsgajqqwxipnobf7r6x5g2nr337cp5ovhmiylq3za
+
+export const saveMappingData = async(data:any) =>{
+ let _encodedData = encodeJSONToBase64(data)
+  
+
+}
+
 export const fetchDevopsFeildsData = async (auth:any) => {
   console.log("selected work item :",auth);
   try {
@@ -169,3 +177,24 @@ export const fetchWorkItemTypesFromCRM  = async() => {
     
 //   }
 // }
+
+export const saveWorkItemTypes  = async(data:any) => {
+  try {
+    let formData = new FormData();
+    formData.append("gyde_devopsmappings",data);
+    const result = 
+    await axios.post('/_api/gyde_devopsconfigurations',
+    {contentType: "application/json",
+    formData
+  });
+    if(result?.status==200){
+      return {status:"success", data:result?.data};
+    }else{
+      return {status:"error", data:"Something Went Wrong..!"};
+    }  
+  } catch (error) {
+    console.log(" Error get WorkItemTypes From CRM ===========", error);
+    return {status:"error", data:error};
+  }
+
+}

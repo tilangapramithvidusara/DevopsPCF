@@ -220,7 +220,7 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
   );
 
   const renderButton = (text: string, record: any, dataIndex: string) => {
-    const isEnable = dropDownOptions?.some(
+    const isEnableFlag = dropDownOptions?.some(
       (item: any) => item == record?.country
     );
     const notNull = Boolean(record?.country);
