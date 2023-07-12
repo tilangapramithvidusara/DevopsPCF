@@ -103,7 +103,3503 @@ export default function ConnectionContainer() {
       enable: false,
     },
   ];
+  const DefaultSaved = [
+    {
+        "key": 10,
+        "sourceWorkItem": "Title",
+        "devopsWorkItem": "Title",
+        "dropdown": [],
+        "mapping": "",
+        "enable": false,
+        "defaultOptionList": [],
+        "isText": true
+    },
+    {
+        "key": 10,
+        "sourceWorkItem": "Work item type",
+        "devopsWorkItem": "Work item type",
+        "dropdown": [],
+        "mapping": "",
+        "enable": false,
+        "defaultOptionList": [],
+        "isText": true
+    },
+    {
+        "key": 10,
+        "sourceWorkItem": "partner work item",
+        "devopsWorkItem": "partner work item",
+        "dropdown": [],
+        "mapping": "",
+        "enable": false,
+        "defaultOptionList": [],
+        "isText": true
+    },
+    {
+        "key": 0,
+        "sourceWorkItem": "Activated By",
+        "dropdown": [
+            {
+                "key": 0,
+                "dropdownValue": "Activated By",
+                "option": [
+                    {
+                        "crmOption": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "devOpsOption": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ]
+                    }
+                ],
+                "isPickList": true
+            },
+            {
+                "key": 1,
+                "dropdownValue": "Activated Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 2,
+                "dropdownValue": "Activity",
+                "option": [
+                    {
+                        "crmOption": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "devOpsOption": [
+                            "Deployment",
+                            "Design",
+                            "Development",
+                            "Documentation",
+                            "Requirements",
+                            "Testing"
+                        ]
+                    }
+                ],
+                "isPickList": true
+            },
+            {
+                "key": 3,
+                "dropdownValue": "Area ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 4,
+                "dropdownValue": "Area Path",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 5,
+                "dropdownValue": "Assigned To",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 6,
+                "dropdownValue": "Attached File Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 7,
+                "dropdownValue": "Authorized As",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 8,
+                "dropdownValue": "Authorized Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 9,
+                "dropdownValue": "Board Column",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 10,
+                "dropdownValue": "Board Column Done",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 11,
+                "dropdownValue": "Board Lane",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 12,
+                "dropdownValue": "Changed By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 13,
+                "dropdownValue": "Changed Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 14,
+                "dropdownValue": "Closed By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 15,
+                "dropdownValue": "Closed Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 16,
+                "dropdownValue": "Comment Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 17,
+                "dropdownValue": "Completed Work",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 18,
+                "dropdownValue": "Created By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 19,
+                "dropdownValue": "Created Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 20,
+                "dropdownValue": "Description",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 21,
+                "dropdownValue": "External Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 22,
+                "dropdownValue": "History",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 23,
+                "dropdownValue": "Hyperlink Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 24,
+                "dropdownValue": "ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 25,
+                "dropdownValue": "Iteration ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 26,
+                "dropdownValue": "Iteration Path",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 27,
+                "dropdownValue": "Node Name",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 28,
+                "dropdownValue": "Parent",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 29,
+                "dropdownValue": "Priority",
+                "option": [
+                    {
+                        "crmOption": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "devOpsOption": [
+                            "1",
+                            "2",
+                            "3",
+                            "4"
+                        ]
+                    }
+                ],
+                "isPickList": true
+            },
+            {
+                "key": 30,
+                "dropdownValue": "Reason",
+                "option": [
+                    {
+                        "crmOption": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "devOpsOption": [
+                            "Completed",
+                            "Cut",
+                            "Deferred",
+                            "Obsolete",
+                            "Moved to backlog",
+                            "Started",
+                            "Reactivated",
+                            "Added to backlog"
+                        ]
+                    }
+                ],
+                "isPickList": true
+            },
+            {
+                "key": 31,
+                "dropdownValue": "Related Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 32,
+                "dropdownValue": "Remaining Work",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 33,
+                "dropdownValue": "Remote Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 34,
+                "dropdownValue": "Resolved By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 35,
+                "dropdownValue": "Resolved Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 36,
+                "dropdownValue": "Rev",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 37,
+                "dropdownValue": "Revised Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 38,
+                "dropdownValue": "Stack Rank",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 39,
+                "dropdownValue": "State",
+                "option": [
+                    {
+                        "crmOption": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "devOpsOption": [
+                            "Doing",
+                            "Done",
+                            "To Do"
+                        ]
+                    }
+                ],
+                "isPickList": true
+            },
+            {
+                "key": 40,
+                "dropdownValue": "State Change Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 41,
+                "dropdownValue": "Tags",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 42,
+                "dropdownValue": "Team Project",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 43,
+                "dropdownValue": "Title",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 44,
+                "dropdownValue": "Watermark",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 45,
+                "dropdownValue": "Work Item Type",
+                "option": [
+                    {
+                        "crmOption": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "devOpsOption": [
+                            "Code Review Request",
+                            "Code Review Response",
+                            "Epic",
+                            "Feedback Request",
+                            "Feedback Response",
+                            "Issue",
+                            "Shared Parameter",
+                            "Shared Steps",
+                            "Task",
+                            "Test Case",
+                            "Test Plan",
+                            "Test Suite"
+                        ]
+                    }
+                ],
+                "isPickList": true
+            }
+        ],
+        "mapping": "",
+        "enable": true,
+        "defaultOptionList": {
+            "defaultOptionList": [
+                {
+                    "crmOption": [
+                        1,
+                        2,
+                        3,
+                        4
+                    ],
+                    "devOpsOption": [
+                        "Deployment",
+                        "Design",
+                        "Requirements",
+                        "Requirements"
+                    ]
+                }
+            ]
+        },
+        "isText": false,
+        "isSelected": true,
+        "isPickListComplete": true,
+        "devopsWorkItem": "Activity"
+    },
+    {
+        "key": 1,
+        "sourceWorkItem": "Build estimate (pts)",
+        "dropdown": [],
+        "mapping": "",
+        "enable": false,
+        "defaultOptionList": [],
+        "isText": false,
+        "isSelected": true,
+        "isPickListComplete": false,
+        "devopsWorkItem": "N/A"
+    },
+    {
+        "key": 2,
+        "sourceWorkItem": "Complexity",
+        "dropdown": [
+            {
+                "key": 0,
+                "dropdownValue": "Activated By",
+                "option": [
+                    {
+                        "crmOption": [
+                            "1 - Very Low",
+                            "2 - Low",
+                            "3 - Medium",
+                            "4 - High",
+                            "5 - Very High"
+                        ],
+                        "devOpsOption": [
+                            1,
+                            2,
+                            3,
+                            4
+                        ]
+                    }
+                ],
+                "isPickList": true
+            },
+            {
+                "key": 1,
+                "dropdownValue": "Activated Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 2,
+                "dropdownValue": "Activity",
+                "option": [
+                    {
+                        "crmOption": [
+                            "1 - Very Low",
+                            "2 - Low",
+                            "3 - Medium",
+                            "4 - High",
+                            "5 - Very High"
+                        ],
+                        "devOpsOption": [
+                            "Deployment",
+                            "Design",
+                            "Development",
+                            "Documentation",
+                            "Requirements",
+                            "Testing"
+                        ]
+                    }
+                ],
+                "isPickList": true
+            },
+            {
+                "key": 3,
+                "dropdownValue": "Area ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 4,
+                "dropdownValue": "Area Path",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 5,
+                "dropdownValue": "Assigned To",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 6,
+                "dropdownValue": "Attached File Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 7,
+                "dropdownValue": "Authorized As",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 8,
+                "dropdownValue": "Authorized Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 9,
+                "dropdownValue": "Board Column",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 10,
+                "dropdownValue": "Board Column Done",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 11,
+                "dropdownValue": "Board Lane",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 12,
+                "dropdownValue": "Changed By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 13,
+                "dropdownValue": "Changed Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 14,
+                "dropdownValue": "Closed By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 15,
+                "dropdownValue": "Closed Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 16,
+                "dropdownValue": "Comment Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 17,
+                "dropdownValue": "Completed Work",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 18,
+                "dropdownValue": "Created By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 19,
+                "dropdownValue": "Created Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 20,
+                "dropdownValue": "Description",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 21,
+                "dropdownValue": "External Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 22,
+                "dropdownValue": "History",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 23,
+                "dropdownValue": "Hyperlink Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 24,
+                "dropdownValue": "ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 25,
+                "dropdownValue": "Iteration ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 26,
+                "dropdownValue": "Iteration Path",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 27,
+                "dropdownValue": "Node Name",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 28,
+                "dropdownValue": "Parent",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 29,
+                "dropdownValue": "Priority",
+                "option": [
+                    {
+                        "crmOption": [
+                            "1 - Very Low",
+                            "2 - Low",
+                            "3 - Medium",
+                            "4 - High",
+                            "5 - Very High"
+                        ],
+                        "devOpsOption": [
+                            "1",
+                            "2",
+                            "3",
+                            "4"
+                        ]
+                    }
+                ],
+                "isPickList": true
+            },
+            {
+                "key": 30,
+                "dropdownValue": "Reason",
+                "option": [
+                    {
+                        "crmOption": [
+                            "1 - Very Low",
+                            "2 - Low",
+                            "3 - Medium",
+                            "4 - High",
+                            "5 - Very High"
+                        ],
+                        "devOpsOption": [
+                            "Completed",
+                            "Cut",
+                            "Deferred",
+                            "Obsolete",
+                            "Moved to backlog",
+                            "Started",
+                            "Reactivated",
+                            "Added to backlog"
+                        ]
+                    }
+                ],
+                "isPickList": true
+            },
+            {
+                "key": 31,
+                "dropdownValue": "Related Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 32,
+                "dropdownValue": "Remaining Work",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 33,
+                "dropdownValue": "Remote Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 34,
+                "dropdownValue": "Resolved By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 35,
+                "dropdownValue": "Resolved Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 36,
+                "dropdownValue": "Rev",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 37,
+                "dropdownValue": "Revised Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 38,
+                "dropdownValue": "Stack Rank",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 39,
+                "dropdownValue": "State",
+                "option": [
+                    {
+                        "crmOption": [
+                            "1 - Very Low",
+                            "2 - Low",
+                            "3 - Medium",
+                            "4 - High",
+                            "5 - Very High"
+                        ],
+                        "devOpsOption": [
+                            "Doing",
+                            "Done",
+                            "To Do"
+                        ]
+                    }
+                ],
+                "isPickList": true
+            },
+            {
+                "key": 40,
+                "dropdownValue": "State Change Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 41,
+                "dropdownValue": "Tags",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 42,
+                "dropdownValue": "Team Project",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 43,
+                "dropdownValue": "Title",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 44,
+                "dropdownValue": "Watermark",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 45,
+                "dropdownValue": "Work Item Type",
+                "option": [
+                    {
+                        "crmOption": [
+                            "1 - Very Low",
+                            "2 - Low",
+                            "3 - Medium",
+                            "4 - High",
+                            "5 - Very High"
+                        ],
+                        "devOpsOption": [
+                            "Code Review Request",
+                            "Code Review Response",
+                            "Epic",
+                            "Feedback Request",
+                            "Feedback Response",
+                            "Issue",
+                            "Shared Parameter",
+                            "Shared Steps",
+                            "Task",
+                            "Test Case",
+                            "Test Plan",
+                            "Test Suite"
+                        ]
+                    }
+                ],
+                "isPickList": true
+            }
+        ],
+        "mapping": "",
+        "enable": false,
+        "defaultOptionList": [],
+        "isText": false,
+        "isSelected": false,
+        "isPickListComplete": false
+    },
+    {
+        "key": 3,
+        "sourceWorkItem": "Design Classification",
+        "dropdown": [],
+        "mapping": "",
+        "enable": false,
+        "defaultOptionList": [],
+        "isText": false,
+        "isSelected": false,
+        "isPickListComplete": false
+    },
+    {
+        "key": 4,
+        "sourceWorkItem": "GapFit",
+        "dropdown": [],
+        "mapping": "",
+        "enable": false,
+        "defaultOptionList": [],
+        "isText": false,
+        "isSelected": false,
+        "isPickListComplete": false
+    },
+    {
+        "key": 5,
+        "sourceWorkItem": "ISV",
+        "dropdown": [
+            {
+                "key": 0,
+                "dropdownValue": "Activated By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 1,
+                "dropdownValue": "Activated Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 2,
+                "dropdownValue": "Activity",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 3,
+                "dropdownValue": "Area ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 4,
+                "dropdownValue": "Area Path",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 5,
+                "dropdownValue": "Assigned To",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 6,
+                "dropdownValue": "Attached File Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 7,
+                "dropdownValue": "Authorized As",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 8,
+                "dropdownValue": "Authorized Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 9,
+                "dropdownValue": "Board Column",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 10,
+                "dropdownValue": "Board Column Done",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 11,
+                "dropdownValue": "Board Lane",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 12,
+                "dropdownValue": "Changed By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 13,
+                "dropdownValue": "Changed Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 14,
+                "dropdownValue": "Closed By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 15,
+                "dropdownValue": "Closed Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 16,
+                "dropdownValue": "Comment Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 17,
+                "dropdownValue": "Completed Work",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 18,
+                "dropdownValue": "Created By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 19,
+                "dropdownValue": "Created Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 20,
+                "dropdownValue": "Description",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 21,
+                "dropdownValue": "External Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 22,
+                "dropdownValue": "History",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 23,
+                "dropdownValue": "Hyperlink Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 24,
+                "dropdownValue": "ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 25,
+                "dropdownValue": "Iteration ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 26,
+                "dropdownValue": "Iteration Path",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 27,
+                "dropdownValue": "Node Name",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 28,
+                "dropdownValue": "Parent",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 29,
+                "dropdownValue": "Priority",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 30,
+                "dropdownValue": "Reason",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 31,
+                "dropdownValue": "Related Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 32,
+                "dropdownValue": "Remaining Work",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 33,
+                "dropdownValue": "Remote Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 34,
+                "dropdownValue": "Resolved By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 35,
+                "dropdownValue": "Resolved Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 36,
+                "dropdownValue": "Rev",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 37,
+                "dropdownValue": "Revised Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 38,
+                "dropdownValue": "Stack Rank",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 39,
+                "dropdownValue": "State",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 40,
+                "dropdownValue": "State Change Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 41,
+                "dropdownValue": "Tags",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 42,
+                "dropdownValue": "Team Project",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 43,
+                "dropdownValue": "Title",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 44,
+                "dropdownValue": "Watermark",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 45,
+                "dropdownValue": "Work Item Type",
+                "option": [],
+                "isPickList": false
+            }
+        ],
+        "mapping": "",
+        "enable": false,
+        "defaultOptionList": [],
+        "isText": false,
+        "isSelected": false,
+        "isPickListComplete": false
+    },
+    {
+        "key": 6,
+        "sourceWorkItem": "Module",
+        "dropdown": [
+            {
+                "key": 0,
+                "dropdownValue": "Activated By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 1,
+                "dropdownValue": "Activated Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 2,
+                "dropdownValue": "Activity",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 3,
+                "dropdownValue": "Area ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 4,
+                "dropdownValue": "Area Path",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 5,
+                "dropdownValue": "Assigned To",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 6,
+                "dropdownValue": "Attached File Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 7,
+                "dropdownValue": "Authorized As",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 8,
+                "dropdownValue": "Authorized Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 9,
+                "dropdownValue": "Board Column",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 10,
+                "dropdownValue": "Board Column Done",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 11,
+                "dropdownValue": "Board Lane",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 12,
+                "dropdownValue": "Changed By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 13,
+                "dropdownValue": "Changed Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 14,
+                "dropdownValue": "Closed By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 15,
+                "dropdownValue": "Closed Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 16,
+                "dropdownValue": "Comment Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 17,
+                "dropdownValue": "Completed Work",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 18,
+                "dropdownValue": "Created By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 19,
+                "dropdownValue": "Created Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 20,
+                "dropdownValue": "Description",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 21,
+                "dropdownValue": "External Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 22,
+                "dropdownValue": "History",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 23,
+                "dropdownValue": "Hyperlink Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 24,
+                "dropdownValue": "ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 25,
+                "dropdownValue": "Iteration ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 26,
+                "dropdownValue": "Iteration Path",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 27,
+                "dropdownValue": "Node Name",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 28,
+                "dropdownValue": "Parent",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 29,
+                "dropdownValue": "Priority",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 30,
+                "dropdownValue": "Reason",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 31,
+                "dropdownValue": "Related Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 32,
+                "dropdownValue": "Remaining Work",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 33,
+                "dropdownValue": "Remote Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 34,
+                "dropdownValue": "Resolved By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 35,
+                "dropdownValue": "Resolved Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 36,
+                "dropdownValue": "Rev",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 37,
+                "dropdownValue": "Revised Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 38,
+                "dropdownValue": "Stack Rank",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 39,
+                "dropdownValue": "State",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 40,
+                "dropdownValue": "State Change Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 41,
+                "dropdownValue": "Tags",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 42,
+                "dropdownValue": "Team Project",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 43,
+                "dropdownValue": "Title",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 44,
+                "dropdownValue": "Watermark",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 45,
+                "dropdownValue": "Work Item Type",
+                "option": [],
+                "isPickList": false
+            }
+        ],
+        "mapping": "",
+        "enable": false,
+        "defaultOptionList": [],
+        "isText": false,
+        "isSelected": false,
+        "isPickListComplete": false
+    },
+    {
+        "key": 7,
+        "sourceWorkItem": "Priority",
+        "dropdown": [],
+        "mapping": "",
+        "enable": false,
+        "defaultOptionList": [],
+        "isText": false,
+        "isSelected": false,
+        "isPickListComplete": false
+    },
+    {
+        "key": 8,
+        "sourceWorkItem": "Resource",
+        "dropdown": [
+            {
+                "key": 0,
+                "dropdownValue": "Activated By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 1,
+                "dropdownValue": "Activated Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 2,
+                "dropdownValue": "Activity",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 3,
+                "dropdownValue": "Area ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 4,
+                "dropdownValue": "Area Path",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 5,
+                "dropdownValue": "Assigned To",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 6,
+                "dropdownValue": "Attached File Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 7,
+                "dropdownValue": "Authorized As",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 8,
+                "dropdownValue": "Authorized Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 9,
+                "dropdownValue": "Board Column",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 10,
+                "dropdownValue": "Board Column Done",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 11,
+                "dropdownValue": "Board Lane",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 12,
+                "dropdownValue": "Changed By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 13,
+                "dropdownValue": "Changed Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 14,
+                "dropdownValue": "Closed By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 15,
+                "dropdownValue": "Closed Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 16,
+                "dropdownValue": "Comment Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 17,
+                "dropdownValue": "Completed Work",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 18,
+                "dropdownValue": "Created By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 19,
+                "dropdownValue": "Created Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 20,
+                "dropdownValue": "Description",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 21,
+                "dropdownValue": "External Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 22,
+                "dropdownValue": "History",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 23,
+                "dropdownValue": "Hyperlink Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 24,
+                "dropdownValue": "ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 25,
+                "dropdownValue": "Iteration ID",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 26,
+                "dropdownValue": "Iteration Path",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 27,
+                "dropdownValue": "Node Name",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 28,
+                "dropdownValue": "Parent",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 29,
+                "dropdownValue": "Priority",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 30,
+                "dropdownValue": "Reason",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 31,
+                "dropdownValue": "Related Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 32,
+                "dropdownValue": "Remaining Work",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 33,
+                "dropdownValue": "Remote Link Count",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 34,
+                "dropdownValue": "Resolved By",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 35,
+                "dropdownValue": "Resolved Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 36,
+                "dropdownValue": "Rev",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 37,
+                "dropdownValue": "Revised Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 38,
+                "dropdownValue": "Stack Rank",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 39,
+                "dropdownValue": "State",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 40,
+                "dropdownValue": "State Change Date",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 41,
+                "dropdownValue": "Tags",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 42,
+                "dropdownValue": "Team Project",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 43,
+                "dropdownValue": "Title",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 44,
+                "dropdownValue": "Watermark",
+                "option": [],
+                "isPickList": false
+            },
+            {
+                "key": 45,
+                "dropdownValue": "Work Item Type",
+                "option": [],
+                "isPickList": false
+            }
+        ],
+        "mapping": "",
+        "enable": false,
+        "defaultOptionList": [],
+        "isText": false,
+        "isSelected": false,
+        "isPickListComplete": false
+    }
+]
+
+const _savedObj = [
+  {
+      "key": 11,
+      "sourceWorkItem": "Title",
+      "devopsWorkItem": "Title",
+      "dropdown": [],
+      "mapping": "",
+      "enable": false,
+      "defaultOptionList": [],
+      "isText": true
+  },
+  {
+      "key": 12,
+      "sourceWorkItem": "Work item type",
+      "devopsWorkItem": "Work item type",
+      "dropdown": [],
+      "mapping": "",
+      "enable": false,
+      "defaultOptionList": [],
+      "isText": true
+  },
+  {
+      "key": 13,
+      "sourceWorkItem": "partner work item",
+      "devopsWorkItem": "partner work item",
+      "dropdown": [],
+      "mapping": "",
+      "enable": false,
+      "defaultOptionList": [],
+      "isText": true
+  },
+  {
+      "key": 0,
+      "sourceWorkItem": "Activated By",
+      "dropdown": [
+          {
+              "key": 0,
+              "dropdownValue": "Activated By",
+              "option": [
+                  {
+                      "crmOption": [
+                          1,
+                          2,
+                          3,
+                          4
+                      ],
+                      "devOpsOption": [
+                          1,
+                          2,
+                          3,
+                          4
+                      ]
+                  }
+              ],
+              "isPickList": true
+          },
+          {
+              "key": 1,
+              "dropdownValue": "Activated Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 2,
+              "dropdownValue": "Activity",
+              "option": [
+                  {
+                      "crmOption": [
+                          1,
+                          2,
+                          3,
+                          4
+                      ],
+                      "devOpsOption": [
+                          "Deployment",
+                          "Design",
+                          "Development",
+                          "Documentation",
+                          "Requirements",
+                          "Testing"
+                      ]
+                  }
+              ],
+              "isPickList": true
+          },
+          {
+              "key": 3,
+              "dropdownValue": "Area ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 4,
+              "dropdownValue": "Area Path",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 5,
+              "dropdownValue": "Assigned To",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 6,
+              "dropdownValue": "Attached File Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 7,
+              "dropdownValue": "Authorized As",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 8,
+              "dropdownValue": "Authorized Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 9,
+              "dropdownValue": "Board Column",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 10,
+              "dropdownValue": "Board Column Done",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 11,
+              "dropdownValue": "Board Lane",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 12,
+              "dropdownValue": "Changed By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 13,
+              "dropdownValue": "Changed Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 14,
+              "dropdownValue": "Closed By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 15,
+              "dropdownValue": "Closed Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 16,
+              "dropdownValue": "Comment Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 17,
+              "dropdownValue": "Completed Work",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 18,
+              "dropdownValue": "Created By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 19,
+              "dropdownValue": "Created Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 20,
+              "dropdownValue": "Description",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 21,
+              "dropdownValue": "External Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 22,
+              "dropdownValue": "History",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 23,
+              "dropdownValue": "Hyperlink Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 24,
+              "dropdownValue": "ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 25,
+              "dropdownValue": "Iteration ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 26,
+              "dropdownValue": "Iteration Path",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 27,
+              "dropdownValue": "Node Name",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 28,
+              "dropdownValue": "Parent",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 29,
+              "dropdownValue": "Priority",
+              "option": [
+                  {
+                      "crmOption": [
+                          1,
+                          2,
+                          3,
+                          4
+                      ],
+                      "devOpsOption": [
+                          "1",
+                          "2",
+                          "3",
+                          "4"
+                      ]
+                  }
+              ],
+              "isPickList": true
+          },
+          {
+              "key": 30,
+              "dropdownValue": "Reason",
+              "option": [
+                  {
+                      "crmOption": [
+                          1,
+                          2,
+                          3,
+                          4
+                      ],
+                      "devOpsOption": [
+                          "Completed",
+                          "Cut",
+                          "Deferred",
+                          "Obsolete",
+                          "Moved to backlog",
+                          "Started",
+                          "Reactivated",
+                          "Added to backlog"
+                      ]
+                  }
+              ],
+              "isPickList": true
+          },
+          {
+              "key": 31,
+              "dropdownValue": "Related Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 32,
+              "dropdownValue": "Remaining Work",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 33,
+              "dropdownValue": "Remote Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 34,
+              "dropdownValue": "Resolved By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 35,
+              "dropdownValue": "Resolved Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 36,
+              "dropdownValue": "Rev",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 37,
+              "dropdownValue": "Revised Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 38,
+              "dropdownValue": "Stack Rank",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 39,
+              "dropdownValue": "State",
+              "option": [
+                  {
+                      "crmOption": [
+                          1,
+                          2,
+                          3,
+                          4
+                      ],
+                      "devOpsOption": [
+                          "Doing",
+                          "Done",
+                          "To Do"
+                      ]
+                  }
+              ],
+              "isPickList": true
+          },
+          {
+              "key": 40,
+              "dropdownValue": "State Change Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 41,
+              "dropdownValue": "Tags",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 42,
+              "dropdownValue": "Team Project",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 43,
+              "dropdownValue": "Title",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 44,
+              "dropdownValue": "Watermark",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 45,
+              "dropdownValue": "Work Item Type",
+              "option": [
+                  {
+                      "crmOption": [
+                          1,
+                          2,
+                          3,
+                          4
+                      ],
+                      "devOpsOption": [
+                          "Code Review Request",
+                          "Code Review Response",
+                          "Epic",
+                          "Feedback Request",
+                          "Feedback Response",
+                          "Issue",
+                          "Shared Parameter",
+                          "Shared Steps",
+                          "Task",
+                          "Test Case",
+                          "Test Plan",
+                          "Test Suite"
+                      ]
+                  }
+              ],
+              "isPickList": true
+          }
+      ],
+      "mapping": "",
+      "enable": true,
+      "defaultOptionList": {
+          "defaultOptionList": [
+              {
+                  "crmOption": [
+                      1,
+                      2,
+                      3,
+                      4
+                  ],
+                  "devOpsOption": [
+                      "Development",
+                      "Design",
+                      "Requirements",
+                      "Development"
+                  ]
+              }
+          ]
+      },
+      "isText": false,
+      "isSelected": true,
+      "isPickListComplete": true,
+      "devopsWorkItem": "Activity"
+  },
+  {
+      "key": 1,
+      "sourceWorkItem": "Build estimate (pts)",
+      "dropdown": [],
+      "mapping": "",
+      "enable": false,
+      "defaultOptionList": [],
+      "isText": false,
+      "isSelected": true,
+      "isPickListComplete": false,
+      "devopsWorkItem": "N/A"
+  },
+  {
+      "key": 2,
+      "sourceWorkItem": "Complexity",
+      "dropdown": [
+          {
+              "key": 0,
+              "dropdownValue": "Activated By",
+              "option": [
+                  {
+                      "crmOption": [
+                          "1 - Very Low",
+                          "2 - Low",
+                          "3 - Medium",
+                          "4 - High",
+                          "5 - Very High"
+                      ],
+                      "devOpsOption": [
+                          1,
+                          2,
+                          3,
+                          4
+                      ]
+                  }
+              ],
+              "isPickList": true
+          },
+          {
+              "key": 1,
+              "dropdownValue": "Activated Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 2,
+              "dropdownValue": "Activity",
+              "option": [
+                  {
+                      "crmOption": [
+                          "1 - Very Low",
+                          "2 - Low",
+                          "3 - Medium",
+                          "4 - High",
+                          "5 - Very High"
+                      ],
+                      "devOpsOption": [
+                          "Deployment",
+                          "Design",
+                          "Development",
+                          "Documentation",
+                          "Requirements",
+                          "Testing"
+                      ]
+                  }
+              ],
+              "isPickList": true
+          },
+          {
+              "key": 3,
+              "dropdownValue": "Area ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 4,
+              "dropdownValue": "Area Path",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 5,
+              "dropdownValue": "Assigned To",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 6,
+              "dropdownValue": "Attached File Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 7,
+              "dropdownValue": "Authorized As",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 8,
+              "dropdownValue": "Authorized Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 9,
+              "dropdownValue": "Board Column",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 10,
+              "dropdownValue": "Board Column Done",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 11,
+              "dropdownValue": "Board Lane",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 12,
+              "dropdownValue": "Changed By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 13,
+              "dropdownValue": "Changed Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 14,
+              "dropdownValue": "Closed By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 15,
+              "dropdownValue": "Closed Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 16,
+              "dropdownValue": "Comment Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 17,
+              "dropdownValue": "Completed Work",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 18,
+              "dropdownValue": "Created By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 19,
+              "dropdownValue": "Created Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 20,
+              "dropdownValue": "Description",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 21,
+              "dropdownValue": "External Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 22,
+              "dropdownValue": "History",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 23,
+              "dropdownValue": "Hyperlink Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 24,
+              "dropdownValue": "ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 25,
+              "dropdownValue": "Iteration ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 26,
+              "dropdownValue": "Iteration Path",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 27,
+              "dropdownValue": "Node Name",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 28,
+              "dropdownValue": "Parent",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 29,
+              "dropdownValue": "Priority",
+              "option": [
+                  {
+                      "crmOption": [
+                          "1 - Very Low",
+                          "2 - Low",
+                          "3 - Medium",
+                          "4 - High",
+                          "5 - Very High"
+                      ],
+                      "devOpsOption": [
+                          "1",
+                          "2",
+                          "3",
+                          "4"
+                      ]
+                  }
+              ],
+              "isPickList": true
+          },
+          {
+              "key": 30,
+              "dropdownValue": "Reason",
+              "option": [
+                  {
+                      "crmOption": [
+                          "1 - Very Low",
+                          "2 - Low",
+                          "3 - Medium",
+                          "4 - High",
+                          "5 - Very High"
+                      ],
+                      "devOpsOption": [
+                          "Completed",
+                          "Cut",
+                          "Deferred",
+                          "Obsolete",
+                          "Moved to backlog",
+                          "Started",
+                          "Reactivated",
+                          "Added to backlog"
+                      ]
+                  }
+              ],
+              "isPickList": true
+          },
+          {
+              "key": 31,
+              "dropdownValue": "Related Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 32,
+              "dropdownValue": "Remaining Work",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 33,
+              "dropdownValue": "Remote Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 34,
+              "dropdownValue": "Resolved By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 35,
+              "dropdownValue": "Resolved Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 36,
+              "dropdownValue": "Rev",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 37,
+              "dropdownValue": "Revised Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 38,
+              "dropdownValue": "Stack Rank",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 39,
+              "dropdownValue": "State",
+              "option": [
+                  {
+                      "crmOption": [
+                          "1 - Very Low",
+                          "2 - Low",
+                          "3 - Medium",
+                          "4 - High",
+                          "5 - Very High"
+                      ],
+                      "devOpsOption": [
+                          "Doing",
+                          "Done",
+                          "To Do"
+                      ]
+                  }
+              ],
+              "isPickList": true
+          },
+          {
+              "key": 40,
+              "dropdownValue": "State Change Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 41,
+              "dropdownValue": "Tags",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 42,
+              "dropdownValue": "Team Project",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 43,
+              "dropdownValue": "Title",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 44,
+              "dropdownValue": "Watermark",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 45,
+              "dropdownValue": "Work Item Type",
+              "option": [
+                  {
+                      "crmOption": [
+                          "1 - Very Low",
+                          "2 - Low",
+                          "3 - Medium",
+                          "4 - High",
+                          "5 - Very High"
+                      ],
+                      "devOpsOption": [
+                          "Code Review Request",
+                          "Code Review Response",
+                          "Epic",
+                          "Feedback Request",
+                          "Feedback Response",
+                          "Issue",
+                          "Shared Parameter",
+                          "Shared Steps",
+                          "Task",
+                          "Test Case",
+                          "Test Plan",
+                          "Test Suite"
+                      ]
+                  }
+              ],
+              "isPickList": true
+          }
+      ],
+      "mapping": "",
+      "enable": false,
+      "defaultOptionList": [],
+      "isText": false,
+      "isSelected": false,
+      "isPickListComplete": false
+  },
+  {
+      "key": 3,
+      "sourceWorkItem": "Design Classification",
+      "dropdown": [],
+      "mapping": "",
+      "enable": false,
+      "defaultOptionList": [],
+      "isText": false,
+      "isSelected": false,
+      "isPickListComplete": false
+  },
+  {
+      "key": 4,
+      "sourceWorkItem": "GapFit",
+      "dropdown": [],
+      "mapping": "",
+      "enable": false,
+      "defaultOptionList": [],
+      "isText": false,
+      "isSelected": false,
+      "isPickListComplete": false
+  },
+  {
+      "key": 5,
+      "sourceWorkItem": "ISV",
+      "dropdown": [
+          {
+              "key": 0,
+              "dropdownValue": "Activated By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 1,
+              "dropdownValue": "Activated Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 2,
+              "dropdownValue": "Activity",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 3,
+              "dropdownValue": "Area ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 4,
+              "dropdownValue": "Area Path",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 5,
+              "dropdownValue": "Assigned To",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 6,
+              "dropdownValue": "Attached File Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 7,
+              "dropdownValue": "Authorized As",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 8,
+              "dropdownValue": "Authorized Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 9,
+              "dropdownValue": "Board Column",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 10,
+              "dropdownValue": "Board Column Done",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 11,
+              "dropdownValue": "Board Lane",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 12,
+              "dropdownValue": "Changed By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 13,
+              "dropdownValue": "Changed Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 14,
+              "dropdownValue": "Closed By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 15,
+              "dropdownValue": "Closed Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 16,
+              "dropdownValue": "Comment Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 17,
+              "dropdownValue": "Completed Work",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 18,
+              "dropdownValue": "Created By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 19,
+              "dropdownValue": "Created Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 20,
+              "dropdownValue": "Description",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 21,
+              "dropdownValue": "External Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 22,
+              "dropdownValue": "History",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 23,
+              "dropdownValue": "Hyperlink Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 24,
+              "dropdownValue": "ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 25,
+              "dropdownValue": "Iteration ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 26,
+              "dropdownValue": "Iteration Path",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 27,
+              "dropdownValue": "Node Name",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 28,
+              "dropdownValue": "Parent",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 29,
+              "dropdownValue": "Priority",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 30,
+              "dropdownValue": "Reason",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 31,
+              "dropdownValue": "Related Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 32,
+              "dropdownValue": "Remaining Work",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 33,
+              "dropdownValue": "Remote Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 34,
+              "dropdownValue": "Resolved By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 35,
+              "dropdownValue": "Resolved Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 36,
+              "dropdownValue": "Rev",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 37,
+              "dropdownValue": "Revised Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 38,
+              "dropdownValue": "Stack Rank",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 39,
+              "dropdownValue": "State",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 40,
+              "dropdownValue": "State Change Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 41,
+              "dropdownValue": "Tags",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 42,
+              "dropdownValue": "Team Project",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 43,
+              "dropdownValue": "Title",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 44,
+              "dropdownValue": "Watermark",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 45,
+              "dropdownValue": "Work Item Type",
+              "option": [],
+              "isPickList": false
+          }
+      ],
+      "mapping": "",
+      "enable": false,
+      "defaultOptionList": [],
+      "isText": false,
+      "isSelected": false,
+      "isPickListComplete": false
+  },
+  {
+      "key": 6,
+      "sourceWorkItem": "Module",
+      "dropdown": [
+          {
+              "key": 0,
+              "dropdownValue": "Activated By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 1,
+              "dropdownValue": "Activated Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 2,
+              "dropdownValue": "Activity",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 3,
+              "dropdownValue": "Area ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 4,
+              "dropdownValue": "Area Path",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 5,
+              "dropdownValue": "Assigned To",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 6,
+              "dropdownValue": "Attached File Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 7,
+              "dropdownValue": "Authorized As",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 8,
+              "dropdownValue": "Authorized Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 9,
+              "dropdownValue": "Board Column",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 10,
+              "dropdownValue": "Board Column Done",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 11,
+              "dropdownValue": "Board Lane",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 12,
+              "dropdownValue": "Changed By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 13,
+              "dropdownValue": "Changed Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 14,
+              "dropdownValue": "Closed By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 15,
+              "dropdownValue": "Closed Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 16,
+              "dropdownValue": "Comment Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 17,
+              "dropdownValue": "Completed Work",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 18,
+              "dropdownValue": "Created By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 19,
+              "dropdownValue": "Created Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 20,
+              "dropdownValue": "Description",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 21,
+              "dropdownValue": "External Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 22,
+              "dropdownValue": "History",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 23,
+              "dropdownValue": "Hyperlink Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 24,
+              "dropdownValue": "ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 25,
+              "dropdownValue": "Iteration ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 26,
+              "dropdownValue": "Iteration Path",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 27,
+              "dropdownValue": "Node Name",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 28,
+              "dropdownValue": "Parent",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 29,
+              "dropdownValue": "Priority",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 30,
+              "dropdownValue": "Reason",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 31,
+              "dropdownValue": "Related Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 32,
+              "dropdownValue": "Remaining Work",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 33,
+              "dropdownValue": "Remote Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 34,
+              "dropdownValue": "Resolved By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 35,
+              "dropdownValue": "Resolved Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 36,
+              "dropdownValue": "Rev",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 37,
+              "dropdownValue": "Revised Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 38,
+              "dropdownValue": "Stack Rank",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 39,
+              "dropdownValue": "State",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 40,
+              "dropdownValue": "State Change Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 41,
+              "dropdownValue": "Tags",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 42,
+              "dropdownValue": "Team Project",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 43,
+              "dropdownValue": "Title",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 44,
+              "dropdownValue": "Watermark",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 45,
+              "dropdownValue": "Work Item Type",
+              "option": [],
+              "isPickList": false
+          }
+      ],
+      "mapping": "",
+      "enable": false,
+      "defaultOptionList": [],
+      "isText": false,
+      "isSelected": false,
+      "isPickListComplete": false
+  },
+  {
+      "key": 7,
+      "sourceWorkItem": "Priority",
+      "dropdown": [],
+      "mapping": "",
+      "enable": false,
+      "defaultOptionList": [],
+      "isText": false,
+      "isSelected": false,
+      "isPickListComplete": false
+  },
+  {
+      "key": 8,
+      "sourceWorkItem": "Resource",
+      "dropdown": [
+          {
+              "key": 0,
+              "dropdownValue": "Activated By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 1,
+              "dropdownValue": "Activated Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 2,
+              "dropdownValue": "Activity",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 3,
+              "dropdownValue": "Area ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 4,
+              "dropdownValue": "Area Path",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 5,
+              "dropdownValue": "Assigned To",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 6,
+              "dropdownValue": "Attached File Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 7,
+              "dropdownValue": "Authorized As",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 8,
+              "dropdownValue": "Authorized Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 9,
+              "dropdownValue": "Board Column",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 10,
+              "dropdownValue": "Board Column Done",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 11,
+              "dropdownValue": "Board Lane",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 12,
+              "dropdownValue": "Changed By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 13,
+              "dropdownValue": "Changed Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 14,
+              "dropdownValue": "Closed By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 15,
+              "dropdownValue": "Closed Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 16,
+              "dropdownValue": "Comment Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 17,
+              "dropdownValue": "Completed Work",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 18,
+              "dropdownValue": "Created By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 19,
+              "dropdownValue": "Created Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 20,
+              "dropdownValue": "Description",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 21,
+              "dropdownValue": "External Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 22,
+              "dropdownValue": "History",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 23,
+              "dropdownValue": "Hyperlink Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 24,
+              "dropdownValue": "ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 25,
+              "dropdownValue": "Iteration ID",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 26,
+              "dropdownValue": "Iteration Path",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 27,
+              "dropdownValue": "Node Name",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 28,
+              "dropdownValue": "Parent",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 29,
+              "dropdownValue": "Priority",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 30,
+              "dropdownValue": "Reason",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 31,
+              "dropdownValue": "Related Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 32,
+              "dropdownValue": "Remaining Work",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 33,
+              "dropdownValue": "Remote Link Count",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 34,
+              "dropdownValue": "Resolved By",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 35,
+              "dropdownValue": "Resolved Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 36,
+              "dropdownValue": "Rev",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 37,
+              "dropdownValue": "Revised Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 38,
+              "dropdownValue": "Stack Rank",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 39,
+              "dropdownValue": "State",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 40,
+              "dropdownValue": "State Change Date",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 41,
+              "dropdownValue": "Tags",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 42,
+              "dropdownValue": "Team Project",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 43,
+              "dropdownValue": "Title",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 44,
+              "dropdownValue": "Watermark",
+              "option": [],
+              "isPickList": false
+          },
+          {
+              "key": 45,
+              "dropdownValue": "Work Item Type",
+              "option": [],
+              "isPickList": false
+          }
+      ],
+      "mapping": "",
+      "enable": false,
+      "defaultOptionList": [],
+      "isText": false,
+      "isSelected": false,
+      "isPickListComplete": false
+  }
+]
   const [dataArr, setDataArr] = useState<any>([]);
+  const [isSavedCompleteFlag, setisSavedCompleteFlag] = useState<boolean>(false);
   const [dataFieldArr, setFieldDataArr] = useState<any>([]);
   const [devopsWorkItemTypes, setDevopsWorkItemTypes] = useState<any>([]);
   const [crmWorkItemTypes, setCrmWorkItemTypes] = useState<any>([]);
@@ -272,18 +3768,21 @@ export default function ConnectionContainer() {
             dropdown: [...dropdownArr],
             mapping: "",
             enable: isOptionList ? true : false,
-            defaultOptionList: isOptionList
-              ? sameDropdownFeild.find((f: any) => f.defaultOptionList)
-              : [],
+            defaultOptionList: [],
             isText: false,
             isSelected: isOptionList ? true : false,
-            isPickListComplete:false
+            isPickListComplete:false,
+            isSavedType: "default"
           };
+
+          // defaultOptionList: isOptionList
+          // ? sameDropdownFeild.find((f: any) => f.defaultOptionList)
+          // : [],
         });
         let currentLength = tableData.length + 1;
         let _tableData = [
           {
-            key: currentLength,
+            key: currentLength+1,
             sourceWorkItem: "Title",
             devopsWorkItem: "Title",
             dropdown: [],
@@ -291,9 +3790,10 @@ export default function ConnectionContainer() {
             enable: false,
             defaultOptionList: [],
             isText: true,
+            isSelected: true,
           },
           {
-            key: currentLength,
+            key: currentLength+2,
             sourceWorkItem: "Work item type",
             devopsWorkItem: "Work item type",
             dropdown: [],
@@ -301,9 +3801,10 @@ export default function ConnectionContainer() {
             enable: false,
             defaultOptionList: [],
             isText: true,
+            isSelected: true,
           },
           {
-            key: currentLength,
+            key: currentLength+3,
             sourceWorkItem: "partner work item",
             devopsWorkItem: "partner work item",
             dropdown: [],
@@ -311,11 +3812,27 @@ export default function ConnectionContainer() {
             enable: false,
             defaultOptionList: [],
             isText: true,
+            isSelected: true,
           },
           ...tableData,
         ];
         console.log("devopsData", _tableData);
         setTaskDataArr(_tableData);
+
+        // if(_savedObj){
+
+        // const _savedTableData:any =  _savedObj.filter(f =>  _tableData.filter((_savedData:any)=>{
+        //     f.sourceWorkItem === _savedData.sourceWorkItem
+
+        //   }))
+
+        //   console.log("*****_savedTableData",_savedTableData);
+          
+        //   setTaskDataArr(_savedTableData);
+        // }else {
+        //   setTaskDataArr(_tableData);
+        // }
+       
         const columns = [
           {
             title: "SOURCE WORK ITEM FIELD",
@@ -487,6 +4004,31 @@ export default function ConnectionContainer() {
   const savePopupModelData = () => {
 
     console.log("SavedMainData",dataFieldArr,taskDataArr);
+
+    if(dataFieldArr.length){
+        console.log("API SAved");
+      let _isSelected =     dataFieldArr.every((field:any)=> field.isSelected)
+
+      setisSavedCompleteFlag(_isSelected)
+      console.log("_isSelected",_isSelected);
+      setIsModalOpen(false);
+      
+        
+           }else if (taskDataArr.length){
+
+               console.log("API Default");
+           }
+
+             // const updatedArray = dataFieldArr.map((item:any) => {
+    //     return {
+    //       ...item,
+    //       ["isSavedType"]: "saved"
+    //     };
+    //   });
+      
+    //   console.log(updatedArray);
+
+    // setIsSaveddataArr(updatedArray)
     
     // if (Object.keys(dataArr).length && dataFieldArr.length) {
     //   console.log("both Select");
