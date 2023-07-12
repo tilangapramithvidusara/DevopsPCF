@@ -15,10 +15,12 @@ import {
   fetchWorkItemTypesFromCRM,
   fetchWorkItemTypesFromDevops,
   fetchDevopsFeildsData,
+  saveWorkItemTypes,
+  createMappingFile,
 } from "../Api/devopsApis";
 
 export default function ConnectionContainer() {
-  const dataSource1 = [
+  const dataSource = [
     {
       key: "1",
       name: "Issue",
@@ -118,15 +120,15 @@ export default function ConnectionContainer() {
   const [isMappedSaved,setIsMappedSaved] = useState<boolean>(false);
   const [configureSettings,setConfigureSettings] = useState<any>("configureMapping");
   const [savedFilteredData, setSavedFilteredData] : any = useState([]);
+  const [mappedWorkItems, setMappedWorkItems] : any = useState([]);
 
-
-  const dataSource = crmWorkItemTypes?.map((item: any, num: number) => {
-    console.log("devopsWorkItemTypes[num] :", devopsWorkItemTypes[num]);
-    console.log("item?.gyde_name[num] :", item?.gyde_name);
-    console.log(
-      "logic build :",
-      devopsWorkItemTypes?.find((res: any) => res == "Epic")
-    );
+  const dataSource1 = crmWorkItemTypes?.map((item: any, num: number) => {
+    // console.log("devopsWorkItemTypes[num] :", devopsWorkItemTypes[num]);
+    // console.log("item?.gyde_name[num] :", item?.gyde_name);
+    // console.log(
+    //   "logic build :",
+    //   devopsWorkItemTypes?.find((res: any) => res == "Epic")
+    // );
     return {
       key: num,
       name: item?.gyde_name,
@@ -489,7 +491,8 @@ export default function ConnectionContainer() {
 
   //  useEffect(()=>{
   //   // when saved data retrieved this will used...
-  //   const comparedData = savedMappedData?.map((data:any)=> {
+  //   const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
+  //   const comparedData = savedMappedData?.filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))?.map((data:any)=> {
   //     console.log("options: saved data", options?.find((item:any)=> item), data?.gyde_name)
   //     return {
   //       key: data?.key,
@@ -556,6 +559,16 @@ export default function ConnectionContainer() {
     setConfigureSettings(value);
   };
 
+  const handleMappingItemSave = () => {
+    console.log("mapped work items....",mappedWorkItems);
+    saveWorkItemTypes(mappedWorkItems);
+    // createMappingFile(mappedWorkItems);
+  }
+console.log("call back",mappedWorkItems);
+
+// var contactId = `${<p>{'request.params.id'}</p>}`;
+// console.log("liquid code..", contactId)
+
   return (
     <div className="devops-container">
       <Spin spinning={isLoading}>
@@ -587,7 +600,7 @@ export default function ConnectionContainer() {
           <>
             <h3 className="sub-title">Mapping - Work Item Types</h3>
             <TableComponent
-              dataSource={dataSource1}
+              dataSource={dataSource}
               columns={workItemColumns}
               onMapping={() => {}}
               size="small"
@@ -598,10 +611,11 @@ export default function ConnectionContainer() {
                 configureSettings == "devopsGenerator" ? "disable-table" : ""
               }
               setDropDownValue={(data: any) => setSelectedWorkItem(data)}
-              rowClassName={
-                configureSettings == "devopsGenerator" ? "disable-table" : ""
-              }
-              disabled={configureSettings == "devopsGenerator" ? true : false}
+              // rowClassName={
+              //   configureSettings == "devopsGenerator" ? "disable-table" : ""
+              // }
+              // disabled={configureSettings == "devopsGenerator" ? true : false}
+              saveMappingItems={(data:any)=>setMappedWorkItems(data)}
             />
 
             <span>
@@ -613,7 +627,7 @@ export default function ConnectionContainer() {
               >
                 Cancel
               </Button>
-              <Button type="primary" htmlType="submit" onClick={() => {}}>
+              <Button type="primary" htmlType="button" onClick={handleMappingItemSave}>
                 Save
               </Button>
             </span>

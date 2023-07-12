@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { base64ToByteArray, encodeJSONToBase64 } from '../Helper/Helper';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -132,7 +133,7 @@ export const fetchWorkItemTypesFromDevops = async(value:any) => {
 export const fetchWorkItemTypesFromCRM  = async() => {
   try {
     const result = 
-    await axios.get('https://gydedesignstudiodev.powerappsportals.com/_api/gyde_workitemtypes');
+    await axios.get('https://gydedesignstudiodev.powerappsportals.com/~/_api/gyde_workitemtypes');
     console.log("get WorkItemTypes From CRM =========> ", result?.data);
     if(result?.status==200){
       return {status:"success", data:result?.data};
@@ -170,23 +171,64 @@ export const fetchWorkItemTypesFromCRM  = async() => {
 //   }
 // }
 
-export const saveWorkItemTypes  = async(data:any) => {
+export const saveWorkItemTypes  = async (mappingData:any) => {
+  // try {
+  //   console.log("mapped data set ///",mappingData)
+  //   const formData = new FormData();   
+  //   const url = "/_api/gyde_devopsconfigurations" ;
+  //   const data = JSON.stringify({ "gyde_name":"Sample Config - RD"});
+  //   const headers:any = {
+  //     "Content-Type": "application/json"
+  //   }
+  //   console.log("formData...",formData);    
+  //   const result = await axios.post(url, data, headers);
+  //   console.log("result...",result);
+  //   localStorage.setItem('save items',JSON.stringify(result));
+  //   return { status:"success", data:result?.data };
+  
+  // } catch (error) {
+  //   console.log(" Save Error", error);
+  //   return {status:"error", data:error};
+  // }
   try {
-    let formData = new FormData();
-    formData.append("gyde_devopsmappings",data);
+    alert("------api intergration start----------");
+    const data = JSON.stringify({
+      gyde_name: "Sample Config - RD",
+    });
+    const baseUrl = "~/_api/gyde_devopsconfigurations" ;
+    const response = await axios.post(`${baseUrl}`, data, { headers: {"contentType": "application/json",} });
+    alert(`${response}`);
+    console.log("api response..",response);
+    return response.status;
+  } catch (error) {
+    alert(`${error}`)
+    console.error('Error creating account:', error);
+    throw error;
+  }
+}
+
+export const createMappingFile  = async(data:any) => {
+  try {
+    const base64Data = encodeJSONToBase64(data);
+    const byteArrayData = base64ToByteArray(base64Data);
+    console.log("byteArrayData", byteArrayData);
     const result = 
-    await axios.post('/_api/gyde_devopsconfigurations',
-    {contentType: "application/json",
-    formData
-  });
+    await axios.put('/_api/gyde_devopsconfigurations(Devops Config GUID)/gyde_devopsmappings ',
+    {
+      contentType: "application/octet-stream",
+      data: byteArrayData,
+
+    });
+    console.log("result...",result);
     if(result?.status==200){
       return {status:"success", data:result?.data};
     }else{
       return {status:"error", data:"Something Went Wrong..!"};
     }  
   } catch (error) {
-    console.log(" Error get WorkItemTypes From CRM ===========", error);
+    console.log(" Save Error", error);
     return {status:"error", data:error};
   }
 
 }
+
