@@ -18,12 +18,12 @@ useEffect(() => {
  console.log("renderedOutput1",renderedOutput);
  
  liquidEngine.parseAndRender(liquidTemplate, data)
- .then(output => {
+ .then((output:any) => {
    console.log("siteSetting1",output);
    
  setRenderedOutput(output);
 })
-.catch(error => {
+.catch((error:any) => {
  console.error('Error rendering Liquid template:', error);
  });
 }, []);

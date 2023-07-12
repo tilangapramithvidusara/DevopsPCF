@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, notification, Radio, RadioChangeEvent, Spin } from "antd";
+// import $ from 'jquery';
 import TableComponent from "../Components/TableComponent";
 import PopupComponent from "../Components/PopupComponent";
 import ConnectionComponent from "../Components/ConnectionComponent";
@@ -21,6 +22,12 @@ import {
 } from "../Api/devopsApis";
 import SiteSettingsCompo from "../Components/SiteSettingsCompo";
 
+
+declare global {
+  interface Window {
+    webapi: any;
+  }
+}
 
 export default function ConnectionContainer() {
   const dataSource = [
@@ -542,7 +549,7 @@ export default function ConnectionContainer() {
 
       setisSavedCompleteFlag(_isSelected)
       console.log("_isSelected",_isSelected);
-      saveMappingData(dataFieldArr,"id")
+      saveMappingData(dataFieldArr,"f237ff2a-7720-ee11-9cbc-6045bd0fcbc6")
       setIsModalOpen(false);
       
         
@@ -574,10 +581,24 @@ export default function ConnectionContainer() {
   };
 
   const handleMappingItemSave = () => {
-    console.log("mapped work items....",mappedWorkItems);
-  let _result =  saveWorkItemTypes(mappedWorkItems);
-  console.log("result",_result);
-  
+  //   console.log("mapped work items....",mappedWorkItems);
+  // let _result =  saveWorkItemTypes(mappedWorkItems);
+  // console.log("result",_result);
+
+  window.parent.webapi.safeAjax({
+    type: "POST",
+    url: "/_api/gyde_devopsconfigurations",
+    contentType: "application/json",
+    data: JSON.stringify({
+        "gyde_name": "Sample Config - RD2",
+    }),
+    success: function (res:any, status:any, xhr:any) {
+        // Assuming the GUID field is 'gyde_devopsconfigurationid'
+        console.log("saving mapping items", res);
+        console.log("saving status",status);
+        console.log("saving xhr",xhr);
+    }
+});
     // createMappingFile(mappedWorkItems);
   }
 console.log("call back",mappedWorkItems);
@@ -647,7 +668,7 @@ console.log("call back",mappedWorkItems);
                 Save
               </Button>
               <div>{`% assign deactivateCustomerBusinessSurveyFlowUrl = settings["DeactivateCustomerBusinessSurveyFlowURL"]%`}
-    <input type="hidden" id="deactivateCustomerBusinessSurveyFlowUrl" value="{{deactivateCustomerBusinessSurveyFlowUrl}}" /></div>
+              <input type="hidden" id="deactivateCustomerBusinessSurveyFlowUrl" value="{{deactivateCustomerBusinessSurveyFlowUrl}}" /></div>
             </span>
 
             <SiteSettingsCompo/>

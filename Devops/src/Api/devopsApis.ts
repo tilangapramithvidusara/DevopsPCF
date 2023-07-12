@@ -160,7 +160,7 @@ export const fetchWorkItemTypesFromDevops = async(value:any) => {
 export const fetchWorkItemTypesFromCRM  = async() => {
   try {
     const result = 
-    await axios.get('https://gydedesignstudiodev.powerappsportals.com/~/_api/gyde_workitemtypes');
+    await axios.get('https://gydedesignstudiodev.powerappsportals.com/_api/gyde_workitemtypes');
     console.log("get WorkItemTypes From CRM =========> ", result?.data);
     if(result?.status==200){
       return {status:"success", data:result?.data};
@@ -274,4 +274,10 @@ export const createMappingFile  = async(data:any) => {
   }
 
 }
+
+// declare global {
+//   interface Window {
+//     webapi: any;
+//   }
+// }
 
