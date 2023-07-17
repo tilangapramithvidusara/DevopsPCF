@@ -450,9 +450,13 @@ const values: any = pairs.map((pair:any) => pair.split("=")[1]);
 const json: any = JSON.parse("[" + values.join(",") + "]");
 
 const encoder = new TextEncoder();
-const byteArray = encoder.encode(JSON.stringify(json));
-const jsonObject = convertByteArrayToJson(byteArray);
-console.log("XXXX1",jsonObject);
+const byteArray : any = encoder.encode(JSON.stringify(json));
+console.log("json....:", json);
+console.log("byte array:", byteArray);
+// const jsonObject = convertByteArrayToJson(byteArray);
+const stringFromArray = String.fromCharCode.apply(String, json);
+const objectRetrieve = JSON.parse(stringFromArray);
+console.log("XXXX1",stringFromArray,objectRetrieve);
 
 
 
