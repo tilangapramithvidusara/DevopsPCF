@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { base64ToByteArray, encodeJSONToBase64 } from '../Helper/Helper';
+import { base64ToByteArray, convertJsontoByteArray, encodeJSONToBase64 } from '../Helper/Helper';
 
 const headers = {
   'Content-Type': 'application/json',
@@ -23,23 +23,32 @@ const data: any = {
 // }
 //dvttsdit35edsgajqqwxipnobf7r6x5g2nr337cp5ovhmiylq3za
 
-export const saveMappingData = async(data:any,guid:any) =>{
- let _encodedData = encodeJSONToBase64(data)
-
- let base64byteArr = base64ToByteArray(_encodedData)
- console.log("XXXXXX",_encodedData,":",base64byteArr);
- 
+export const saveMappingData = async(_data:any,guid:any) =>{
 
  try {
-  alert("------api intergration start----------");
-  const data = JSON.stringify({
-    gyde_name: "Sample Config - RD",
-  });
-  const baseUrl = "~/_api/gyde_devopsconfigurations" ;
-  const response = await axios.put(`${baseUrl}(${guid})/gyde_devopsfieldmappings`, {data:base64byteArr}, { headers: {"contentType": "application/octet-stream",} });
-  alert(`${response}`);
-  console.log("api response..",response);
-  return response.status;
+  console.log("Saving");
+
+  let byteArray = convertJsontoByteArray(_data)
+
+  console.log("encoded",guid,":",byteArray);
+ 
+
+  window.parent.webapi.safeAjax({
+    type: "PUT",
+    url: `/_api/gyde_devopsconfigurations(${guid})/gyde_devopsfieldmappings`,
+    contentType: "application/octet-stream",
+    data: byteArray,
+    success: function (data:any, textStatus:any, xhr:any) {
+      console.log("dataxhr",data,"textStatus",textStatus,"xhr",xhr);
+    
+  },
+
+});
+  // const baseUrl = "~/_api/gyde_devopsconfigurations" ;
+  // const response = await axios.put(`${baseUrl}(${guid})/gyde_devopsfieldmappings`, {data:base64byteArr}, { headers: {"contentType": "application/octet-stream",} });
+  // alert(`${response}`);
+  // console.log("api response..",response);
+  // return response.status;
 } catch (error) {
   alert(`${error}`)
   console.error('Error creating account:', error);
@@ -49,6 +58,147 @@ export const saveMappingData = async(data:any,guid:any) =>{
 
 }
 
+
+export const saveDefaultMappingData = async(_guid:any) =>{
+
+  try {
+    console.log("defaultSaving");
+    
+   alert("------api intergration Save start----------");
+  
+
+var record :any= {};
+record.gyde_defaultsetting = true; // Boolean
+ 
+   window.parent.webapi.safeAjax({
+    type: "PATCH",
+     contentType: "application/json",
+     url: `/_api/gyde_devopsconfigurations(${_guid})`,
+     data: JSON.stringify(record),
+     success: function (data:any, textStatus:any, xhr:any) {
+       console.log("Record updated");
+     },
+     error: function (xhr:any, textStatus:any, errorThrown:any) {
+       console.log(xhr);
+     }
+ 
+ });
+   // const baseUrl = "~/_api/gyde_devopsconfigurations" ;
+   // const response = await axios.put(`${baseUrl}(${guid})/gyde_devopsfieldmappings`, {data:base64byteArr}, { headers: {"contentType": "application/octet-stream",} });
+   // alert(`${response}`);
+   // console.log("api response..",response);
+   // return response.status;
+ } catch (error) {
+   alert(`${error}`)
+   console.error('Error creating account:', error);
+   throw error;
+ }
+   
+ 
+ }
+
+ export const createDevConfigApi = (record:any)=> {
+
+   return new Promise((resolve:any,reject:any)=> {
+
+    window.parent.webapi.safeAjax({
+      type: "POST",
+      contentType: "application/json",
+      url: "/_api/gyde_devopsconfigurations",
+      data: JSON.stringify(record),
+      success: function (data:any, textStatus:any, xhr:any) {
+          var newId = xhr.getResponseHeader("entityid");
+          resolve(newId)
+        //  setGuid(newId)
+         // recordType ==='newRecord' &&  createMappingFile(mappedWorkItems,newId);
+         // console.log("newId",newId);
+      },
+      error: function (xhr:any, textStatus:any, errorThrown:any) {
+        reject("Errror")
+          console.log("hr",xhr);
+      }
+  });
+  
+   })
+ }
+ export const fetchFieldMapping = (guid:any)=> {
+
+  //https://partnerstudioportaluk.powerappsportals.com/_api/gyde_devopsconfigurations(bebdc8ea-5524-ee11-9965-6045bd0fcbc6)/gyde_devopsfieldmappings/$value
+
+   return new Promise((resolve,rejects)=> {
+
+    window.parent.webapi.safeAjax({
+      type: "GET",
+      url: `/_api/gyde_devopsconfigurations(${guid})/gyde_devopsfieldmappings/$value`,
+      contentType: "application/json",
+      success: function (data:any, textStatus:any, xhr:any) {
+        console.log("fetchFieldMapping",data,"textStatus",textStatus,"xhr",xhr);
+        resolve(data)
+    },
+      error: function(error:any, status:any, xhr:any) {
+      console.log('error', error);
+      rejects(error)
+      }
+      });
+      
+   })
+    
+    
+
+
+ }
+ export const fetchDefaultSetting = (pId:any)=>{
+  console.log("PIDDEV",pId);
+  
+    return new Promise((resolve:any,rejects:any)=>{
+      window.parent.webapi.safeAjax({
+        type: "GET",
+        url: `/_api/gyde_devopsconfigurations?$select=gyde_devopsconfigurationid,_gyde_customerbusinesssurvey_value,_gyde_customerorpartner_value,gyde_defaultsetting,gyde_devopsfieldmappings,gyde_devopsfieldmappings_name,gyde_devopsmappingcomplete,gyde_devopsmappings,gyde_devopsmappings_name,gyde_name,statecode,versionnumber&$filter=(_gyde_customerorpartner_value eq ${pId} and gyde_defaultsetting eq true)`,
+        contentType: "application/json",
+        headers: {
+        "Prefer": "odata.include-annotations=*"
+        },
+        success: function (data:any, textStatus:any, xhr:any) {
+        var results = data;
+        console.log("FETCH results:==========>",results);
+        if(results?.value.length){
+         let _guID =results.value[0]["gyde_devopsconfigurationid"]; // Guid
+         resolve({type:'updateDefault',id:_guID})
+          console.log("callLength");  
+        }else {
+          resolve({type:'createDefault',id:null})
+        }
+       },
+        error: function (xhr:any, textStatus:any, errorThrown:any) {
+         console.log(xhr);
+         rejects(xhr)
+         }
+        });
+    })
+
+ 
+ }
+ export const fetchDevOpsMappingField = (guid:any)=> {
+
+   return new Promise((resolve,rejects)=> {
+
+    window.parent.webapi.safeAjax({
+      type: "GET",
+      url: `/_api/gyde_devopsconfigurations(${guid})/gyde_devopsmappings?size=full%20%E2%80%93`,
+      contentType: "application/json",
+      success: function (data:any, textStatus:any, xhr:any) {
+        console.log("fetchDevOpsMappingField",data,"textStatus",textStatus,"xhr",xhr);
+        resolve(data)
+      
+    },
+      error: function(error:any, status:any, xhr:any) {
+      console.log('error', error);
+      rejects(error)
+      }
+      });
+   })
+
+}
 export const fetchDevopsFeildsData = async (auth:any) => {
   console.log("selected work item :",auth);
   try {
@@ -114,6 +264,32 @@ export const fetchWorkItemTypesFromDevops = async(value:any) => {
     console.log("GetWorkItemTypes ===========", error);
     return {status:"error", data:error}
   }
+}
+
+export const fetchDevOpsConfigById = (id:any)=> {
+
+  return new Promise((resolve,reject)=>{
+
+    window.parent.webapi.safeAjax({
+      type: "GET",
+      url:`/_api/gyde_devopsconfigurations(${id})`,
+      contentType: "application/json",
+      success: function (data:any, textStatus:any, xhr:any) {
+
+        console.log("fetchDevOpsConfigById",data,"textStatus",textStatus,"xhr",xhr);
+        resolve(data)
+      
+    },
+      error: function(error:any, status:any, xhr:any) {
+      console.log('error', error);
+      reject(error)
+      }
+      });
+      
+      
+
+  })
+
 }
 
 // export const postReq3 = async() => {
@@ -250,24 +426,36 @@ export const saveWorkItemTypes  = async (mappingData:any) => {
   }
 }
 
-export const createMappingFile  = async(data:any) => {
+export const createMappingFile  = async(data:any,guid:any) => {
   try {
     const base64Data = encodeJSONToBase64(data);
     const byteArrayData = base64ToByteArray(base64Data);
-    console.log("byteArrayData", byteArrayData);
-    const result = 
-    await axios.put('/_api/gyde_devopsconfigurations(Devops Config GUID)/gyde_devopsmappings ',
-    {
+    console.log("byteArrayData",guid, byteArrayData);
+
+    window.parent.webapi.safeAjax({
+      type: "PUT",
+      url: `/_api/gyde_devopsconfigurations(${guid})/gyde_devopsmappings`,
       contentType: "application/octet-stream",
       data: byteArrayData,
+      success: function (data:any, textStatus:any, xhr:any) {
+        console.log("dataxhr",data,"textStatus",textStatus,"xhr",xhr);
+      
+    },
+  
+  });
+    // const result = 
+    // await axios.put('/_api/gyde_devopsconfigurations(Devops Config GUID)/gyde_devopsmappings ',
+    // {
+    //   contentType: "application/octet-stream",
+    //   data: byteArrayData,
 
-    });
-    console.log("result...",result);
-    if(result?.status==200){
-      return {status:"success", data:result?.data};
-    }else{
-      return {status:"error", data:"Something Went Wrong..!"};
-    }  
+    // });
+    // console.log("result...",result);
+    // if(result?.status==200){
+    //   return {status:"success", data:result?.data};
+    // }else{
+    //   return {status:"error", data:"Something Went Wrong..!"};
+    // }  
   } catch (error) {
     console.log(" Save Error", error);
     return {status:"error", data:error};

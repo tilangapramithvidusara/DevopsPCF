@@ -30,7 +30,8 @@ interface CommonTableProps extends TableProps<any> {
   pickListDataSource?:any
   currentPickListData?:any;
   defaultPickListData?:any;
-  saveMappingItems?:any
+  saveMappingItems?:any;
+  setMappingType?:any
 }
 
 interface TableColumn {
@@ -72,8 +73,8 @@ const TableComponent: React.FC<CommonTableProps> = ({
   pickListDataSource,
   defaultPickListData,
   disabled,
+  setMappingType,
   saveMappingItems,
-
   ...rest
 }) => {
   const [tableData, setTableData] = useState(dataSource);
@@ -250,7 +251,7 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
       <div>
         {record?.enable && (
           <img
-            src= {isModelopen && record?.isPickListComplete ? "https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png":"https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1"}
+            src= {isModelopen && record?.isPickListComplete ? "https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1":"https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png"}
             alt="1"
             style={{ marginLeft: 100 }}
             width={20}
@@ -265,6 +266,7 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
 
   const handleButtonClick = (record: any) => {
     console.log("Button clicked for record:", record);
+     record?.gyde_name &&setMappingType(record.gyde_name)
     if(!disabled){
         isModelopen ?  showPickListModal(record) :  setDropDownValue(record);  modelAction()
     }

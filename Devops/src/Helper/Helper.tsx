@@ -1,3 +1,5 @@
+
+
 // Function to encode JSON to Base64
 export const encodeJSONToBase64 = (jsonData: object): string => {
   const jsonString: string = JSON.stringify(jsonData);
@@ -49,3 +51,27 @@ export const byteArrayToBase64 = (byteArray: Uint8Array): string => {
 
   return btoa(binaryString);
 }
+
+export const convertJsontoByteArray = (data:any)=> {
+// Convert array to JSON string
+const jsonString = JSON.stringify(data);
+// Create a TextEncoder
+const encoder = new TextEncoder();
+// Encode the JSON string to bytes
+const byteArray = encoder.encode(jsonString);
+
+return byteArray;
+
+}
+
+
+
+export const convertByteArrayToJson = (byteArray: Uint8Array): any => {
+  const decoder = new TextDecoder();
+  const jsonString = decoder.decode(byteArray);
+  const jsonObject = JSON.parse(jsonString);
+
+  return jsonObject;
+};
+
+

@@ -7,6 +7,7 @@ import ConnectionComponent from "../Components/ConnectionComponent";
 import {
   exampleCRMData,
   exampleDevOpsData,
+  SampleData,
   savedMappedData,
   workItemTypes,
 } from "../Constants/Samples/sample";
@@ -19,8 +20,17 @@ import {
   saveWorkItemTypes,
   createMappingFile,
   saveMappingData,
+  saveDefaultMappingData,
+  fetchFieldMapping,
+  fetchDevOpsMappingField,
+  fetchDefaultSetting,
+  createDevConfigApi,
+  fetchDevOpsConfigById,
 } from "../Api/devopsApis";
 import SiteSettingsCompo from "../Components/SiteSettingsCompo";
+import { convertByteArrayToJson } from "../Helper/Helper";
+
+
 
 
 declare global {
@@ -132,8 +142,26 @@ export default function ConnectionContainer() {
   const [configureSettings,setConfigureSettings] = useState<any>("configureMapping");
   const [savedFilteredData, setSavedFilteredData] : any = useState([]);
   const [mappedWorkItems, setMappedWorkItems] : any = useState([]);
-  const [guid,setGuid] :any = useState()
+  const [workitemTypesData, setWorkitemTypeData] : any = useState("Work item type");
+  const [partnetType, setPartnerType] : any = useState("partner work item");
+  const [title,SetTitle] :any = useState('Title')
+  const [mappingType, setMappingType] : any = useState('');
+  const [mappedField, setmMppedField] = useState<any>('');
 
+
+  
+  const [defaultGuId,setDefaultdefaultGuId] :any = useState()
+  const [guId,setGuId] :any = useState()
+  const url = new URL(window.location.href);
+
+  // Get the URLSearchParams object from the URL
+  const queryParameters = url.searchParams;
+  console.log("queryParameters",queryParameters);
+  
+  const cusId = queryParameters.get("cusid")
+  const cbsId = queryParameters.get("cbsid")
+  const _pId = queryParameters.get("pid")
+  console.log("cbs11",cbsId,cusId)
   const dataSource1 = crmWorkItemTypes?.map((item: any, num: number) => {
     // console.log("devopsWorkItemTypes[num] :", devopsWorkItemTypes[num]);
     // console.log("item?.gyde_name[num] :", item?.gyde_name);
@@ -242,7 +270,7 @@ export default function ConnectionContainer() {
                     devOps.attributeType === "DoublePicklist")) ||
                 ((crm.AttributeType === "String" ||
                   crm.AttributeType === "Lookup") &&
-                  (devOps.attributeType = "Guid")) ||
+                  (devOps.attributeType = "defaultGuId")) ||
                 (crm.AttributeType === "Boolean" &&
                   devOps.attributeType === "Boolean")
             )
@@ -304,8 +332,8 @@ export default function ConnectionContainer() {
         let _tableData = [
           {
             key: currentLength+1,
-            sourceWorkItem: "Title",
-            devopsWorkItem: "Title",
+            sourceWorkItem: `${title}`,
+            devopsWorkItem: `${title}`,
             dropdown: [],
             mapping: "",
             enable: false,
@@ -315,8 +343,8 @@ export default function ConnectionContainer() {
           },
           {
             key: currentLength+2,
-            sourceWorkItem: "Work item type",
-            devopsWorkItem: "Work item type",
+            sourceWorkItem: `${workitemTypesData}`,
+            devopsWorkItem: `${workitemTypesData}`,
             dropdown: [],
             mapping: "",
             enable: false,
@@ -326,8 +354,8 @@ export default function ConnectionContainer() {
           },
           {
             key: currentLength+3,
-            sourceWorkItem: "partner work item",
-            devopsWorkItem: "partner work item",
+            sourceWorkItem:`${partnetType}`,
+            devopsWorkItem: `${partnetType}`,
             dropdown: [],
             mapping: "",
             enable: false,
@@ -389,130 +417,6 @@ export default function ConnectionContainer() {
       ? setIsLoading(true)
       : setIsLoading(false);
   }, [isModalOpen, taskDataArr]);
-  const tempAPI = () => {
-    const tempArr = [
-      {
-        name: "Issue",
-        country: "Epic1",
-        AttributeType: "Lookup",
-        hasPicklist: false,
-        option: [1, 2, 4],
-      },
-      {
-        name: "Epic",
-        country: "Epic",
-        AttributeType: "Lookup",
-        hasPicklist: true,
-        option: [1, 2, 4],
-      },
-      {
-        name: "Test Plan",
-        country: "Test Plan",
-        AttributeType: "String",
-        hasPicklist: true,
-        option: [1, 2, 4],
-      },
-    ];
-    const dataSourcew = [
-      {
-        key: "1",
-        name: "Issue",
-        age: 32,
-        country: "N/A",
-        mapping: "Mapping",
-        enable: false,
-        AttributeType: "Lookup",
-      }, // info: 'Additional info for John Doe',
-      {
-        key: "2",
-        name: "Epic",
-        age: 28,
-        country: "Epic",
-        mapping: "Mapping",
-        enable: true,
-        AttributeType: "Lookup",
-      }, // info: 'Additional info for Jane Smith'
-      {
-        key: "3",
-        name: "Epic",
-        age: 38,
-        country: "Task",
-        mapping: "Mapping",
-        enable: true,
-        AttributeType: "a",
-      }, //info: 'Additional info for Jhon Smith'
-      {
-        key: "4",
-        name: "Test Case",
-        age: 38,
-        country: "Test Case",
-        mapping: "Mapping",
-        enable: true,
-        AttributeType: "String",
-      },
-      {
-        key: "5",
-        name: "Test Plan",
-        age: 38,
-        country: "Test Plan",
-        mapping: "Mapping",
-        enable: true,
-        AttributeType: "String",
-      },
-    ];
-
-    let tableData = exampleCRMData.map((crm, key) => {
-      let dropdownArr: any = [];
-      let picklistArr: any = [];
-      let x: any = exampleDevOpsData
-        .filter((devOps) => crm.AttributeType === devOps.attributeType)
-        .map((_data) => {
-          dropdownArr.push({
-            dropdownValue: _data.fieldName,
-            option: _data.hasPicklist ? _data.allowedValues : [],
-            isPickList: _data.hasPicklist ? true : false,
-          });
-        });
-
-      console.log("x5555", x, crm.SchemaName);
-      return {
-        key: key,
-        name: crm.SchemaName,
-        dropdown: [...dropdownArr],
-        mapping: "",
-        enable: "",
-      };
-    });
-
-    let xx = dataSourcew.map((f, key) => {
-      let dropdownArr: any = [];
-      let picklistArr: any = [];
-      let x: any = tempArr
-        .filter((_f) => f.AttributeType === _f.AttributeType)
-        .map((_data) => {
-          //dropdownArr.push({dropdownValue:_data.country,option:_data.hasPicklist ? _data.option : [],isPickList:_data.hasPicklist ? true: false})
-          return {
-            dropdownValue: _data.country,
-            option: _data.hasPicklist ? _data.option : [],
-            isPickList: _data.hasPicklist ? true : false,
-          };
-        });
-
-      console.log("x5555", x, f.name);
-      return {
-        key: key,
-        name: f.name,
-        dropdown: [...x],
-        mapping: "",
-        enable: "",
-      };
-    });
-
-    console.log("tableData", tableData);
-    console.log("_tem1_tem14", xx);
-    setTaskDataArr(xx);
-  };
-
   // console.log(" devopsWorkItemTypes :", devopsWorkItemTypes);
   // console.log("dataSource",dataSource);
   useEffect(() => {
@@ -522,6 +426,56 @@ export default function ConnectionContainer() {
     });
   }, []);
 
+  useEffect(()=>{
+    // window.parent.webapi.safeAjax({
+    //   type: "GET",
+    //   url: "/_api/gyde_workitemtypes",
+    //   contentType: "application/json",
+    //   success: function (res:any, status:any, xhr:any) {
+    //   console.log("all fetch",res);
+    //   },
+    //   error: function(error:any, status:any, xhr:any) {
+    //   console.log('error', error);
+    //   }
+    //   });
+
+  },[])
+
+//CUSID ,BID if default = PID
+  useEffect(()=>{
+
+    
+const pairs: any = SampleData.split("&");
+const values: any = pairs.map((pair:any) => pair.split("=")[1]);
+const json: any = JSON.parse("[" + values.join(",") + "]");
+
+const encoder = new TextEncoder();
+const byteArray = encoder.encode(JSON.stringify(json));
+const jsonObject = convertByteArrayToJson(byteArray);
+console.log("XXXX1",jsonObject);
+
+
+
+
+    
+    if(isModalOpen){
+      console.log("pID1",_pId);      
+     // fetchDefaultSettingData(_pId);
+    }
+  },[isModalOpen])
+
+  const  fetchDefaultSettingData = async(pid:any) => {
+       let result:any = await fetchDefaultSetting(pid);
+       console.log("fetchSEtting",result);
+       
+       if(result.type=== 'updateDefault'){
+          setDefaultdefaultGuId(result.id)
+         fetchFieldMapping(result.id)
+         
+       }else if (result.type=== 'createDefault'){
+        createDevConfig('default')
+       }
+  }
   //  useEffect(()=>{
   //   // when saved data retrieved this will used...
   //   const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
@@ -539,41 +493,49 @@ export default function ConnectionContainer() {
   //   console.log("comparedData...!@#", comparedData);
   // },[devopsWorkItemTypes])
 
-  const savePopupModelData = () => {
-
+  const savePopupModelData = async (buttonType:any) => {
+    console.log("buttonType",buttonType,defaultGuId);
+    
     console.log("SavedMainData",dataFieldArr,taskDataArr);
-
     if(dataFieldArr.length){
         console.log("API SAved");
       let _isSelected =     dataFieldArr.every((field:any)=> field.isSelected)
-
       setisSavedCompleteFlag(_isSelected)
       console.log("_isSelected",_isSelected);
-      saveMappingData(dataFieldArr,"f237ff2a-7720-ee11-9cbc-6045bd0fcbc6")
-      setIsModalOpen(false);
+      if(buttonType === 'Save'){
+        let _result =await  fetchFieldMapping(guId)
+       
+        let result = await fetchDevOpsConfigById(guId)
+        console.log("resultGUID",result);
+        console.log("fetchFieldMapping",_result);
       
-        
-           }else if (taskDataArr.length){
+        let _structureData = [{mappingType:dataFieldArr}]
+        saveMappingData(_structureData,guId)
+      }else if (buttonType === 'Default' ){
+        let _result =await  fetchFieldMapping(defaultGuId)
+       
+        let result = await fetchDevOpsConfigById(defaultGuId)
+        console.log("resultGUID",result);
+        console.log("fetchFieldMapping",_result);
+      
+        let _structureData = [{mappingType:dataFieldArr}]
+        saveMappingData(_structureData,defaultGuId), saveDefaultMappingData(defaultGuId) 
+      }
+    //  setIsModalOpen(false);
+    }else if (taskDataArr.length){  
+      if(buttonType === 'Save'){
+        let result = await fetchDevOpsConfigById(guId)
+        console.log("resultGUID",result);
+        let _structureData = [{mappingType:taskDataArr}]
+        saveMappingData(_structureData,guId) 
+      }else if (buttonType === 'Default' ){
+        let result = await fetchDevOpsConfigById(defaultGuId)
+        console.log("resultGUID",result);
+        let _structureData = [{mappingType:taskDataArr}]
+        saveMappingData(_structureData,defaultGuId) ,saveDefaultMappingData(defaultGuId) 
+      }
 
-    //     return field;
-    //   });
-    //   console.log("9631111", dataArr, ":", dataFieldArr, updateditems);
-    // } else if (dataFieldArr.length) {
-    //   console.log(" Select source field");
-    //   console.log("963", dataArr, dataFieldArr);
-    // } else {
-    //   console.log("default Data");
-    //   console.log("dataSourceArr", taskDataArr);
-    // }
-    // console.log("963", dataArr, dataFieldArr);
-    // // if (data?.length) {
-    // //   let _data = data.filter((f: any) => f.isText === false);
-    // //   console.log("12345", _data);
-    // //   console.log(
-    // //     "cvc",
-    // //     _data.every((_f: any) => _f.isSelected === true)
-    // //   );
-    // // }
+      console.log("default");      
   }
   }
   const handleConfigure = ({ target: { value } }: RadioChangeEvent) => {
@@ -584,25 +546,51 @@ export default function ConnectionContainer() {
   //   console.log("mapped work items....",mappedWorkItems);
   // let _result =  saveWorkItemTypes(mappedWorkItems);
   // console.log("result",_result);
-
-  window.parent.webapi.safeAjax({
-    type: "POST",
-    url: "/_api/gyde_devopsconfigurations",
-    contentType: "application/json",
-    data: JSON.stringify({
-        "gyde_name": "Sample Config - RD2",
-    }),
-    success: function (res:any, status:any, xhr:any) {
-        // Assuming the GUID field is 'gyde_devopsconfigurationid'
-        console.log("saving mapping items", res);
-        console.log("saving status",status);
-        console.log("saving xhr",xhr);
-    }
-});
-    // createMappingFile(mappedWorkItems);
+  createDevConfig();
+console.log("defaultGuId",defaultGuId); 
   }
 console.log("call back",mappedWorkItems);
 
+
+const createDevConfig = async(recordType:any ="newRecord")=> {
+
+  const currentTime = new Date();
+  const hours = currentTime.getHours();
+  const minutes = currentTime.getMinutes();
+  const seconds = currentTime.getSeconds();
+  
+  console.log("cbs******",cbsId,cusId);
+  
+  var record :any= {};
+  record.gyde_name = `react config ${recordType}${hours}${minutes}${seconds}`; 
+  record["gyde_customerorpartner@odata.bind"] = recordType ==='default' ? `/accounts(${_pId})` :  `/accounts(${cusId})`// Lookup
+  record["gyde_customerbusinesssurvey@odata.bind"] = `/gyde_customerbusinesssurveies(${cbsId})`; // Lookup
+  //add  name default true;
+  console.log("record1",record);
+ let newId = await createDevConfigApi(record)
+ console.log("newIDDEV",newId);
+ 
+ if(newId){
+  recordType ==='default' ? setDefaultdefaultGuId(newId) : setGuId(newId)
+  recordType ==='newRecord' &&  createMappingFile(mappedWorkItems,newId);
+  console.log("newId",newId);
+ }
+  // window.parent.webapi.safeAjax({
+  //     type: "POST",
+  //     contentType: "application/json",
+  //     url: "/_api/gyde_devopsconfigurations",
+  //     data: JSON.stringify(record),
+  //     success: function (data:any, textStatus:any, xhr:any) {
+  //         var newId = xhr.getResponseHeader("entityid");
+          // setDefaultdefaultGuId(newId)
+          // recordType ==='newRecord' &&  createMappingFile(mappedWorkItems,newId);
+          // console.log("newId",newId);
+  //     },
+  //     error: function (xhr:any, textStatus:any, errorThrown:any) {
+  //         console.log("hr",xhr);
+  //     }
+  // });
+}
 // var contactId = `${<p>{'request.params.id'}</p>}`;
 // console.log("liquid code..", contactId)
 
@@ -653,6 +641,8 @@ console.log("call back",mappedWorkItems);
               // }
               // disabled={configureSettings == "devopsGenerator" ? true : false}
               saveMappingItems={(data:any)=>setMappedWorkItems(data)}
+              setMappingType={setmMppedField}
+              isPicklistModel={false}
             />
 
             <span>
@@ -699,6 +689,7 @@ console.log("call back",mappedWorkItems);
                   setFieldDataArr={setFieldDataArr}
                   isPicklistModel={false}
                   currentPickListData ={dataArr}
+                  setMappingType={setmMppedField}
                 />
 
                 <div
@@ -720,6 +711,7 @@ console.log("call back",mappedWorkItems);
                   <Button
                     className="ant-btn-primary"
                     onClick={(e) => {
+                      savePopupModelData("Default")
                       /* Handle button click */
                     }}
                     style={{ marginLeft: "5px" }}
@@ -728,7 +720,9 @@ console.log("call back",mappedWorkItems);
                   </Button>
                   <Button
                     className="ant-btn-primary"
-                    onClick={savePopupModelData}
+                    onClick={()=>{
+                      savePopupModelData("Save")
+                    }}
                     style={{ marginLeft: "5px" }}
                   >
                     Save
