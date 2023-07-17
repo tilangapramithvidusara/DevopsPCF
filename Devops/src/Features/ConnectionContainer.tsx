@@ -506,15 +506,11 @@ console.log("devOpsCOnfig",_result);
       
        setGuId(_result.id)
        let result :any = await fetchDevOpsMappingField(_result.id)
-        let byteArr:any = base64ToByteArray(result.data?.value)
-        console.log("convertedBY",byteArr);
-        const stringFromArray = String.fromCharCode.apply(String, byteArr);
-  console.log("stringFromArray",stringFromArray);
-  
-  const objectRetrieve = JSON.parse(stringFromArray);
-  console.log("XXXX1BY",stringFromArray,objectRetrieve);
-        console.log("_resultDevOps",result);
+      
+        let JsonData = convertByteArrayToJson(result.data?.value)
+        console.log("JsonDataFirst",JsonData);
         
+
    }
    else {
     if(_result.type === 'createDefault'){
