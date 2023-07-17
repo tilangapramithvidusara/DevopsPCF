@@ -133,11 +133,13 @@ record.gyde_defaultsetting = true; // Boolean
       contentType: "application/json",
       success: function (data:any, textStatus:any, xhr:any) {
         console.log("fetchFieldMapping",data,"textStatus",textStatus,"xhr",xhr);
-        resolve(data)
+        resolve({type:"success",data:data})
+
     },
       error: function(error:any, status:any, xhr:any) {
-      console.log('error', error);
-      rejects(error)
+      console.log('error', error,status);
+      resolve({type:"error",data:[]})
+      
       }
       });
       
@@ -178,6 +180,39 @@ record.gyde_defaultsetting = true; // Boolean
 
  
  }
+
+ export const fetchDevopsConfig =(id:any,bId:any) =>{
+
+  return new Promise((resolve:any,rejects:any)=>{
+    window.parent.webapi.safeAjax({
+      type: "GET",
+      url: `/_api/gyde_devopsconfigurations?$select=gyde_devopsconfigurationid,_gyde_customerbusinesssurvey_value,_gyde_customerorpartner_value,gyde_defaultsetting,gyde_devopsfieldmappings,gyde_devopsfieldmappings_name,gyde_devopsmappingcomplete,gyde_devopsmappings,gyde_devopsmappings_name,gyde_name,statecode,versionnumber&$filter=(_gyde_customerorpartner_value eq ${id} and _gyde_customerbusinesssurvey_value eq ${bId} )`,
+      contentType: "application/json",
+      headers: {
+      "Prefer": "odata.include-annotations=*"
+      },
+      success: function (data:any, textStatus:any, xhr:any) {
+      var results = data;
+      console.log("FETCH fetchDevopsConfig:==========>",results);
+      if(results?.value.length){
+       let _guID =results.value[0]["gyde_devopsconfigurationid"]; // Guid
+       console.log("fetchDevopsConfig");
+       
+       resolve({type:'updateConfig',id:_guID})
+        console.log("callLength");  
+      }else {
+       resolve({type:'createDefault',id:null})
+      }
+     },
+      error: function (xhr:any, textStatus:any, errorThrown:any) {
+       console.log(xhr);
+       rejects(xhr)
+       }
+      });
+  })
+
+
+ }
  export const fetchDevOpsMappingField = (guid:any)=> {
 
    return new Promise((resolve,rejects)=> {
@@ -188,12 +223,12 @@ record.gyde_defaultsetting = true; // Boolean
       contentType: "application/json",
       success: function (data:any, textStatus:any, xhr:any) {
         console.log("fetchDevOpsMappingField",data,"textStatus",textStatus,"xhr",xhr);
-        resolve(data)
+        resolve({type:"success",data:data})
       
     },
       error: function(error:any, status:any, xhr:any) {
       console.log('error', error);
-      rejects(error)
+      resolve({type:"error",data:[]})
       }
       });
    })

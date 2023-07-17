@@ -66,12 +66,23 @@ return byteArray;
 
 
 
-export const convertByteArrayToJson = (byteArray: Uint8Array): any => {
-  const decoder = new TextDecoder();
-  const jsonString = decoder.decode(byteArray);
-  const jsonObject = JSON.parse(jsonString);
+export const convertByteArrayToJson = (data: any): any => {
 
-  return jsonObject;
+  const pairs: any = data.split("&");
+  const values: any = pairs.map((pair:any) => pair.split("=")[1]);
+  const json: any = JSON.parse("[" + values.join(",") + "]");
+  
+  const encoder = new TextEncoder();
+  const byteArray : any = encoder.encode(JSON.stringify(json));
+  console.log("json....:", json);
+  console.log("byte array:", byteArray);
+  // const jsonObject = convertByteArrayToJson(byteArray);
+  const stringFromArray = String.fromCharCode.apply(String, json);
+  console.log("stringFromArray",stringFromArray);
+  
+  const objectRetrieve = JSON.parse(stringFromArray);
+  console.log("XXXX1",stringFromArray,objectRetrieve);
+  return objectRetrieve;
 };
 
 

@@ -124,11 +124,12 @@ const TableComponent: React.FC<CommonTableProps> = ({
     const isError = !!error;
     setDropDownOptions(options);
     console.log("isModelopen Now", isModelopen ? record : "");
-    let currentValue = isModelopen
-      ? record?.dropdown.find(
-          (dropDownData: any) =>
-            record.sourceWorkItem === dropDownData.dropdownValue
-        )
+    console.log(" record?.dropdown.length", isModelopen && record?.dropdown?.length);
+    
+    let currentValue = isModelopen && record?.dropdown?.length  ?   record?.dropdown?.find(
+        (dropDownData: any) =>
+          record.sourceWorkItem === dropDownData.dropdownValue
+      )
       : record[dataIndex];
     console.log("currentValuecurrentValue", currentValue);
     console.log("options======> ", options);
@@ -161,7 +162,7 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
                     width: "100%",
                     borderColor: isError ? "red" : undefined,
                   }}
-                  defaultValue={isModelopen && record.isSavedType === "saved" ? record?.devopsWorkItem :record.isSavedType === "default"? currentValue?.dropdownValue : currentValue}
+                  defaultValue={isModelopen && record.isSavedType === "saved" ?  record?.devopsWorkItem ?  record?.devopsWorkItem : currentValue?.dropdownValue :record.isSavedType === "setasDefault" ?  record?.devopsWorkItem ? record?.devopsWorkItem : currentValue?.dropdownValue :record.isSavedType === "default"? currentValue?.dropdownValue ? currentValue?.dropdownValue  :record?.devopsWorkItem: currentValue}
                   onChange={(value) => {
                     handleFieldChange(record.key, dataIndex, value);
                   }}
@@ -320,8 +321,8 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
         ? { ...item, [dataIndex]: value, enable: false,isSelected:true }
         : isModelopen
         ? currentValue?.isPicklist
-          ? { ...item, [dataIndex]: currentValue.value,  ["defaultOptionList"]: [],enable: true, isSelected:true }
-          : { ...item, [dataIndex]: currentValue.value, ["defaultOptionList"]: [],enable: false,isSelected:true }
+          ? { ...item, [dataIndex]: currentValue.value,  ["defaultOptionList"]: [],enable: true, isSelected:true,["isPickListComplete"] :false}
+          : { ...item, [dataIndex]: currentValue.value, ["defaultOptionList"]: [],enable: false,isSelected:true ,["isPickListComplete"]:false}
         : { ...item, [dataIndex]: value, enable: true ,isSelected:true};
     }
     return item;

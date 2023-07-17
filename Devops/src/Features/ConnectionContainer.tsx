@@ -26,9 +26,10 @@ import {
   fetchDefaultSetting,
   createDevConfigApi,
   fetchDevOpsConfigById,
+  fetchDevopsConfig,
 } from "../Api/devopsApis";
 import SiteSettingsCompo from "../Components/SiteSettingsCompo";
-import { convertByteArrayToJson } from "../Helper/Helper";
+import { base64ToByteArray, convertByteArrayToJson } from "../Helper/Helper";
 
 
 
@@ -147,10 +148,10 @@ export default function ConnectionContainer() {
   const [title,SetTitle] :any = useState('Title')
   const [mappingType, setMappingType] : any = useState('');
   const [mappedField, setmMppedField] = useState<any>('');
-
+  const [isEnablePopUp, setIsEnablePopUp] = useState<boolean>(false);
 
   
-  const [defaultGuId,setDefaultdefaultGuId] :any = useState()
+  const [defaultGuId,setDefaultGuId] :any = useState()
   const [guId,setGuId] :any = useState()
   const url = new URL(window.location.href);
 
@@ -162,6 +163,7 @@ export default function ConnectionContainer() {
   const cbsId = queryParameters.get("cbsid")
   const _pId = queryParameters.get("pid")
   console.log("cbs11",cbsId,cusId)
+  
   const dataSource1 = crmWorkItemTypes?.map((item: any, num: number) => {
     // console.log("devopsWorkItemTypes[num] :", devopsWorkItemTypes[num]);
     // console.log("item?.gyde_name[num] :", item?.gyde_name);
@@ -365,8 +367,32 @@ export default function ConnectionContainer() {
           },
           ...tableData,
         ];
-        console.log("devopsData", _tableData);
-        setTaskDataArr(_tableData);
+        //console.log("devopsData", _tableData);
+      //  setTaskDataArr(_tableData);
+ 
+       // default Fetch 
+       console.log("_p");
+       
+          let updatedSavedData :any= await fetchFieldMappingData(mappedField)
+          let updatedDefaultData:any = await fetchDefaultSettingData(_pId);
+
+          console.log("updated1111",updatedSavedData,updatedDefaultData);
+           if(updatedSavedData?.length){
+            console.log("sa111");
+            
+            setTaskDataArr(updatedSavedData[0]["value"]);
+           }
+          else if(updatedDefaultData?.length){
+            setTaskDataArr(updatedDefaultData);
+            console.log("outter",updatedDefaultData);
+
+          }else {
+            console.log("innner",_tableData);
+            
+            setTaskDataArr(_tableData);
+
+          }
+         //fetchDefaultSettingData(_pId);
 
         // if(_savedObj){
 
@@ -427,6 +453,9 @@ export default function ConnectionContainer() {
   }, []);
 
   useEffect(()=>{
+    console.log("cbs******",cbsId,cusId,_pId);
+
+    findDevopsConfigGuId(cusId,cbsId)
     // window.parent.webapi.safeAjax({
     //   type: "GET",
     //   url: "/_api/gyde_workitemtypes",
@@ -441,61 +470,125 @@ export default function ConnectionContainer() {
 
   },[])
 
+  const fetchFieldMappingData = async(itemKey:any) => {
+    
+    if(guId){
+      let _result:any = await fetchFieldMapping(guId)
+    if(_result.type == "success"){
+      let JsonData = convertByteArrayToJson(_result.data)
+      console.log("fieldMAppQ",JsonData);
+    console.log("fieldMAppQ",itemKey);
+    
+      const updatedData = JsonData.filter((item: any) => {
+        console.log("12",item.key,itemKey);
+        
+         return item.key === itemKey
+        
+      });
+      console.log("upppp",updatedData);
+      
+      return updatedData;
+    }else if(_result.type == "error")
+    return [];
+    
+    }else {
+      return [];
+    }
+  }
+
+
+  const  findDevopsConfigGuId = async(cusId:any,bId:any)=> {
+
+   let _result:any =   await fetchDevopsConfig(cusId,bId)
+console.log("devOpsCOnfig",_result);
+
+   if(_result.type === 'updateConfig'){
+      
+       setGuId(_result.id)
+       let result :any = await fetchDevOpsMappingField(_result.id)
+        let byteArr:any = base64ToByteArray(result.data?.value)
+        console.log("convertedBY",byteArr);
+        const stringFromArray = String.fromCharCode.apply(String, byteArr);
+  console.log("stringFromArray",stringFromArray);
+  
+  const objectRetrieve = JSON.parse(stringFromArray);
+  console.log("XXXX1BY",stringFromArray,objectRetrieve);
+        console.log("_resultDevOps",result);
+        
+   }
+   else {
+    if(_result.type === 'createDefault'){
+      setGuId("")
+  }
+   }
+  }
+
 //CUSID ,BID if default = PID
   useEffect(()=>{
-
-    
-const pairs: any = SampleData.split("&");
-const values: any = pairs.map((pair:any) => pair.split("=")[1]);
-const json: any = JSON.parse("[" + values.join(",") + "]");
-
-const encoder = new TextEncoder();
-const byteArray : any = encoder.encode(JSON.stringify(json));
-console.log("json....:", json);
-console.log("byte array:", byteArray);
-// const jsonObject = convertByteArrayToJson(byteArray);
-const stringFromArray = String.fromCharCode.apply(String, json);
-const objectRetrieve = JSON.parse(stringFromArray);
-console.log("XXXX1",stringFromArray,objectRetrieve);
-
-
 
 
     
     if(isModalOpen){
-      console.log("pID1",_pId);      
-     // fetchDefaultSettingData(_pId);
+     //fetchDefaultSettingData(_pId);
     }
   },[isModalOpen])
 
   const  fetchDefaultSettingData = async(pid:any) => {
+    console.log("pID",pid);
+    
        let result:any = await fetchDefaultSetting(pid);
        console.log("fetchSEtting",result);
        
        if(result.type=== 'updateDefault'){
-          setDefaultdefaultGuId(result.id)
-         fetchFieldMapping(result.id)
+          setDefaultGuId(result.id)
+         let _result:any = await fetchFieldMapping(result.id)
+         console.log("RRRDF",_result);
          
+         if(_result?.type === "success"){
+          let JsonData = convertByteArrayToJson(_result.data)
+          console.log("defaultQQQ",JsonData);
+     const updatedData = JsonData.filter((item: any) => {
+       console.log("OTem,",item);
+       if (item.key === mappedField) {
+         return  { ...item, ["value"]:dataSource,};
+       }
+     });
+ 
+      console.log("updated",updatedData.length);
+      if( updatedData.length){
+       return updatedData[0]["value"]
+      }else{
+              return [];
+      }  
+    
+         }
+         else{
+          return [];
+  }  
+     
        }else if (result.type=== 'createDefault'){
         createDevConfig('default')
+        return [];
        }
   }
-  //  useEffect(()=>{
-  //   // when saved data retrieved this will used...
-  //   const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
-  //   const comparedData = savedMappedData?.filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))?.map((data:any)=> {
-  //     console.log("options: saved data", options?.find((item:any)=> item), data?.gyde_name)
-  //     return {
-  //       key: data?.key,
-  //       name:data?.name,
-  //       gyde_name:data?.gyde_name == "N/A" ? data?.gyde_name : options?.find((item:any)=> item == data?.gyde_name),
-  //       mapping:data?.mapping,
-  //       enable: options?.find((item:any)=> item == data?.gyde_name) ? true : false
-  //     }
-  //   });
-  //   setSavedFilteredData(comparedData);
-  //   console.log("comparedData...!@#", comparedData);
-  // },[devopsWorkItemTypes])
+
+  
+   useEffect(()=>{
+    // when saved data retrieved this will used...
+    const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
+    const comparedData = savedMappedData?.filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))?.map((data:any)=> {
+      console.log("options: saved data", options?.find((item:any)=> item), data?.gyde_name)
+      return {
+        key: data?.key,
+        name:data?.name,
+        gyde_name:data?.gyde_name == "N/A" ? data?.gyde_name : options?.find((item:any)=> item == data?.gyde_name),
+        mapping:data?.mapping,
+        enable: options?.find((item:any)=> item == data?.gyde_name) ? true : false
+      }
+    });
+    setSavedFilteredData(comparedData);
+    console.log("comparedData...!@#", comparedData);
+  },[devopsWorkItemTypes])
 
   const savePopupModelData = async (buttonType:any) => {
     console.log("buttonType",buttonType,defaultGuId);
@@ -506,37 +599,58 @@ console.log("XXXX1",stringFromArray,objectRetrieve);
       let _isSelected =     dataFieldArr.every((field:any)=> field.isSelected)
       setisSavedCompleteFlag(_isSelected)
       console.log("_isSelected",_isSelected);
+
       if(buttonType === 'Save'){
-        let _result =await  fetchFieldMapping(guId)
-       
-        let result = await fetchDevOpsConfigById(guId)
-        console.log("resultGUID",result);
-        console.log("fetchFieldMapping",_result);
+        if(guId){
+          let _result:any =await  fetchFieldMapping(guId)
+        let updatedData = dataFieldArr.map((item:any)=> {
+          return  { ...item, ["isSavedType"]:"saved",};
+        })
+          commonFieldMappingSave(guId,_result,mappedField,updatedData)
+        }else {
+          notification.error({message:"GUID Not found"})
+        }
       
-        let _structureData = [{mappingType:dataFieldArr}]
-        saveMappingData(_structureData,guId)
       }else if (buttonType === 'Default' ){
-        let _result =await  fetchFieldMapping(defaultGuId)
-       
-        let result = await fetchDevOpsConfigById(defaultGuId)
-        console.log("resultGUID",result);
-        console.log("fetchFieldMapping",_result);
-      
-        let _structureData = [{mappingType:dataFieldArr}]
-        saveMappingData(_structureData,defaultGuId), saveDefaultMappingData(defaultGuId) 
+        if(defaultGuId){
+          let _result:any =await  fetchFieldMapping(defaultGuId)
+          let updatedData = dataFieldArr.map((item:any)=> {
+            return  { ...item, ["isSavedType"]:"setasDefault",};
+          })
+          saveDefaultMappingData(defaultGuId)
+          commonFieldMappingSave(defaultGuId,_result,mappedField,updatedData)
+          
+        }else {
+          notification.error({message:"GUID Not found"})
+        }
+        
       }
     //  setIsModalOpen(false);
     }else if (taskDataArr.length){  
       if(buttonType === 'Save'){
-        let result = await fetchDevOpsConfigById(guId)
-        console.log("resultGUID",result);
-        let _structureData = [{mappingType:taskDataArr}]
-        saveMappingData(_structureData,guId) 
+        if(guId){
+          let _result =await  fetchFieldMapping(guId)
+          let updatedData = taskDataArr.map((item:any)=> {
+            return  { ...item, ["isSavedType"]:"saved",};
+          })
+        commonFieldMappingSave(guId,_result,mappedField,updatedData)
+        }else {
+          notification.error({message:"GUID Not found"})
+        }
+        
+       
       }else if (buttonType === 'Default' ){
-        let result = await fetchDevOpsConfigById(defaultGuId)
-        console.log("resultGUID",result);
-        let _structureData = [{mappingType:taskDataArr}]
-        saveMappingData(_structureData,defaultGuId) ,saveDefaultMappingData(defaultGuId) 
+        if(defaultGuId){
+          let _result =await  fetchFieldMapping(defaultGuId)
+          let updatedData = taskDataArr.map((item:any)=> {
+            return  { ...item, ["isSavedType"]:"setasDefault",};
+          })
+          saveDefaultMappingData(defaultGuId)
+        commonFieldMappingSave(defaultGuId,_result,mappedField,updatedData)
+        }else {
+          notification.error({message:"GUID Not found"})
+        }
+       
       }
 
       console.log("default");      
@@ -575,8 +689,8 @@ const createDevConfig = async(recordType:any ="newRecord")=> {
  console.log("newIDDEV",newId);
  
  if(newId){
-  recordType ==='default' ? setDefaultdefaultGuId(newId) : setGuId(newId)
-  recordType ==='newRecord' &&  createMappingFile(mappedWorkItems,newId);
+  recordType ==='default' && setDefaultGuId(newId) ,saveDefaultMappingData(newId)
+  recordType ==='newRecord' &&  createMappingFile(mappedWorkItems,newId); setGuId(newId);
   console.log("newId",newId);
  }
   // window.parent.webapi.safeAjax({
@@ -586,7 +700,7 @@ const createDevConfig = async(recordType:any ="newRecord")=> {
   //     data: JSON.stringify(record),
   //     success: function (data:any, textStatus:any, xhr:any) {
   //         var newId = xhr.getResponseHeader("entityid");
-          // setDefaultdefaultGuId(newId)
+          // setDefaultGuId(newId)
           // recordType ==='newRecord' &&  createMappingFile(mappedWorkItems,newId);
           // console.log("newId",newId);
   //     },
@@ -597,6 +711,33 @@ const createDevConfig = async(recordType:any ="newRecord")=> {
 }
 // var contactId = `${<p>{'request.params.id'}</p>}`;
 // console.log("liquid code..", contactId)
+
+
+const commonFieldMappingSave =(guId:any,_result:any,itemKey:any,dataSource:any) => {
+console.log("result101",guId,":",_result,":",itemKey,dataSource);
+
+  if(_result.type === 'success'){
+    let JsonData = convertByteArrayToJson(_result.data)
+    const updatedData = JsonData.map((item: any) => {
+      console.log("OTem,",item);
+      if (item.key === itemKey) {
+        return  { ...item, ["value"]:dataSource,};
+      }
+      return {...item,["key"]:itemKey,["value"]:dataSource};
+      
+    });
+    console.log("xxJ",JsonData);
+    console.log("fetchFieldMapping",_result);
+    console.log("updated102",updatedData);
+    
+   // let _structureData = [{key:itemKey,value:updatedData}]
+    saveMappingData(updatedData,guId)
+  }
+ else if(_result.type === 'error'){
+  let _structureData = [{key:itemKey,value:dataSource}]
+  saveMappingData(_structureData,guId)
+ }
+}
 
   return (
     <div className="devops-container">
