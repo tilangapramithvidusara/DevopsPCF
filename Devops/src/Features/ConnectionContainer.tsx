@@ -246,7 +246,7 @@ export default function ConnectionContainer() {
       if (devopsData.status === "success") {
         console.log("crm", crmData);
         let tableData = exampleCRMData?.map((crm: any, key: any) => {
-          let dropdownArr: any = exampleDevOpsData
+          let dropdownArr: any = devopsData.data?.Value
             .filter(
               (devOps: any) =>
                 ((crm.AttributeType === "Memo" ||
@@ -368,10 +368,10 @@ export default function ConnectionContainer() {
           ...tableData,
         ];
         //console.log("devopsData", _tableData);
-      //  setTaskDataArr(_tableData);
+     // setTaskDataArr(_tableData);
  
        // default Fetch 
-       console.log("_p");
+      //  console.log("_p");
        
           let updatedSavedData :any= await fetchFieldMappingData(mappedField)
           let updatedDefaultData:any = await fetchDefaultSettingData(_pId);
@@ -503,7 +503,7 @@ export default function ConnectionContainer() {
 console.log("devOpsCOnfig",_result);
 
    if(_result.type === 'updateConfig'){
-      
+      //filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))
        setGuId(_result.id)
        let result :any = await fetchDevOpsMappingField(_result.id)
       
@@ -511,7 +511,7 @@ console.log("devOpsCOnfig",_result);
         console.log("JsonDataFirst",JsonMappedData);
 
         const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
-        const comparedData = JsonMappedData?.filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))?.map((data:any)=> {
+        const comparedData = JsonMappedData?.map((data:any)=> {
           console.log("options: saved data", options?.find((item:any)=> item), data?.gyde_name)
           return {
             key: data?.key,
@@ -540,7 +540,7 @@ console.log("devOpsCOnfig",_result);
 
     
     if(isModalOpen){
-     //fetchDefaultSettingData(_pId);
+     fetchDefaultSettingData(_pId);
     }
   },[isModalOpen])
 
@@ -838,7 +838,7 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
                 onClick={() => {
                    console.log("_navigateUrl",_navigateUrl);
                    
-                  window.location.href = 'customer-dashboard%3Fid%3Df4011bf2-bae8-ed11-8847-6045bd0fcbc6'; 
+                  window.location.href = `${_navigateUrl}`
                   
                 }}
               >
