@@ -596,7 +596,8 @@ console.log("devOpsCOnfig",_result);
      const updatedData = JsonData.filter((item: any) => {
        console.log("OTem,",item);
        if (item.key === mappedField) {
-         return  { ...item, ["value"]:dataSource,};
+        return item;
+        // return  { ...item, ["value"]:dataSource,};
        }
      });
  
