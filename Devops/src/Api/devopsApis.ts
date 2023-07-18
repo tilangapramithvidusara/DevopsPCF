@@ -237,7 +237,8 @@ record.gyde_defaultsetting = true; // Boolean
 
 }
 export const fetchDevopsFeildsData = async (auth:any,url:string) => {
-  console.log("selected work item :",url,":",auth);
+  //fetch
+  console.log("selected work item :",url,":",auth); 
   try {
     //devopsWorkItemFieldURL
     const result = await axios.post(`${url}`, 
