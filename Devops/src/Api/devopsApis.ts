@@ -1,4 +1,6 @@
+import { rejects } from 'assert';
 import axios from 'axios';
+import { resolve } from 'path';
 import { base64ToByteArray, convertJsontoByteArray, encodeJSONToBase64 } from '../Helper/Helper';
 
 const headers = {
@@ -219,7 +221,7 @@ record.gyde_defaultsetting = true; // Boolean
 
     window.parent.webapi.safeAjax({
       type: "GET",
-      url: `/_api/gyde_devopsconfigurations(${guid})/gyde_devopsmappings?size=full%20%E2%80%93`,
+      url: `/_api/gyde_devopsconfigurations(${guid})/gyde_devopsmappings/$value`,
       contentType: "application/json",
       success: function (data:any, textStatus:any, xhr:any) {
         console.log("fetchDevOpsMappingField",data,"textStatus",textStatus,"xhr",xhr);
@@ -463,19 +465,30 @@ export const saveWorkItemTypes  = async (mappingData:any) => {
 
 export const createMappingFile  = async(data:any,guid:any) => {
   try {
-    const base64Data = encodeJSONToBase64(data);
-    const byteArrayData = base64ToByteArray(base64Data);
-    console.log("byteArrayData",guid, byteArrayData);
+     return new Promise((resolve,rejects)=> {
 
-    window.parent.webapi.safeAjax({
-      type: "PUT",
-      url: `/_api/gyde_devopsconfigurations(${guid})/gyde_devopsmappings`,
-      contentType: "application/octet-stream",
-      data: byteArrayData,
-      success: function (data:any, textStatus:any, xhr:any) {
-        console.log("dataxhr",data,"textStatus",textStatus,"xhr",xhr);
-      
-    },
+
+      const base64Data = encodeJSONToBase64(data);
+      const byteArrayData = base64ToByteArray(base64Data);
+      console.log("byteArrayData",guid, byteArrayData);
+  
+      window.parent.webapi.safeAjax({
+        type: "PUT",
+        url: `/_api/gyde_devopsconfigurations(${guid})/gyde_devopsmappings`,
+        contentType: "application/octet-stream",
+        data: byteArrayData,
+        success: function (data:any, textStatus:any, xhr:any) {
+          console.log("dataxhr",data,"textStatus",textStatus,"xhr",xhr);
+
+          resolve({type:"success"})
+        
+      },
+      error: function(error:any, status:any, xhr:any) {
+        console.log('error', error);
+        resolve({type:"error"})
+        }
+
+     })
   
   });
     // const result = 

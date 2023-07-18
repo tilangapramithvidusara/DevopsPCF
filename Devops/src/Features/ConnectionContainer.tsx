@@ -28,8 +28,7 @@ import {
   fetchDevOpsConfigById,
   fetchDevopsConfig,
 } from "../Api/devopsApis";
-import SiteSettingsCompo from "../Components/SiteSettingsCompo";
-import { base64ToByteArray, convertByteArrayToJson } from "../Helper/Helper";
+import { convertByteArrayToJson } from "../Helper/Helper";
 
 
 
@@ -162,6 +161,7 @@ export default function ConnectionContainer() {
   const cusId = queryParameters.get("cusid")
   const cbsId = queryParameters.get("cbsid")
   const _pId = queryParameters.get("pid")
+  const _navigateUrl = queryParameters.get("returnto")
   console.log("cbs11",cbsId,cusId)
   
   const dataSource1 = crmWorkItemTypes?.map((item: any, num: number) => {
@@ -468,7 +468,7 @@ export default function ConnectionContainer() {
     //   }
     //   });
 
-  },[])
+  },[devopsWorkItemTypes])
 
   const fetchFieldMappingData = async(itemKey:any) => {
     
@@ -507,14 +507,29 @@ console.log("devOpsCOnfig",_result);
        setGuId(_result.id)
        let result :any = await fetchDevOpsMappingField(_result.id)
       
-        let JsonData = convertByteArrayToJson(result.data?.value)
-        console.log("JsonDataFirst",JsonData);
+        let JsonMappedData = convertByteArrayToJson(result.data)
+        console.log("JsonDataFirst",JsonMappedData);
+
+        const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
+        const comparedData = JsonMappedData?.filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))?.map((data:any)=> {
+          console.log("options: saved data", options?.find((item:any)=> item), data?.gyde_name)
+          return {
+            key: data?.key,
+            name:data?.name,
+            gyde_name:data?.gyde_name == "N/A" ? data?.gyde_name : options?.find((item:any)=> item == data?.gyde_name),
+            mapping:data?.mapping,
+            enable: options?.find((item:any)=> item == data?.gyde_name) ? true : false
+          }
+        });
+        setSavedFilteredData(comparedData);
+        console.log("comparedData...!@#", comparedData);
         
 
    }
    else {
     if(_result.type === 'createDefault'){
       setGuId("")
+      createDevConfig('newRecord')
   }
    }
   }
@@ -571,19 +586,19 @@ console.log("devOpsCOnfig",_result);
   
    useEffect(()=>{
     // when saved data retrieved this will used...
-    const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
-    const comparedData = savedMappedData?.filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))?.map((data:any)=> {
-      console.log("options: saved data", options?.find((item:any)=> item), data?.gyde_name)
-      return {
-        key: data?.key,
-        name:data?.name,
-        gyde_name:data?.gyde_name == "N/A" ? data?.gyde_name : options?.find((item:any)=> item == data?.gyde_name),
-        mapping:data?.mapping,
-        enable: options?.find((item:any)=> item == data?.gyde_name) ? true : false
-      }
-    });
-    setSavedFilteredData(comparedData);
-    console.log("comparedData...!@#", comparedData);
+    // const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
+    // const comparedData = savedMappedData?.filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))?.map((data:any)=> {
+    //   console.log("options: saved data", options?.find((item:any)=> item), data?.gyde_name)
+    //   return {
+    //     key: data?.key,
+    //     name:data?.name,
+    //     gyde_name:data?.gyde_name == "N/A" ? data?.gyde_name : options?.find((item:any)=> item == data?.gyde_name),
+    //     mapping:data?.mapping,
+    //     enable: options?.find((item:any)=> item == data?.gyde_name) ? true : false
+    //   }
+    // });
+    // setSavedFilteredData(comparedData);
+    // console.log("comparedData...!@#", comparedData);
   },[devopsWorkItemTypes])
 
   const savePopupModelData = async (buttonType:any) => {
@@ -656,17 +671,29 @@ console.log("devOpsCOnfig",_result);
     setConfigureSettings(value);
   };
 
-  const handleMappingItemSave = () => {
+  const handleMappingItemSave = async () => {
   //   console.log("mapped work items....",mappedWorkItems);
   // let _result =  saveWorkItemTypes(mappedWorkItems);
   // console.log("result",_result);
-  createDevConfig();
+  if(guId){
+    let response:any = await  createMappingFile(mappedWorkItems,guId); 
+   if(response.type === 'success'){
+    setIsMappedSaved(true)
+   }
+   else if(response.type === 'error'){
+    setIsMappedSaved(false)
+   }
+  }
+  else {
+    createDevConfig("newRecord",true);
+  }
+
 console.log("defaultGuId",defaultGuId); 
   }
 console.log("call back",mappedWorkItems);
 
 
-const createDevConfig = async(recordType:any ="newRecord")=> {
+const createDevConfig = async(recordType:any ="newRecord",isCreateMapping:boolean =false)=> {
 
   const currentTime = new Date();
   const hours = currentTime.getHours();
@@ -685,8 +712,24 @@ const createDevConfig = async(recordType:any ="newRecord")=> {
  console.log("newIDDEV",newId);
  
  if(newId){
+  console.log("recordType",recordType);
+  
   recordType ==='default' && setDefaultGuId(newId) ,saveDefaultMappingData(newId)
-  recordType ==='newRecord' &&  createMappingFile(mappedWorkItems,newId); setGuId(newId);
+  recordType ==='newRecord' &&  setGuId(newId);
+
+
+  if(isCreateMapping){
+   let response:any = await createMappingFile(mappedWorkItems,newId); 
+
+   if(response.type === 'success'){
+    setIsMappedSaved(true)
+   }
+   else if(response.type === 'error'){
+    setIsMappedSaved(false)
+   }
+  }
+
+  
   console.log("newId",newId);
  }
   // window.parent.webapi.safeAjax({
@@ -791,18 +834,24 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
                 className="cancel-btn"
                 type="primary"
                 htmlType="submit"
-                onClick={() => {}}
+               
+                onClick={() => {
+                   console.log("_navigateUrl",_navigateUrl);
+                   
+                  window.location.href = 'customer-dashboard%3Fid%3Df4011bf2-bae8-ed11-8847-6045bd0fcbc6'; 
+                  
+                }}
               >
                 Cancel
               </Button>
               <Button type="primary" htmlType="button" onClick={handleMappingItemSave}>
                 Save
               </Button>
-              <div>{`% assign deactivateCustomerBusinessSurveyFlowUrl = settings["DeactivateCustomerBusinessSurveyFlowURL"]%`}
-              <input type="hidden" id="deactivateCustomerBusinessSurveyFlowUrl" value="{{deactivateCustomerBusinessSurveyFlowUrl}}" /></div>
+              {/* <div>{`% assign deactivateCustomerBusinessSurveyFlowUrl = settings["DeactivateCustomerBusinessSurveyFlowURL"]%`}
+              <input type="hidden" id="deactivateCustomerBusinessSurveyFlowUrl" value="{{deactivateCustomerBusinessSurveyFlowUrl}}" /></div> */}
             </span>
 
-            <SiteSettingsCompo/>
+
           </>
         )}
         {/* <TableComponent dataSource={dataSource} columns={columns} /> */}
