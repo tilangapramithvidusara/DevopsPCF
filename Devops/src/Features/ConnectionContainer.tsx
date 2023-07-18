@@ -133,7 +133,7 @@ export default function ConnectionContainer() {
     },
   ];
   const [dataArr, setDataArr] = useState<any>([]);
-  const [isSavedCompleteFlag, setisSavedCompleteFlag] = useState<boolean>(false);
+  const [isSavedCompleteFlag, setisSavedCompleteFlag] = useState<any>([]);
   const [dataFieldArr, setFieldDataArr] = useState<any>([]);
   const [devopsWorkItemTypes, setDevopsWorkItemTypes] = useState<any>([]);
   const [crmWorkItemTypes, setCrmWorkItemTypes] = useState<any>([]);
@@ -651,7 +651,12 @@ console.log("devopsWorkItemFieldURL*",devopsWorkItemFieldURL);
     if(dataFieldArr.length){
         console.log("API SAved");
       let _isSelected =     dataFieldArr.every((field:any)=> field.isSelected)
-      setisSavedCompleteFlag(_isSelected)
+
+      setisSavedCompleteFlag((prevState:any) => [
+        ...prevState,
+        { type: mappedField, isCompleted: _isSelected }
+      ]);
+      
       console.log("_isSelected",_isSelected);
 
       if(buttonType === 'Save'){
@@ -684,7 +689,10 @@ console.log("devopsWorkItemFieldURL*",devopsWorkItemFieldURL);
     //  setIsModalOpen(false);
     }else if (taskDataArr.length){ 
       let _isSelected =     taskDataArr.every((field:any)=> field.isSelected)
-      setisSavedCompleteFlag(_isSelected) 
+      setisSavedCompleteFlag((prevState:any) => [
+        ...prevState,
+        { type: mappedField, isCompleted: _isSelected }
+      ]);
       if(buttonType === 'Save'){
         if(guId){
           let _result =await  fetchFieldMapping(guId)
