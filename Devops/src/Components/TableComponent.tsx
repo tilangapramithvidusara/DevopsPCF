@@ -32,6 +32,7 @@ interface CommonTableProps extends TableProps<any> {
   defaultPickListData?:any;
   saveMappingItems?:any;
   setMappingType?:any
+  setWorkitemTypeData?:any
 }
 
 interface TableColumn {
@@ -75,6 +76,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   disabled,
   setMappingType,
   saveMappingItems,
+  setWorkitemTypeData,
   ...rest
 }) => {
   const [tableData, setTableData] = useState(dataSource);
@@ -267,7 +269,7 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
 
   const handleButtonClick = (record: any) => {
     console.log("Button clicked for record:", record);
-     record?.gyde_name &&setMappingType(record.gyde_name)
+     record?.gyde_name &&setMappingType(record.gyde_name) ,setWorkitemTypeData({source:record.name,devOps:record.gyde_name})
     if(!disabled){
         isModelopen ?  showPickListModal(record) :  setDropDownValue(record);  modelAction()
     }
@@ -629,7 +631,7 @@ if(_result[0].length){
                   />
                 
                   <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-                  <Button className='ant-btn-primary'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
+                  <Button className='cancel-btn mr-10'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
                   Cancel
                     </Button>
                     <Button className='ant-btn-primary'  onClick={savePickListData} style={{marginLeft:'5px'}}>

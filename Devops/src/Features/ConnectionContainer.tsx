@@ -37,6 +37,7 @@ import { convertByteArrayToJson } from "../Helper/Helper";
 declare global {
   interface Window {
     webapi: any;
+    devopsMetaData:any;
   }
 }
 
@@ -143,7 +144,7 @@ export default function ConnectionContainer() {
   const [configureSettings,setConfigureSettings] = useState<any>("configureMapping");
   const [savedFilteredData, setSavedFilteredData] : any = useState([]);
   const [mappedWorkItems, setMappedWorkItems] : any = useState([]);
-  const [workitemTypesData, setWorkitemTypeData] : any = useState("Work item type");
+  const [workitemTypesData, setWorkitemTypeData]  = useState<any>("Work item type");
   const [partnetType, setPartnerType] : any = useState("partner work item");
   const [title,SetTitle] :any = useState('Title')
   const [mappingType, setMappingType] : any = useState('');
@@ -370,30 +371,30 @@ export default function ConnectionContainer() {
           ...tableData,
         ];
         //console.log("devopsData", _tableData);
-     // setTaskDataArr(_tableData);
+     setTaskDataArr(_tableData);
  
        // default Fetch 
       //  console.log("_p");
        
-          let updatedSavedData :any= await fetchFieldMappingData(mappedField)
-          let updatedDefaultData:any = await fetchDefaultSettingData(_pId);
+          // let updatedSavedData :any= await fetchFieldMappingData(mappedField)
+          // let updatedDefaultData:any = await fetchDefaultSettingData(_pId);
 
-          console.log("updated1111",updatedSavedData,updatedDefaultData);
-           if(updatedSavedData?.length){
-            console.log("sa111");
+          // console.log("updated1111",updatedSavedData,updatedDefaultData);
+          //  if(updatedSavedData?.length){
+          //   console.log("sa111");
             
-            setTaskDataArr(updatedSavedData[0]["value"]);
-           }
-          else if(updatedDefaultData?.length){
-            setTaskDataArr(updatedDefaultData);
-            console.log("outter",updatedDefaultData);
+          //   setTaskDataArr(updatedSavedData[0]["value"]);
+          //  }
+          // else if(updatedDefaultData?.length){
+          //   setTaskDataArr(updatedDefaultData);
+          //   console.log("outter",updatedDefaultData);
 
-          }else {
-            console.log("innner",_tableData);
+          // }else {
+          //   console.log("innner",_tableData);
             
-            setTaskDataArr(_tableData);
+          //   setTaskDataArr(_tableData);
 
-          }
+          // }
          //fetchDefaultSettingData(_pId);
 
         // if(_savedObj){
@@ -457,9 +458,9 @@ export default function ConnectionContainer() {
   useEffect(()=>{
     console.log("cbs******",cbsId,cusId,_pId);
 
-   findDevopsConfigGuId(cusId,cbsId)
+   //findDevopsConfigGuId(cusId,cbsId)
 
-   getWorkitemNames(_itemId)
+   //getWorkitemNames(_itemId)
     // window.parent.webapi.safeAjax({
     //   type: "GET",
     //   url: "/_api/gyde_workitemtypes",
@@ -595,6 +596,12 @@ console.log("devOpsCOnfig",_result);
         return [];
        }
   }
+
+  useEffect(()=>{
+  let _meta =  window?.parent?.devopsMetaData
+console.log("_meta*",_meta);
+
+  },[])
 
   
    useEffect(()=>{
@@ -810,7 +817,7 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
             setDevopsWorkItemTypes(res?.data?.Value), setDevopsResult(res);
           }}
         />
-
+ <div className="text-left mb-20">
         {isMappedSaved && <Radio.Group
           options={[
             { label: "DevOps Generator", value: "devopsGenerator" },
@@ -821,6 +828,7 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
           optionType="button"
           buttonStyle="solid"
         />}
+        </div>
         {devopsResult?.status && (
           <>
             <h3 className="sub-title">Mapping - Work Item Types</h3>
@@ -836,6 +844,8 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
                 configureSettings == "devopsGenerator" ? "disable-table" : ""
               }
               setDropDownValue={(data: any) => setSelectedWorkItem(data)}
+              
+
               // rowClassName={
               //   configureSettings == "devopsGenerator" ? "disable-table" : ""
               // }
@@ -843,11 +853,13 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
               saveMappingItems={(data:any)=>setMappedWorkItems(data)}
               setMappingType={setmMppedField}
               isPicklistModel={false}
+              setWorkitemTypeData={setWorkitemTypeData}
+              
             />
 
             <span>
               <Button
-                className="cancel-btn"
+                className="cancel-btn mr-10"
                 type="primary"
                 htmlType="submit"
                
@@ -906,7 +918,7 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
                   }}
                 >
                   <Button
-                    className="ant-btn-primary"
+                   className="ant-btn-default cancel-btn"
                     onClick={(e) => {
                       /* Handle button click */
                     }}
