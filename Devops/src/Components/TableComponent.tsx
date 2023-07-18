@@ -125,6 +125,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
     const error = dropdownErrors[dataIndex];
     const isError = !!error;
     setDropDownOptions(options);
+    console.log("crrt Now",record );
     console.log("isModelopen Now", isModelopen ? record : "");
     console.log(" record?.dropdown.length", isModelopen && record?.dropdown?.length);
     
@@ -196,8 +197,8 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
                 width: "100%",
                 borderColor: isError ? "red" : undefined,
               }}
-               value={isModelopen ? currentValue?.dropdownValue : record[dataIndex]}
-              defaultValue= {isPicklistModel ? currentRecordValue[0]:""}
+               value={isModelopen ? currentValue?.dropdownValue : record?.gyde_name}
+              defaultValue= {isPicklistModel ? currentRecordValue[0]:record?.gyde_name}
               onChange={(value) => {
                 handleFieldChange(record.key, dataIndex, value);
               }}

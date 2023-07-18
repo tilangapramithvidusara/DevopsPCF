@@ -44,7 +44,7 @@ declare global {
 
 
 export default function ConnectionContainer() {
-  const dataSource = [
+  const dataSource1 = [
     {
       key: "1",
       name: "Issue",
@@ -144,7 +144,7 @@ export default function ConnectionContainer() {
   const [isLoading,setIsLoading] = useState<boolean>(false);
   const [isMappedSaved,setIsMappedSaved] = useState<boolean>(false);
   const [configureSettings,setConfigureSettings] = useState<any>("configureMapping");
-  const [savedFilteredData, setSavedFilteredData] : any = useState([]);
+  const [savedFilteredData, setSavedFilteredData]  = useState<any>([]);
   const [mappedWorkItems, setMappedWorkItems] : any = useState([]);
   const [workitemTypesData, setWorkitemTypeData]  = useState<any>({
     source:'Work item type',devOps:'Work item type'});
@@ -170,17 +170,17 @@ export default function ConnectionContainer() {
   const _navigateUrl = queryParameters.get("returnto")
   console.log("cbs11",cbsId,cusId)
   
-  const dataSource1 = crmWorkItemTypes?.map((item: any, num: number) => {
+  const dataSource = crmWorkItemTypes?.map((item: any, num: number) => {
     return {
       key: num,
-      name: item?.gyde_name,
+      name: item,
       gyde_name: devopsWorkItemTypes?.find(
-        (res: any) => res == item?.gyde_name
+        (res: any) => res == item
       ),
       mapping: "Mapping",
       enable:
-        devopsWorkItemTypes?.find((res: any) => res == item?.gyde_name) ==
-        item?.gyde_name
+        devopsWorkItemTypes?.find((res: any) => res == item) ==
+        item
           ? true
           : false,
     };
@@ -455,19 +455,19 @@ export default function ConnectionContainer() {
   }, [isModalOpen, taskDataArr]);
   // console.log(" devopsWorkItemTypes :", devopsWorkItemTypes);
   // console.log("dataSource",dataSource);
-  // useEffect(() => {
-  //   fetchWorkItemTypesFromCRM().then((result: any) => {
-  //     console.log("crm work items :", result, result?.data?.value);
-     
-  //   });
-  // }, []);
+  useEffect(() => {
+    // fetchWorkItemTypesFromCRM().then((result: any) => {
+    //   console.log("crm work items :", result, result?.data?.value);
+    //   setCrmWorkItemTypes(result?.data?.value);
+    // });
+  }, []);
 
   useEffect(()=>{
-    console.log("cbs******",cbsId,cusId,_pId);
+    console.log("cbs******",cbsId,cusId,_pId,);
 
     findDevopsConfigGuId(cusId,cbsId)
 
-   //getWorkitemNames(_itemId)
+   getWorkitemNames(_itemId)
     // window.parent.webapi.safeAjax({
     //   type: "GET",
     //   url: "/_api/gyde_workitemtypes",
@@ -485,8 +485,8 @@ export default function ConnectionContainer() {
   const getWorkitemNames =  async(_itemId:any)=> {
      console.log("_itemId",_itemId);
      
-    let result =  await fetWorkItemsbyId(_itemId)
-    setConfigurationData(result);
+    let result : any =  await fetWorkItemsbyId(_itemId)
+    setConfigurationData(result?.data);
     console.log("result",result);
     
   }
@@ -524,31 +524,43 @@ console.log("devOpsCOnfig",_result);
        setGuId(_result.id)
        let result :any = await fetchDevOpsMappingField(_result.id)
       
-        let JsonMappedData = convertByteArrayToJson(result.data)
-        console.log("JsonDataFirst",JsonMappedData);
+         if(result.type == "success"){
+          let JsonMappedData = convertByteArrayToJson(result.data)
+          console.log("JsonDataFirst",JsonMappedData);
+  
+          //const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
+          const comparedData = JsonMappedData?.map((data:any)=> {
+            console.log("options: saved data", options?.find((item:any)=> item), data?.gyde_name)
+            return {
+              key: data?.key,
+              name:data?.name,
+              gyde_name:data?.gyde_name == "N/A" ? data?.gyde_name : options?.find((item:any)=> item == data?.gyde_name),
+              mapping:data?.mapping,
+              enable: options?.find((item:any)=> item == data?.gyde_name) ? true : false
+            }
+          });
+  
+          console.log("comparedData",comparedData,comparedData?.length,dataSource,dataSource?.length);
+          
+          if(comparedData?.length) setSavedFilteredData(comparedData);
+          else {dataSource?.length} setSavedFilteredData(dataSource);
+          console.log("comparedData...!@#", comparedData);
+          console.log("savedFilteredData...!@#", savedFilteredData);
+         }else if(result.type === "error"){
 
-        const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
-        const comparedData = JsonMappedData?.map((data:any)=> {
-          console.log("options: saved data", options?.find((item:any)=> item), data?.gyde_name)
-          return {
-            key: data?.key,
-            name:data?.name,
-            gyde_name:data?.gyde_name == "N/A" ? data?.gyde_name : options?.find((item:any)=> item == data?.gyde_name),
-            mapping:data?.mapping,
-            enable: options?.find((item:any)=> item == data?.gyde_name) ? true : false
-          }
-        });
-        setSavedFilteredData(comparedData);
-        console.log("comparedData...!@#", comparedData);
+          return [];
+         }
         
 
    }
-   else {
-    if(_result.type === 'createDefault'){
+   
+   else if(_result.type === 'createDefault'){
       setGuId("")
+      
       createDevConfig('newRecord')
+
   }
-   }
+   
   }
 
 //CUSID ,BID if default = PID
@@ -578,7 +590,8 @@ console.log("devOpsCOnfig",_result);
      const updatedData = JsonData.filter((item: any) => {
        console.log("OTem,",item);
        if (item.key === mappedField) {
-         return  { ...item, ["value"]:dataSource,};
+        return item;
+        // return  { ...item, ["value"]:dataSource,};
        }
      });
  
@@ -596,6 +609,10 @@ console.log("devOpsCOnfig",_result);
      
        }else if (result.type=== 'createDefault'){
         createDevConfig('default')
+        return [];
+       }
+       else if (result.type=== 'error'){
+        //createDevConfig('default')
         return [];
        }
   }
@@ -858,7 +875,7 @@ const areAllTrue = (array:[]) => {
           <>
             <h3 className="sub-title">Mapping - Work Item Types</h3>
             <TableComponent
-              dataSource={savedFilteredData?.length  ? savedFilteredData :dataSource}
+              dataSource={dataSource}
               columns={workItemColumns}
               onMapping={() => {}}
               size="small"

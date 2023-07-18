@@ -124,11 +124,7 @@ record.gyde_defaultsetting = true; // Boolean
    })
  }
  export const fetchFieldMapping = (guid:any)=> {
-
-  //https://partnerstudioportaluk.powerappsportals.com/_api/gyde_devopsconfigurations(bebdc8ea-5524-ee11-9965-6045bd0fcbc6)/gyde_devopsfieldmappings/$value
-  //https://seerv2sample2.azurewebsites.net
    return new Promise((resolve,rejects)=> {
-
     window.parent.webapi.safeAjax({
       type: "GET",
       url: `/_api/gyde_devopsconfigurations(${guid})/gyde_devopsfieldmappings/$value`,
@@ -174,8 +170,8 @@ record.gyde_defaultsetting = true; // Boolean
         }
        },
         error: function (xhr:any, textStatus:any, errorThrown:any) {
-         console.log(xhr);
-         rejects(xhr)
+         console.log("Default Error");
+         resolve({type:'error',id:[]})
          }
         });
     })
@@ -207,8 +203,9 @@ record.gyde_defaultsetting = true; // Boolean
       }
      },
       error: function (xhr:any, textStatus:any, errorThrown:any) {
+        console.log("fetchDevopsConfig Error");
        console.log(xhr);
-       rejects(xhr)
+       resolve({type:'error',id:null})
        }
       });
   })
@@ -229,7 +226,7 @@ record.gyde_defaultsetting = true; // Boolean
       
     },
       error: function(error:any, status:any, xhr:any) {
-      console.log('error', error);
+      console.log('fetchDevOpsMappingField', error);
       resolve({type:"error",data:[]})
       }
       });
