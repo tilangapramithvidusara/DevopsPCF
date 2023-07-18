@@ -329,6 +329,30 @@ export const fetchDevOpsConfigById = (id:any)=> {
 
 }
 
+
+export const fetWorkItemsbyId =(id:any)=> {
+  return new Promise((resolve,reject)=>{
+    window.parent.webapi.safeAjax({
+      type: "GET",
+      url:`/_api/gyde_gyde365surveies(${id})`,
+      contentType: "application/json",
+      success: function (data:any, textStatus:any, xhr:any) {
+        console.log("fetchDevOpsConfigById",data,"textStatus",textStatus,"xhr",xhr);
+        resolve({type:"success",data:data})
+      
+    },
+      error: function(error:any, status:any, xhr:any) {
+      console.log('error', error);
+      resolve({type:"error",data:[]})
+      }
+      });
+      
+      
+
+  })
+
+
+}
 // export const postReq3 = async() => {
 //   try {
 //     const result = await axios.post('https://seerv2samplefunctions.azurewebsites.net/api/workitemtypes?code=Ht8huimZ3kJtn36JX6fjuFRX6fI7GqYnKbg1wJcqlVa2AzFu2nOLRQ==',
@@ -510,6 +534,7 @@ export const createMappingFile  = async(data:any,guid:any) => {
   }
 
 }
+
 
 // declare global {
 //   interface Window {

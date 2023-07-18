@@ -27,7 +27,7 @@ const PopupComponent: React.FC<PopupProps> = ({ visible, onClose, buttons, Conte
       footer={null}
       centered
       //destroyOnClose
-      bodyStyle={{height:Ispicklist ? 335 : 600}}
+      //bodyStyle={{height:Ispicklist ? 335 : 600}}
       width={800}
     
     >

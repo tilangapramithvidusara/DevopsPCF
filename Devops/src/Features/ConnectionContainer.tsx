@@ -27,6 +27,7 @@ import {
   createDevConfigApi,
   fetchDevOpsConfigById,
   fetchDevopsConfig,
+  fetWorkItemsbyId,
 } from "../Api/devopsApis";
 import { convertByteArrayToJson } from "../Helper/Helper";
 
@@ -161,6 +162,7 @@ export default function ConnectionContainer() {
   const cusId = queryParameters.get("cusid")
   const cbsId = queryParameters.get("cbsid")
   const _pId = queryParameters.get("pid")
+  const _itemId = queryParameters.get("id")
   const _navigateUrl = queryParameters.get("returnto")
   console.log("cbs11",cbsId,cusId)
   
@@ -455,7 +457,9 @@ export default function ConnectionContainer() {
   useEffect(()=>{
     console.log("cbs******",cbsId,cusId,_pId);
 
-    findDevopsConfigGuId(cusId,cbsId)
+   findDevopsConfigGuId(cusId,cbsId)
+
+   getWorkitemNames(_itemId)
     // window.parent.webapi.safeAjax({
     //   type: "GET",
     //   url: "/_api/gyde_workitemtypes",
@@ -469,6 +473,15 @@ export default function ConnectionContainer() {
     //   });
 
   },[devopsWorkItemTypes])
+
+  const getWorkitemNames =  async(_itemId:any)=> {
+     console.log("_itemId",_itemId);
+     
+    let result =  await fetWorkItemsbyId(_itemId)
+
+    console.log("result",result);
+    
+  }
 
   const fetchFieldMappingData = async(itemKey:any) => {
     
@@ -540,7 +553,7 @@ console.log("devOpsCOnfig",_result);
 
     
     if(isModalOpen){
-     fetchDefaultSettingData(_pId);
+    // fetchDefaultSettingData(_pId);
     }
   },[isModalOpen])
 
@@ -762,13 +775,16 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
       if (item.key === itemKey) {
         return  { ...item, ["value"]:dataSource,};
       }
-      return {...item,["key"]:itemKey,["value"]:dataSource};
+      return item;
       
     });
     console.log("xxJ",JsonData);
     console.log("fetchFieldMapping",_result);
     console.log("updated102",updatedData);
-    
+    if (!updatedData.some((item:any) => item.key === itemKey)) {
+      updatedData.push({ key: itemKey, value: dataSource });
+    }
+    console.log("updated103",updatedData);
    // let _structureData = [{key:itemKey,value:updatedData}]
     saveMappingData(updatedData,guId)
   }
