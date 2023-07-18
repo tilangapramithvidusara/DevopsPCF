@@ -126,7 +126,7 @@ record.gyde_defaultsetting = true; // Boolean
  export const fetchFieldMapping = (guid:any)=> {
 
   //https://partnerstudioportaluk.powerappsportals.com/_api/gyde_devopsconfigurations(bebdc8ea-5524-ee11-9965-6045bd0fcbc6)/gyde_devopsfieldmappings/$value
-
+  //https://seerv2sample2.azurewebsites.net
    return new Promise((resolve,rejects)=> {
 
     window.parent.webapi.safeAjax({
@@ -236,10 +236,11 @@ record.gyde_defaultsetting = true; // Boolean
    })
 
 }
-export const fetchDevopsFeildsData = async (auth:any) => {
-  console.log("selected work item :",auth);
+export const fetchDevopsFeildsData = async (auth:any,url:string) => {
+  console.log("selected work item :",url,":",auth);
   try {
-    const result = await axios.post('https://seerv2sample2.azurewebsites.net/api/GetWorkItemTypeFields?code=CaKwbNIEMdEd1QYrcg9gXEGYcmm0age5Pg1syECCr0a3AzFuIOW6EA==', 
+    //devopsWorkItemFieldURL
+    const result = await axios.post(`${url}`, 
       // {headers: headers},
     //   {
     //     "organizationUri": "https://dev.azure.com/SEERTEST2",
@@ -275,6 +276,8 @@ export const fetchDevopsFeildsData = async (auth:any) => {
 
 export const fetchWorkItemTypesFromDevops = async(value:any) => {
   try {
+    //azureWorkItemTypeURL
+
     const result = 
     await axios.post('https://seerv2sample2.azurewebsites.net/api/GetWorkItemTypes?code=eZ8HwfEwRhr3EMahUUgKUz44rtzwwtaHss-lHwReYpS2AzFuDdbXow==', 
       // {
