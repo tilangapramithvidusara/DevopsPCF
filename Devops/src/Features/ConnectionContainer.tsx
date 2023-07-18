@@ -500,19 +500,15 @@ export default function ConnectionContainer() {
   }
 
   const fetchFieldMappingData = async(itemKey:any) => {
-    
     if(guId){
       let _result:any = await fetchFieldMapping(guId)
     if(_result.type == "success"){
       let JsonData = convertByteArrayToJson(_result.data)
       console.log("fieldMAppQ",JsonData);
     console.log("fieldMAppQ",itemKey);
-    
       const updatedData = JsonData.filter((item: any) => {
         console.log("12",item.key,itemKey);
-        
          return item.key === itemKey
-        
       });
       console.log("upppp",updatedData);
       

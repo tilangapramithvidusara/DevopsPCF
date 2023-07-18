@@ -132,7 +132,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
         (dropDownData: any) =>
           record.sourceWorkItem === dropDownData.dropdownValue
       )
-      : record[dataIndex];
+      : "N/A"
     console.log("currentValuecurrentValue", currentValue);
     console.log("options======> ", options);
 
@@ -164,7 +164,10 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
                     width: "100%",
                     borderColor: isError ? "red" : undefined,
                   }}
-                  defaultValue={isModelopen && record.isSavedType === "saved" ?  record?.devopsWorkItem ?  record?.devopsWorkItem : currentValue?.dropdownValue :record.isSavedType === "setasDefault" ?  record?.devopsWorkItem ? record?.devopsWorkItem : currentValue?.dropdownValue :record.isSavedType === "default"? currentValue?.dropdownValue ? currentValue?.dropdownValue  :record?.devopsWorkItem: currentValue}
+                  defaultValue={
+                    isModelopen && record.isSavedType === "saved" ?  record?.devopsWorkItem ?  record?.devopsWorkItem : 
+                    currentValue?.dropdownValue ? currentValue?.dropdownValue : "N/A" :record.isSavedType === "setasDefault" ?  record?.devopsWorkItem ? record?.devopsWorkItem : currentValue?.dropdownValue ? currentValue?.dropdownValue :"N/A" :record.isSavedType === "default"? currentValue?.dropdownValue ? currentValue?.dropdownValue  :record?.devopsWorkItem ? record?.devopsWorkItem: "N/A" : "N/A"
+                  }
                   onChange={(value) => {
                     handleFieldChange(record.key, dataIndex, value);
                   }}
@@ -193,7 +196,7 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
                 width: "100%",
                 borderColor: isError ? "red" : undefined,
               }}
-               value={isModelopen ? currentValue?.dropdownValue : currentValue}
+               value={isModelopen ? currentValue?.dropdownValue : record[dataIndex]}
               defaultValue= {isPicklistModel ? currentRecordValue[0]:""}
               onChange={(value) => {
                 handleFieldChange(record.key, dataIndex, value);
@@ -216,10 +219,10 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
                 
                 
               )}
-
-              <Option key={"NA"} value={"N/A"}>
+                {!isPicklistModel ?               <Option key={"NA"} value={"N/A"}>
                 N/A
-              </Option>
+              </Option> : "" }
+
             </Select>
             )}
             
