@@ -269,7 +269,8 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
 
   const handleButtonClick = (record: any) => {
     console.log("Button clicked for record:", record);
-     record?.gyde_name &&setMappingType(record.gyde_name) ,setWorkitemTypeData({source:record.name,devOps:record.gyde_name})
+    //setWorkitemTypeData({source:record.name,devOps:record.gyde_name})
+     record?.gyde_name &&setMappingType(record.gyde_name) 
     if(!disabled){
         isModelopen ?  showPickListModal(record) :  setDropDownValue(record);  modelAction()
     }

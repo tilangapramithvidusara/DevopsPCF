@@ -37,9 +37,13 @@ import { convertByteArrayToJson } from "../Helper/Helper";
 declare global {
   interface Window {
     webapi: any;
-    devopsMetaData:any;
+    devopsWorkItemTypes:any;
+    azureWorkItemTypeURL:any;
+    devopsWorkItemFields:any;
+    devopsWorkItemFieldURL:any;
   }
 }
+
 
 export default function ConnectionContainer() {
   const dataSource = [
@@ -144,7 +148,8 @@ export default function ConnectionContainer() {
   const [configureSettings,setConfigureSettings] = useState<any>("configureMapping");
   const [savedFilteredData, setSavedFilteredData] : any = useState([]);
   const [mappedWorkItems, setMappedWorkItems] : any = useState([]);
-  const [workitemTypesData, setWorkitemTypeData]  = useState<any>("Work item type");
+  const [workitemTypesData, setWorkitemTypeData]  = useState<any>({
+    source:'Work item type',devOps:'Work item type'});
   const [partnetType, setPartnerType] : any = useState("partner work item");
   const [title,SetTitle] :any = useState('Title')
   const [mappingType, setMappingType] : any = useState('');
@@ -241,14 +246,24 @@ export default function ConnectionContainer() {
       projectName: authData?.projectName,
       workItemType: selectedWorkItem?.name,
     };
+    let devopsWorkItemFieldURL =  window?.parent?.devopsWorkItemFieldURL;
+    let devopsWorkItemFields =  window?.parent?.devopsWorkItemFields
+   
+    
     if (selectedWorkItem?.name != undefined && selectedWorkItem?.name != null) {
-      const devopsData = await fetchDevopsFeildsData(authObj);
+      console.log("ff1",devopsWorkItemFieldURL);
+      console.log("fc",devopsWorkItemFields);
+      
+      const devopsData = await fetchDevopsFeildsData(authObj,devopsWorkItemFieldURL);
       console.log("apiDara,", devopsData, selectedWorkItem);
-      const crmData = await FetchCrmFields();
+     // const crmData = await FetchCrmFields();
       let sameDropdownFeild: any = [];
       if (devopsData.status === "success") {
-        console.log("crm", crmData);
-        let tableData = exampleCRMData?.map((crm: any, key: any) => {
+       // console.log("crm", crmData);
+       const crmData = JSON.parse(devopsWorkItemFields)
+       console.log("CCCW",crmData);
+       
+        let tableData = crmData?.map((crm: any, key: any) => {
           let dropdownArr: any = devopsData.data?.Value
             .filter(
               (devOps: any) =>
@@ -348,8 +363,8 @@ export default function ConnectionContainer() {
           },
           {
             key: currentLength+2,
-            sourceWorkItem: `${workitemTypesData}`,
-            devopsWorkItem: `${workitemTypesData}`,
+            sourceWorkItem: `${workitemTypesData.source}`,
+            devopsWorkItem: `${workitemTypesData.devOps}`,
             dropdown: [],
             mapping: "",
             enable: false,
@@ -371,30 +386,30 @@ export default function ConnectionContainer() {
           ...tableData,
         ];
         //console.log("devopsData", _tableData);
-     setTaskDataArr(_tableData);
+    // setTaskDataArr(_tableData);
  
        // default Fetch 
       //  console.log("_p");
        
-          // let updatedSavedData :any= await fetchFieldMappingData(mappedField)
-          // let updatedDefaultData:any = await fetchDefaultSettingData(_pId);
+          let updatedSavedData :any= await fetchFieldMappingData(mappedField)
+          let updatedDefaultData:any = await fetchDefaultSettingData(_pId);
 
-          // console.log("updated1111",updatedSavedData,updatedDefaultData);
-          //  if(updatedSavedData?.length){
-          //   console.log("sa111");
+          console.log("updated1111",updatedSavedData,updatedDefaultData);
+           if(updatedSavedData?.length){
+            console.log("sa111");
             
-          //   setTaskDataArr(updatedSavedData[0]["value"]);
-          //  }
-          // else if(updatedDefaultData?.length){
-          //   setTaskDataArr(updatedDefaultData);
-          //   console.log("outter",updatedDefaultData);
+            setTaskDataArr(updatedSavedData[0]["value"]);
+           }
+          else if(updatedDefaultData?.length){
+            setTaskDataArr(updatedDefaultData);
+            console.log("outter",updatedDefaultData);
 
-          // }else {
-          //   console.log("innner",_tableData);
+          }else {
+            console.log("innner",_tableData);
             
-          //   setTaskDataArr(_tableData);
+            setTaskDataArr(_tableData);
 
-          // }
+          }
          //fetchDefaultSettingData(_pId);
 
         // if(_savedObj){
@@ -458,7 +473,7 @@ export default function ConnectionContainer() {
   useEffect(()=>{
     console.log("cbs******",cbsId,cusId,_pId);
 
-   //findDevopsConfigGuId(cusId,cbsId)
+    findDevopsConfigGuId(cusId,cbsId)
 
    //getWorkitemNames(_itemId)
     // window.parent.webapi.safeAjax({
@@ -598,8 +613,16 @@ console.log("devOpsCOnfig",_result);
   }
 
   useEffect(()=>{
-  let _meta =  window?.parent?.devopsMetaData
-console.log("_meta*",_meta);
+
+   
+  let devopsWorkItemTypes =  window?.parent?.devopsWorkItemTypes
+  let azureWorkItemTypeURL =  window?.parent?.azureWorkItemTypeURL
+  let devopsWorkItemFields =  window?.parent?.devopsWorkItemFields
+  let devopsWorkItemFieldURL =  window?.parent?.devopsWorkItemFieldURL
+console.log("devopsWorkItemTypes*",devopsWorkItemTypes);
+console.log("azureWorkItemTypeURL*",azureWorkItemTypeURL);
+console.log("devopsWorkItemFields*",devopsWorkItemFields);
+console.log("devopsWorkItemFieldURL*",devopsWorkItemFieldURL);
 
   },[])
 
@@ -643,7 +666,9 @@ console.log("_meta*",_meta);
         }
       
       }else if (buttonType === 'Default' ){
+        
         if(defaultGuId){
+
           let _result:any =await  fetchFieldMapping(defaultGuId)
           let updatedData = dataFieldArr.map((item:any)=> {
             return  { ...item, ["isSavedType"]:"setasDefault",};
@@ -657,7 +682,9 @@ console.log("_meta*",_meta);
         
       }
     //  setIsModalOpen(false);
-    }else if (taskDataArr.length){  
+    }else if (taskDataArr.length){ 
+      let _isSelected =     taskDataArr.every((field:any)=> field.isSelected)
+      setisSavedCompleteFlag(_isSelected) 
       if(buttonType === 'Save'){
         if(guId){
           let _result =await  fetchFieldMapping(guId)
@@ -833,7 +860,7 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
           <>
             <h3 className="sub-title">Mapping - Work Item Types</h3>
             <TableComponent
-              dataSource={dataSource}
+              dataSource={savedFilteredData?.length  ? savedFilteredData :dataSource}
               columns={workItemColumns}
               onMapping={() => {}}
               size="small"
@@ -861,12 +888,12 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
               <Button
                 className="cancel-btn mr-10"
                 type="primary"
-                htmlType="submit"
+                htmlType="button"
                
                 onClick={() => {
                    console.log("_navigateUrl",_navigateUrl);
                    
-                  window.location.href = `${_navigateUrl}`
+                  window.location.href = `/${_navigateUrl}`
                   
                 }}
               >
