@@ -331,7 +331,7 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
   console.log("updatedDataupdatedData",updatedData);
 
   setTableData(updatedData);
-  setFieldDataArr(updatedData)
+  isModelopen && setFieldDataArr(updatedData)
  }
    
     // isPicklistModel === false &&  setFieldDataArr(updatedData)
