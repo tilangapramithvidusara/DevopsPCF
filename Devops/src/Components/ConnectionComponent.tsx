@@ -3,10 +3,11 @@ import { Form, Input, Button, Row, Col, notification, } from 'antd';
 import { fetchWorkItemTypesFromDevops } from '../Api/devopsApis';
 
 interface ConnectionProps {
-  setWorkItemData:any
+  setWorkItemData:any,
+  connectionFetch:any,
 }
 
- const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData})=> {
+ const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData, connectionFetch})=> {
   const [form] = Form.useForm();
   const [error, setError] = useState<boolean>(false);
 
@@ -16,6 +17,7 @@ interface ConnectionProps {
     "projectName": "SEETTEST1"
 }
   const onFinish = (values: any) => {
+    connectionFetch(false);
     console.log("onFinish", values); // You can handle the form submission here
    fetchWorkItemTypesFromDevops(values).then((res:any)=>{
     if(res?.status=="success"){

@@ -14,8 +14,6 @@ import {
 import SampleModel from "../Components/SampleMode";
 import { FetchCrmFields } from "../Api/crmApis";
 import {
-  fetchWorkItemTypesFromCRM,
-  fetchWorkItemTypesFromDevops,
   fetchDevopsFeildsData,
   saveWorkItemTypes,
   createMappingFile,
@@ -155,7 +153,7 @@ export default function ConnectionContainer() {
   const [mappingType, setMappingType] : any = useState('');
   const [mappedField, setmMppedField] = useState<any>('');
   const [isEnablePopUp, setIsEnablePopUp] = useState<boolean>(false);
-
+  const [configurationData, setConfigurationData] = useState<any>();
   
   const [defaultGuId,setDefaultGuId] :any = useState()
   const [guId,setGuId] :any = useState()
@@ -173,12 +171,6 @@ export default function ConnectionContainer() {
   console.log("cbs11",cbsId,cusId)
   
   const dataSource1 = crmWorkItemTypes?.map((item: any, num: number) => {
-    // console.log("devopsWorkItemTypes[num] :", devopsWorkItemTypes[num]);
-    // console.log("item?.gyde_name[num] :", item?.gyde_name);
-    // console.log(
-    //   "logic build :",
-    //   devopsWorkItemTypes?.find((res: any) => res == "Epic")
-    // );
     return {
       key: num,
       name: item?.gyde_name,
@@ -463,12 +455,12 @@ export default function ConnectionContainer() {
   }, [isModalOpen, taskDataArr]);
   // console.log(" devopsWorkItemTypes :", devopsWorkItemTypes);
   // console.log("dataSource",dataSource);
-  useEffect(() => {
-    fetchWorkItemTypesFromCRM().then((result: any) => {
-      console.log("crm work items :", result, result?.data?.value);
-      setCrmWorkItemTypes(result?.data?.value);
-    });
-  }, []);
+  // useEffect(() => {
+  //   fetchWorkItemTypesFromCRM().then((result: any) => {
+  //     console.log("crm work items :", result, result?.data?.value);
+     
+  //   });
+  // }, []);
 
   useEffect(()=>{
     console.log("cbs******",cbsId,cusId,_pId);
@@ -494,7 +486,7 @@ export default function ConnectionContainer() {
      console.log("_itemId",_itemId);
      
     let result =  await fetWorkItemsbyId(_itemId)
-
+    setConfigurationData(result);
     console.log("result",result);
     
   }
@@ -608,21 +600,18 @@ console.log("devOpsCOnfig",_result);
        }
   }
 
-  useEffect(()=>{
-
-   
-  let devopsWorkItemTypes =  window?.parent?.devopsWorkItemTypes
-  let azureWorkItemTypeURL =  window?.parent?.azureWorkItemTypeURL
-  let devopsWorkItemFields =  window?.parent?.devopsWorkItemFields
-  let devopsWorkItemFieldURL =  window?.parent?.devopsWorkItemFieldURL
-console.log("devopsWorkItemTypes*",devopsWorkItemTypes);
-console.log("azureWorkItemTypeURL*",azureWorkItemTypeURL);
-console.log("devopsWorkItemFields*",devopsWorkItemFields);
-console.log("devopsWorkItemFieldURL*",devopsWorkItemFieldURL);
-
+  useEffect(()=>{ 
+    let devopsWorkItemTypes =  window?.parent?.devopsWorkItemTypes
+    let azureWorkItemTypeURL =  window?.parent?.azureWorkItemTypeURL
+    let devopsWorkItemFields =  window?.parent?.devopsWorkItemFields
+    let devopsWorkItemFieldURL =  window?.parent?.devopsWorkItemFieldURL
+    console.log("devopsWorkItemTypes*",devopsWorkItemTypes);
+    console.log("azureWorkItemTypeURL*",azureWorkItemTypeURL);
+    console.log("devopsWorkItemFields*",devopsWorkItemFields);
+    console.log("devopsWorkItemFieldURL*",devopsWorkItemFieldURL);
+    devopsWorkItemTypes && setCrmWorkItemTypes(JSON.parse(devopsWorkItemTypes));
   },[])
 
-  
    useEffect(()=>{
     // when saved data retrieved this will used...
     // const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
@@ -741,7 +730,8 @@ console.log("devopsWorkItemFieldURL*",devopsWorkItemFieldURL);
 
 console.log("defaultGuId",defaultGuId); 
   }
-console.log("call back",mappedWorkItems);
+
+console.log("call back :",mappedWorkItems);
 
 
 const createDevConfig = async(recordType:any ="newRecord",isCreateMapping:boolean =false)=> {
@@ -831,6 +821,10 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
   saveMappingData(_structureData,guId)
  }
 }
+// condition to Enable Final devops button to connect..
+const areAllTrue = (array:[]) => {
+  return array.every(element => element === true);
+};
 
   return (
     <div className="devops-container">
@@ -840,27 +834,27 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
           <span>Connection Details</span>
           <span>
             {" "}
-            <h5 className="sub-title2"> Survey Name - Business Name</h5>
+            <h5 className="sub-title2">{configurationData?.gyde_name} </h5>
           </span>
         </h3>
         <ConnectionComponent
           setWorkItemData={(res: any) => {
-            setDevopsWorkItemTypes(res?.data?.Value), setDevopsResult(res);
+            setDevopsWorkItemTypes(res?.data?.Value), setDevopsResult(res?.data?.Value ? true :false);
           }}
-        />
- <div className="text-left mb-20">
-        {isMappedSaved && <Radio.Group
-          options={[
-            { label: "DevOps Generator", value: "devopsGenerator" },
-            { label: "Configure Mapping", value: "configureMapping" },
-          ]}
-          onChange={handleConfigure}
-          value={configureSettings}
-          optionType="button"
-          buttonStyle="solid"
-        />}
+          connectionFetch={(res:any)=>setDevopsResult(res)}        />
+        <div className="text-left mb-20">
+          {isMappedSaved && <Radio.Group
+            options={[
+              { label: "DevOps Generator", value: "devopsGenerator" },
+              { label: "Configure Mapping", value: "configureMapping" },
+            ]}
+            onChange={handleConfigure}
+            value={configureSettings}
+            optionType="button"
+            buttonStyle="solid"
+          />}
         </div>
-        {devopsResult?.status && (
+        {devopsResult && (
           <>
             <h3 className="sub-title">Mapping - Work Item Types</h3>
             <TableComponent
@@ -892,19 +886,18 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
               <Button
                 className="cancel-btn mr-10"
                 type="primary"
-                htmlType="button"
-               
-                onClick={() => {
-                   console.log("_navigateUrl",_navigateUrl);
-                   
-                  window.location.href = `/${_navigateUrl}`
-                  
+                htmlType="button"   
+                onClick={() => {                
+                  window.location.href = `/${_navigateUrl}`               
                 }}
               >
                 Cancel
               </Button>
               <Button type="primary" htmlType="button" onClick={handleMappingItemSave}>
                 Save
+              </Button>
+              <Button type="primary" htmlType="button" disabled={true} onClick={()=>''}>
+                Next
               </Button>
               {/* <div>{`% assign deactivateCustomerBusinessSurveyFlowUrl = settings["DeactivateCustomerBusinessSurveyFlowURL"]%`}
               <input type="hidden" id="deactivateCustomerBusinessSurveyFlowUrl" value="{{deactivateCustomerBusinessSurveyFlowUrl}}" /></div> */}
