@@ -677,7 +677,7 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
       
         return updatedState;
       });
-      if(!isSavedCompleteFlag.length) setIsSavedCompleteFlag( {type: mappedField, isCompleted: _isSelected })
+    
 
       console.log("_isSelected",_isSelected);
  console.log("setIsSavedCompleteFlag",isSavedCompleteFlag);
@@ -728,7 +728,7 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
       
         return updatedState;
       });
-      if(!isSavedCompleteFlag.length) setIsSavedCompleteFlag( {type: mappedField, isCompleted: _isSelected })
+
       console.log("setIsSavedCompleteFlag",isSavedCompleteFlag);
       if(buttonType === 'Save'){
         if(guId){
