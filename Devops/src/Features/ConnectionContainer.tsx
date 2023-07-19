@@ -7,7 +7,6 @@ import ConnectionComponent from "../Components/ConnectionComponent";
 import {
   exampleCRMData,
   exampleDevOpsData,
-  SampleData,
   savedMappedData,
   workItemTypes,
 } from "../Constants/Samples/sample";
@@ -285,7 +284,7 @@ export default function ConnectionContainer() {
                   crm.AttributeType === "Lookup") &&
                   (devOps.attributeType = "defaultGuId")) ||
                 (crm.AttributeType === "Boolean" &&
-                  devOps.attributeType === "Boolean")
+                  devOps.attributeType === "Boolean") || (crm?.Options != undefined && crm?.Options?.length &&  devOps?.hasPicklist === true)
             )
             .map((_data: any, key: any) => {
               if (
@@ -840,10 +839,12 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
     console.log("updated103",updatedData);
    // let _structureData = [{key:itemKey,value:updatedData}]
     saveMappingData(updatedData,guId)
+    setIsModalOpen(false)
   }
  else if(_result.type === 'error'){
   let _structureData = [{key:itemKey,value:dataSource}]
   saveMappingData(_structureData,guId)
+  setIsModalOpen(false)
  }
 }
 // condition to Enable Final devops button to connect..
