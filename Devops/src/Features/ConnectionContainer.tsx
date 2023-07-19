@@ -130,7 +130,7 @@ export default function ConnectionContainer() {
     },
   ];
   const [dataArr, setDataArr] = useState<any>([]);
-  const [isSavedCompleteFlag, setisSavedCompleteFlag] = useState<any>([]);
+ 
   const [dataFieldArr, setFieldDataArr] = useState<any>([]);
   const [devopsWorkItemTypes, setDevopsWorkItemTypes] = useState<any>([]);
   const [crmWorkItemTypes, setCrmWorkItemTypes] = useState<any>([]);
@@ -159,6 +159,7 @@ export default function ConnectionContainer() {
   const url = new URL(window.location.href);
   const [retrieveDevopsMapping, setRetrieveDevopsMapping] = useState<any>([]);
   const [initialTableData, setInitialTableData] = useState<any>([]);
+  const [isSavedCompleteFlag, setIsSavedCompleteFlag] = useState<any>([]);
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
   console.log("queryParameters",queryParameters);
@@ -661,13 +662,18 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
         console.log("API SAved");
       let _isSelected =     dataFieldArr.every((field:any)=> field.isSelected)
 
-      setisSavedCompleteFlag((prevState:any) => [
-        ...prevState,
-        { type: mappedField, isCompleted: _isSelected }
-      ]);
+    const _updatedFlagStatus =   crmWorkItemTypes.map((item:any)=> {
+      console.log("itemRT",item,mappedField);
       
-      console.log("_isSelected",_isSelected);
+        if(item === mappedField) {
+        return { key:mappedField, value: _isSelected}
+        }
+        return  {key:item,value:false};
+      })
+       setIsSavedCompleteFlag(_updatedFlagStatus)
 
+      console.log("_isSelected",_isSelected);
+ console.log("setIsSavedCompleteFlag",_updatedFlagStatus);
       if(buttonType === 'Save'){
         if(guId){
           let _result:any =await  fetchFieldMapping(guId)
@@ -698,10 +704,18 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
     //  setIsModalOpen(false);
     }else if (taskDataArr.length){ 
       let _isSelected =     taskDataArr.every((field:any)=> field.isSelected)
-      setisSavedCompleteFlag((prevState:any) => [
-        ...prevState,
-        { type: mappedField, isCompleted: _isSelected }
-      ]);
+      const _updatedFlagStatus =   crmWorkItemTypes.map((item:any)=> {
+        console.log("itemRT",item,mappedField);
+        
+          if(item === mappedField) {
+          return { key:mappedField, value: _isSelected}
+          }
+          return  {key:item,value:false};
+        })
+         setIsSavedCompleteFlag(_updatedFlagStatus)
+
+       console.log("setIsSavedCompleteFlag",_updatedFlagStatus);
+       
       if(buttonType === 'Save'){
         if(guId){
           let _result =await  fetchFieldMapping(guId)
@@ -973,6 +987,7 @@ const areAllTrue = (array:[]) => {
                    className="ant-btn-default cancel-btn"
                     onClick={(e) => {
                       /* Handle button click */
+                      handleCancel()
                     }}
                     style={{ marginLeft: "5px" }}
                   >
