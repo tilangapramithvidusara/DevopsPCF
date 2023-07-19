@@ -220,7 +220,7 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
                 
                 
               )}
-                {!isPicklistModel ?               <Option key={"NA"} value={"N/A"}>
+                {!isPicklistModel ? <Option key={"NA"} value={"N/A"}>
                 N/A
               </Option> : "" }
 
@@ -253,12 +253,27 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
     let pickListCompletedFlag =  isModelopen && Object.keys(record?.defaultOptionList).length && record?.defaultOptionList.defaultOptionList.filter((pickList:any)=>pickList.devOpsOption).every((f:any) => f !==  undefined)
    console.log("pickListCompletedFlag",pickListCompletedFlag);
    
+   const checkMappedStatus = () => {
+    if(isModelopen){
+      if(record?.isPickListComplete){
+        return "https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1";
+      }else{
+        return "https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png" ;
+      }
+    }else{
+      if(record?.fieldMapping){
+        return "https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1";
+      }else{
+        return "https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png" ;
+      }
+    }
+   }
 
     return (
       <div>
         {record?.enable && (
           <img
-            src= {isModelopen && record?.isPickListComplete ? "https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1":"https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png"}
+            src= {checkMappedStatus()}
             alt="1"
             style={{ marginLeft: 100 }}
             width={20}

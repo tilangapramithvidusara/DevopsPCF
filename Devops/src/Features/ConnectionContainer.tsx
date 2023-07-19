@@ -139,7 +139,7 @@ export default function ConnectionContainer() {
   const [taskDataArr, setTaskDataArr]: any = useState([]);
   const [tableColumn, setColumns] = useState<any>([]);
   const [selectedWorkItem, setSelectedWorkItem] = useState<any>();
-  const [devopsResult,setDevopsResult] = useState<any>();
+  const [devopsResult,setDevopsResult] = useState<boolean>(false);
   const [isLoading,setIsLoading] = useState<boolean>(false);
   const [isMappedSaved,setIsMappedSaved] = useState<boolean>(false);
   const [configureSettings,setConfigureSettings] = useState<any>("configureMapping");
@@ -158,8 +158,9 @@ export default function ConnectionContainer() {
   const [guId,setGuId] :any = useState()
   const url = new URL(window.location.href);
   const [retrieveDevopsMapping, setRetrieveDevopsMapping] = useState<any>([]);
-  const [initialTableData, setInitialTableData] = useState<any>([]);
+  const [dataAfterSave, setDataAfterSave] = useState<any>([]);
   const [isSavedCompleteFlag, setIsSavedCompleteFlag] = useState<any>({ key: '', value: '' });
+
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
   console.log("queryParameters",queryParameters);
@@ -187,15 +188,15 @@ export default function ConnectionContainer() {
     setSelectedWorkItem({});
   };
 
-  const dataSource = crmWorkItemTypes?.map((item: any, num: number) => {
-    return {
-      key: num,
-      name: item,
-      gyde_name: devopsWorkItemTypes?.find((res: any) => res == item),
-      mapping: "Mapping",
-      enable:devopsWorkItemTypes?.find((res: any) => res == item) == item ? true : false,
-    };
-  });
+  // const dataSource = crmWorkItemTypes?.map((item: any, num: number) => {
+  //   return {
+  //     key: num,
+  //     name: item,
+  //     gyde_name: devopsWorkItemTypes?.find((res: any) => res == item),
+  //     mapping: "Mapping",
+  //     enable:devopsWorkItemTypes?.find((res: any) => res == item) == item ? true : false,
+  //   };
+  // });
 
   const workItemColumns = [
     {
@@ -218,12 +219,21 @@ export default function ConnectionContainer() {
     }, // accordionContent: 'Additional info'
   ];
 
-  // useEffect(()=>{
-   
-  //   setInitialTableData(dataSource);
-  //   console.log("crmWorkItemTypes", crmWorkItemTypes);
-  // },[devopsWorkItemTypes])
-  console.log("initialTableData", initialTableData);
+  useEffect(()=>{
+    if(retrieveDevopsMapping?.length == 0){
+    const data = crmWorkItemTypes?.map((item: any, num: number) => {
+      return {
+        key: num,
+        name: item,
+        gyde_name: devopsWorkItemTypes?.find((res: any) => res == item),
+        enable:devopsWorkItemTypes?.find((res: any) => res == item) == item ? true : false,
+      };
+    });
+    setRetrieveDevopsMapping(data);
+    }
+    console.log("data not saved initial data", retrieveDevopsMapping);
+  },[devopsWorkItemTypes])
+  // console.log("initialTableData", initialTableData);
   useEffect(() => {
     //tempAPI();
     const data: string | null = localStorage.getItem("items");
@@ -550,9 +560,9 @@ console.log("devOpsCOnfig",_result);
       
          if(result.type == "success"){
           let JsonMappedData = convertByteArrayToJson(result.data)
-          console.log("JsonDataFirst",JsonMappedData);
+          console.log("JsonDataFirst","load when saved data retrieving.....",JsonMappedData);
           setRetrieveDevopsMapping(JsonMappedData);
-       
+          setDataAfterSave(JsonMappedData);
           console.log("savedFilteredData...!@#", savedFilteredData);
          }else if(result.type === "error"){
 
@@ -656,6 +666,27 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
     // console.log("comparedData...!@#", comparedData);
   },[isSavedCompleteFlag])
 
+  useEffect(()=>{
+    console.log("isSavedCompleteFlag", isSavedCompleteFlag?.key);
+    const newData = retrieveDevopsMapping?.map((item:any)=>{
+      if(item?.name == isSavedCompleteFlag?.key){
+        return {...item, fieldMapping: isSavedCompleteFlag?.value}
+      }
+    return {...item,fieldMapping: item?.fieldMapping ? item?.fieldMapping : false}
+    })
+    console.log("data source inside use effect", newData);
+    setRetrieveDevopsMapping(newData);
+    setMappedWorkItems(newData);
+  },[isSavedCompleteFlag])
+
+  useEffect(()=>{
+    // Toggle to devops Configuration once all mapped correctly...
+    if((checkFinalMappingStatus(retrieveDevopsMapping,"fieldMapping") && 
+    checkFinalMappingStatus(retrieveDevopsMapping,"isCorrectlyMapped"))){
+      setConfigureSettings("devopsGenerator");
+    }
+  },[])
+
   const savePopupModelData = async (buttonType:any) => {
     console.log("buttonType",buttonType,defaultGuId);
     
@@ -669,7 +700,7 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
       }, 1000);
 
       console.log("_isSelected",_isSelected);
- console.log("setIsSavedCompleteFlag",isSavedCompleteFlag);
+      console.log("setIsSavedCompleteFlag",isSavedCompleteFlag);
       if(buttonType === 'Save'){
         if(guId){
           let _result:any =await  fetchFieldMapping(guId)
@@ -851,10 +882,10 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
  }
 }
 // condition to Enable Final devops button to connect..
-const areAllTrue = (array:[]) => {
-  return array.every(element => element === true);
+const checkFinalMappingStatus = (array:[], column:string) => {
+  return array.every(element => element[column] === true);
 };
-
+console.log("final condition ::", checkFinalMappingStatus(retrieveDevopsMapping,"fieldMapping"), checkFinalMappingStatus(retrieveDevopsMapping,"isCorrectlyMapped"))
   return (
     <div className="devops-container">
       <Spin spinning={isLoading}>
@@ -875,7 +906,7 @@ const areAllTrue = (array:[]) => {
         </div>
         {devopsResult && (
           <>
-            {(isMappedSaved || retrieveDevopsMapping?.length>0) && <Radio.Group
+            {(checkFinalMappingStatus(dataAfterSave,"fieldMapping") && checkFinalMappingStatus(dataAfterSave,"isCorrectlyMapped")) && <Radio.Group
               options={[
                 { label: "DevOps Generator", value: "devopsGenerator" },
                 { label: "Configure Mapping", value: "configureMapping" },
@@ -888,12 +919,13 @@ const areAllTrue = (array:[]) => {
 
             <h3 className="sub-title">Mapping - Work Item Types</h3>
             <TableComponent
-              dataSource={retrieveDevopsMapping?.length>0 ? retrieveDevopsMapping : dataSource}
+              dataSource={retrieveDevopsMapping}
               columns={workItemColumns}
               onMapping={() => {}}
               size="small"
               scroll={{ y: 300 }}
               isModelopen={false}
+              // loading={!devopsResult}
               modelAction={showModal}
               className={
                 configureSettings == "devopsGenerator" ? "disable-table" : ""
@@ -924,12 +956,14 @@ const areAllTrue = (array:[]) => {
                 Cancel
               </Button>
               
+              {(checkFinalMappingStatus(dataAfterSave,"fieldMapping") && checkFinalMappingStatus(dataAfterSave,"isCorrectlyMapped"))? 
+              (<Button type="primary" htmlType="button" onClick={()=>''}>
+                Next
+              </Button>)
+              :(
               <Button type="primary" htmlType="button" onClick={handleMappingItemSave}>
                 Save
-              </Button>
-              {/* <Button type="primary" htmlType="button" disabled={true} onClick={()=>''}>
-                Next
-              </Button> */}
+              </Button>)}
               {/* <div>{`% assign deactivateCustomerBusinessSurveyFlowUrl = settings["DeactivateCustomerBusinessSurveyFlowURL"]%`}
               <input type="hidden" id="deactivateCustomerBusinessSurveyFlowUrl" value="{{deactivateCustomerBusinessSurveyFlowUrl}}" /></div> */}
             </span>
