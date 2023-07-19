@@ -661,23 +661,8 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
     if(dataFieldArr.length){
         console.log("API SAved");
       let _isSelected =     dataFieldArr.every((field:any)=> field.isSelected)
-      setIsSavedCompleteFlag((prevState: any) => {
-        const updatedState = prevState.map((item: any) => {
-          if (item.type === mappedField) {
-            return { ...item, isCompleted: _isSelected };
-          }
-          return item;
-        });
-      
-        const isTypeExists = updatedState.some((item: any) => item.type === mappedField);
-      
-        if (!isTypeExists) {
-          updatedState.push({ type: mappedField, isCompleted: _isSelected });
-        }
-      
-        return updatedState;
-      });
     
+      setIsSavedCompleteFlag({key:mappedField,value:_isSelected})
 
       console.log("_isSelected",_isSelected);
  console.log("setIsSavedCompleteFlag",isSavedCompleteFlag);
@@ -712,23 +697,7 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
     }else if (taskDataArr.length){ 
       let _isSelected =     taskDataArr.every((field:any)=> field.isSelected)
 
-      setIsSavedCompleteFlag((prevState: any) => {
-        const updatedState = prevState.map((item: any) => {
-          if (item.type === mappedField) {
-            return { ...item, isCompleted: _isSelected };
-          }
-          return item;
-        });
-      
-        const isTypeExists = updatedState.some((item: any) => item.type === mappedField);
-      
-        if (!isTypeExists) {
-          updatedState.push({ type: mappedField, isCompleted: _isSelected });
-        }
-      
-        return updatedState;
-      });
-
+       setIsSavedCompleteFlag({key:mappedField,value:_isSelected})
       console.log("setIsSavedCompleteFlag",isSavedCompleteFlag);
       if(buttonType === 'Save'){
         if(guId){
