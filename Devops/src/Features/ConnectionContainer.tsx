@@ -159,7 +159,7 @@ export default function ConnectionContainer() {
   const url = new URL(window.location.href);
   const [retrieveDevopsMapping, setRetrieveDevopsMapping] = useState<any>([]);
   const [initialTableData, setInitialTableData] = useState<any>([]);
-  const [isSavedCompleteFlag, setIsSavedCompleteFlag] = useState<any>([]);
+  const [isSavedCompleteFlag, setIsSavedCompleteFlag] = useState<any>({ key: '', value: '' });
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
   console.log("queryParameters",queryParameters);
@@ -638,6 +638,8 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
   },[])
 
    useEffect(()=>{
+    console.log("isSavedCompleteFlagA1",isSavedCompleteFlag);
+    
     // when saved data retrieved this will used...
     // const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
     // const comparedData = savedMappedData?.filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))?.map((data:any)=> {
@@ -652,7 +654,7 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
     // });
     // setSavedFilteredData(comparedData);
     // console.log("comparedData...!@#", comparedData);
-  },[devopsWorkItemTypes])
+  },[isSavedCompleteFlag])
 
   const savePopupModelData = async (buttonType:any) => {
     console.log("buttonType",buttonType,defaultGuId);
@@ -662,7 +664,9 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
         console.log("API SAved");
       let _isSelected =     dataFieldArr.every((field:any)=> field.isSelected)
     
-      setIsSavedCompleteFlag({key:mappedField,value:_isSelected})
+      setTimeout(() => {
+        setIsSavedCompleteFlag({key:mappedField,value:_isSelected})
+      }, 1000);
 
       console.log("_isSelected",_isSelected);
  console.log("setIsSavedCompleteFlag",isSavedCompleteFlag);
@@ -697,7 +701,9 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
     }else if (taskDataArr.length){ 
       let _isSelected =     taskDataArr.every((field:any)=> field.isSelected)
 
-       setIsSavedCompleteFlag({key:mappedField,value:_isSelected})
+      setTimeout(() => {
+        setIsSavedCompleteFlag({key:mappedField,value:_isSelected})
+      }, 1000);
       console.log("setIsSavedCompleteFlag",isSavedCompleteFlag);
       if(buttonType === 'Save'){
         if(guId){
