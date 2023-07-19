@@ -661,19 +661,26 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
     if(dataFieldArr.length){
         console.log("API SAved");
       let _isSelected =     dataFieldArr.every((field:any)=> field.isSelected)
-
-    const _updatedFlagStatus =   crmWorkItemTypes.map((item:any)=> {
-      console.log("itemRT",item,mappedField);
+      setIsSavedCompleteFlag((prevState: any) => {
+        const updatedState = prevState.map((item: any) => {
+          if (item.type === mappedField) {
+            return { ...item, isCompleted: _isSelected };
+          }
+          return item;
+        });
       
-        if(item === mappedField) {
-        return { key:mappedField, value: _isSelected}
+        const isTypeExists = updatedState.some((item: any) => item.type === mappedField);
+      
+        if (!isTypeExists) {
+          updatedState.push({ type: mappedField, isCompleted: _isSelected });
         }
-        return  {key:item,value:false};
-      })
-       setIsSavedCompleteFlag(_updatedFlagStatus)
+      
+        return updatedState;
+      });
+      if(!isSavedCompleteFlag.length) setIsSavedCompleteFlag( {type: mappedField, isCompleted: _isSelected })
 
       console.log("_isSelected",_isSelected);
- console.log("setIsSavedCompleteFlag",_updatedFlagStatus);
+ console.log("setIsSavedCompleteFlag",isSavedCompleteFlag);
       if(buttonType === 'Save'){
         if(guId){
           let _result:any =await  fetchFieldMapping(guId)
@@ -704,18 +711,25 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
     //  setIsModalOpen(false);
     }else if (taskDataArr.length){ 
       let _isSelected =     taskDataArr.every((field:any)=> field.isSelected)
-      const _updatedFlagStatus =   crmWorkItemTypes.map((item:any)=> {
-        console.log("itemRT",item,mappedField);
-        
-          if(item === mappedField) {
-          return { key:mappedField, value: _isSelected}
-          }
-          return  {key:item,value:false};
-        })
-         setIsSavedCompleteFlag(_updatedFlagStatus)
 
-       console.log("setIsSavedCompleteFlag",_updatedFlagStatus);
-       
+      setIsSavedCompleteFlag((prevState: any) => {
+        const updatedState = prevState.map((item: any) => {
+          if (item.type === mappedField) {
+            return { ...item, isCompleted: _isSelected };
+          }
+          return item;
+        });
+      
+        const isTypeExists = updatedState.some((item: any) => item.type === mappedField);
+      
+        if (!isTypeExists) {
+          updatedState.push({ type: mappedField, isCompleted: _isSelected });
+        }
+      
+        return updatedState;
+      });
+      if(!isSavedCompleteFlag.length) setIsSavedCompleteFlag( {type: mappedField, isCompleted: _isSelected })
+      console.log("setIsSavedCompleteFlag",isSavedCompleteFlag);
       if(buttonType === 'Save'){
         if(guId){
           let _result =await  fetchFieldMapping(guId)

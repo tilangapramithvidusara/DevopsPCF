@@ -52,7 +52,7 @@ export const saveMappingData = async(_data:any,guid:any) =>{
   // console.log("api response..",response);
   // return response.status;
 } catch (error) {
-  alert(`${error}`)
+ 
   console.error('Error creating account:', error);
   throw error;
 }
@@ -65,10 +65,6 @@ export const saveDefaultMappingData = async(_guid:any) =>{
 
   try {
     console.log("defaultSaving");
-    
-   alert("------api intergration Save start----------");
-  
-
 var record :any= {};
 record.gyde_defaultsetting = true; // Boolean
  
@@ -91,7 +87,7 @@ record.gyde_defaultsetting = true; // Boolean
    // console.log("api response..",response);
    // return response.status;
  } catch (error) {
-   alert(`${error}`)
+   
    console.error('Error creating account:', error);
    throw error;
  }
@@ -456,7 +452,7 @@ export const saveWorkItemTypes  = async (mappingData:any) => {
   //   return {status:"error", data:error};
   // }
   try {
-    alert("------api intergration start----------");
+   
     const data = JSON.stringify({
       gyde_name: "Sample Config - RD",
     });
@@ -478,11 +474,11 @@ export const saveWorkItemTypes  = async (mappingData:any) => {
   });
   // parses JSON response into native JavaScript objects
 
-    alert(`${response}`);
+   
     console.log("api response..",response);
     return response.status;
   } catch (error) {
-    alert(`${error}`)
+
     console.error('Error creating account:', error);
     throw error;
   }
