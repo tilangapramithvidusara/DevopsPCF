@@ -645,7 +645,7 @@ if(_result[0].length){
                     </div>
          
          </>}
-                  Ispicklist={false}
+                  Ispicklist={true}
       /> }
       {Object.entries(dropdownErrors).map(([dataIndex, error]) => (
         <div key={dataIndex}>

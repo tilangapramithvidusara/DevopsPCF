@@ -34,7 +34,7 @@ const PopupComponent: React.FC<PopupProps> = ({ visible, onClose, buttons, Conte
       <div style={{ overflowY: 'hidden', }}>
         {/* Content */}
         {/* ... */}
-        <p className='modal-title'>Work Item Field Mapping</p>
+        <p className='modal-title'>{Ispicklist  ? "Field Mapping" :"Work Item Field Mapping"}</p>
         {Content}
       </div>
 
