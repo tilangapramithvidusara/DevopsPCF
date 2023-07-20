@@ -153,7 +153,8 @@ export default function ConnectionContainer() {
   const [mappedField, setmMppedField] = useState<any>('');
   const [isEnablePopUp, setIsEnablePopUp] = useState<boolean>(false);
   const [configurationData, setConfigurationData] = useState<any>();
-  
+  const [loading , setLoading] = useState<boolean>(false);
+  const [visibleButton , setVisibleButton] = useState<boolean>(false);
   const [defaultGuId,setDefaultGuId] :any = useState()
   const [guId,setGuId] :any = useState()
   const url = new URL(window.location.href);
@@ -231,9 +232,9 @@ export default function ConnectionContainer() {
     });
     setRetrieveDevopsMapping(data);
     }
-    console.log("data not saved initial data", retrieveDevopsMapping);
   },[devopsWorkItemTypes])
-  // console.log("initialTableData", initialTableData);
+  console.log("data not saved initial data", retrieveDevopsMapping);
+
   useEffect(() => {
     //tempAPI();
     const data: string | null = localStorage.getItem("items");
@@ -476,8 +477,8 @@ export default function ConnectionContainer() {
   useEffect(()=>{
     console.log("cbs******",cbsId,cusId,_pId,);
 
-    findDevopsConfigGuId(cusId,cbsId)
-
+    findDevopsConfigGuId(cusId,cbsId);
+    setLoading(false); 
    getWorkitemNames(_itemId)
     // window.parent.webapi.safeAjax({
     //   type: "GET",
@@ -547,49 +548,47 @@ export default function ConnectionContainer() {
     }
   }
 
+  const callFetchMappedItemsApi = async() => {
+
+  }
+
 
   const  findDevopsConfigGuId = async(cusId:any,bId:any)=> {
-
-   let _result:any =   await fetchDevopsConfig(cusId,bId)
-console.log("devOpsCOnfig",_result);
-
+   let _result:any =   await fetchDevopsConfig(cusId,bId);
+   setLoading(true);
+      console.log("devOpsCOnfig",_result);
    if(_result.type === 'updateConfig'){
       //filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))
        setGuId(_result.id)
-       let result :any = await fetchDevOpsMappingField(_result.id)
-      
+       let result :any = await fetchDevOpsMappingField(_result.id)     
          if(result.type == "success"){
           let JsonMappedData = convertByteArrayToJson(result.data)
           console.log("JsonDataFirst","load when saved data retrieving.....",JsonMappedData);
           setRetrieveDevopsMapping(JsonMappedData);
           setDataAfterSave(JsonMappedData);
+          console.log("JsonMappedData",JsonMappedData);
+          setIsLoading(false);
           console.log("savedFilteredData...!@#", savedFilteredData);
          }else if(result.type === "error"){
-
           return [];
          }
-        
-
-   }
-   
-   else if(_result.type === 'createDefault'){
-      setGuId("")
-      
-      createDevConfig('newRecord')
-
-  }
-   
+    }else if(_result.type === 'createDefault'){
+      setGuId("")     
+      createDevConfig('newRecord');
+      setIsLoading(false);
+    }
+    setLoading(false);  
   }
 console.log("retrieveDevopsMapping", retrieveDevopsMapping);
 //CUSID ,BID if default = PID
-  useEffect(()=>{
+  // useEffect(()=>{
 
 
     
-    if(isModalOpen){
-    // fetchDefaultSettingData(_pId);
-    }
-  },[isModalOpen])
+  //   if(isModalOpen){
+  //   // fetchDefaultSettingData(_pId);
+  //   }
+  // },[isModalOpen])
 
   const  fetchDefaultSettingData = async(pid:any) => {
     console.log("pID",pid);
@@ -680,8 +679,14 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
   },[isSavedCompleteFlag])
 
   useEffect(()=>{
+    // const hasFieldMapping:boolean = retrieveDevopsMapping?.some((item:any) => item.fieldMapping !== undefined);
+    // if(hasFieldMapping){
+    //   setVisibleButton(true);
+    // }else{
+    //   setVisibleButton(false);
+    // }
     // Toggle to devops Configuration once all mapped correctly...
-    if((checkFinalMappingStatus(retrieveDevopsMapping,"fieldMapping") && 
+    if((dataAfterSave?.length > 0 && checkFinalMappingStatus(retrieveDevopsMapping,"fieldMapping") && 
     checkFinalMappingStatus(retrieveDevopsMapping,"isCorrectlyMapped"))){
       setConfigureSettings("devopsGenerator");
     }
@@ -776,7 +781,8 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
   if(guId){
     let response:any = await  createMappingFile(mappedWorkItems,guId); 
    if(response.type === 'success'){
-    setIsMappedSaved(true)
+    setIsMappedSaved(true);
+    findDevopsConfigGuId(cusId,cbsId);
    }
    else if(response.type === 'error'){
     setIsMappedSaved(false)
@@ -908,7 +914,7 @@ console.log("final condition ::", checkFinalMappingStatus(retrieveDevopsMapping,
         </div>
         {devopsResult && (
           <>
-            {(checkFinalMappingStatus(dataAfterSave,"fieldMapping") && checkFinalMappingStatus(dataAfterSave,"isCorrectlyMapped")) && <Radio.Group
+            {(dataAfterSave?.length >0 && checkFinalMappingStatus(dataAfterSave,"fieldMapping") && checkFinalMappingStatus(dataAfterSave,"isCorrectlyMapped")) && <Radio.Group
               options={[
                 { label: "DevOps Generator", value: "devopsGenerator" },
                 { label: "Configure Mapping", value: "configureMapping" },
@@ -927,7 +933,7 @@ console.log("final condition ::", checkFinalMappingStatus(retrieveDevopsMapping,
               size="small"
               scroll={{ y: 300 }}
               isModelopen={false}
-              // loading={!devopsResult}
+              // loading={loading}
               modelAction={showModal}
               className={
                 configureSettings == "devopsGenerator" ? "disable-table" : ""
@@ -958,7 +964,7 @@ console.log("final condition ::", checkFinalMappingStatus(retrieveDevopsMapping,
                 Cancel
               </Button>
               
-              {(checkFinalMappingStatus(dataAfterSave,"fieldMapping") && checkFinalMappingStatus(dataAfterSave,"isCorrectlyMapped"))? 
+              {(dataAfterSave?.length >0 && checkFinalMappingStatus(dataAfterSave,"fieldMapping") && checkFinalMappingStatus(dataAfterSave,"isCorrectlyMapped") || configureSettings == "devopsGenerator" )? 
               (<Button type="primary" htmlType="button" onClick={()=>''}>
                 Next
               </Button>)
