@@ -883,6 +883,7 @@ console.log("result101",guId,":",_result,":",itemKey,dataSource);
 }
 // condition to Enable Final devops button to connect..
 const checkFinalMappingStatus = (array:[], column:string) => {
+  console.log("inside condition: ", array.every(element => element[column]));
   return array.every(element => element[column] === true);
 };
 console.log("final condition ::", checkFinalMappingStatus(retrieveDevopsMapping,"fieldMapping"), checkFinalMappingStatus(retrieveDevopsMapping,"isCorrectlyMapped"))
@@ -890,6 +891,7 @@ console.log("final condition ::", checkFinalMappingStatus(retrieveDevopsMapping,
     <div className="devops-container">
       <Spin spinning={isLoading}>
         <h1 className="title">DevOps Work Items</h1>
+        <div className="bg-wrap">
         <h3 className="sub-title">
           <span>Connection Details</span>
           <span>
@@ -966,80 +968,153 @@ console.log("final condition ::", checkFinalMappingStatus(retrieveDevopsMapping,
               </Button>)}
               {/* <div>{`% assign deactivateCustomerBusinessSurveyFlowUrl = settings["DeactivateCustomerBusinessSurveyFlowURL"]%`}
               <input type="hidden" id="deactivateCustomerBusinessSurveyFlowUrl" value="{{deactivateCustomerBusinessSurveyFlowUrl}}" /></div> */}
+       
+          {/* <h3 className="sub-title">
+            <span>Connection Details</span>
+            <span>
+              {" "}
+              <h5 className="sub-title2">{configurationData?.gyde_name} </h5>
             </span>
+          </h3>
+          <ConnectionComponent
+            setWorkItemData={(res: any) => {
+              setDevopsWorkItemTypes(res?.data?.Value), setDevopsResult(res?.data?.Value ? true :false);
+            }}
+            connectionFetch={(res:any)=>setDevopsResult(res)}        />
+          <div className="text-left mb-20">
+          </div>
+          {devopsResult && (
+            <>
+            {(isMappedSaved || retrieveDevopsMapping?.length>0) && <div className="text-left"><Radio.Group
+                options={[
+                  { label: "DevOps Generator", value: "devopsGenerator" },
+                  { label: "Configure Mapping", value: "configureMapping" },
+                ]}
+                onChange={handleConfigure}
+                value={configureSettings}
+                optionType="button"
+                buttonStyle="solid"
+            /></div> }
 
+              <h3 className="sub-title">Mapping - Work Item Types</h3>
+              <TableComponent
+                dataSource={retrieveDevopsMapping?.length>0 ? retrieveDevopsMapping : dataSource}
+                columns={workItemColumns}
+                onMapping={() => {}}
+                size="small"
+                scroll={{ y: 300 }}
+                isModelopen={false}
+                modelAction={showModal}
+                className={
+                  configureSettings == "devopsGenerator" ? "disable-table" : ""
+                }
+                setDropDownValue={(data: any) => setSelectedWorkItem(data)}
+                
 
-          </>
-        )}
-        {/* <TableComponent dataSource={dataSource} columns={columns} /> */}
-        {isModalOpen && (
-          <PopupComponent
-            visible={isModalOpen}
-            onOk={handleOk}
-            onClose={handleCancel}
-            buttons={[
-              { title: "Cancel", onClickHandler: "" },
-              { title: "Set as Default", onClickHandler: savePopupModelData },
-              { title: "Save", onClickHandler: savePopupModelData },
-            ]}
-            Content={
-              <div>
-                <TableComponent
-                  dataSource={taskDataArr}
-                  columns={tableColumn}
-                  onMapping={() => {}}
-                  size="small"
-                  scroll={{ y: 300 }}
-                  modelAction={showModal}
-                  isModelopen={isModalOpen}
-                  setDataArr={setDataArr}
-                  setFieldDataArr={setFieldDataArr}
-                  isPicklistModel={false}
-                  currentPickListData ={dataArr}
-                  setMappingType={setmMppedField}
-                />
+                // rowClassName={
+                //   configureSettings == "devopsGenerator" ? "disable-table" : ""
+                // }
+                // disabled={configureSettings == "devopsGenerator" ? true : false}
+                saveMappingItems={(data:any)=>setMappedWorkItems(data)}
+                setMappingType={setmMppedField}
+                isPicklistModel={false}
+                setWorkitemTypeData={setWorkitemTypeData}
+                
+              />
 
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    marginTop: "20px",
+              <span>
+                <Button
+                  className="cancel-btn mr-10"
+                  type="primary"
+                  htmlType="button"   
+                  onClick={() => {                
+                    window.location.href = `/${_navigateUrl}`               
                   }}
                 >
-                  <Button
-                   className="ant-btn-default cancel-btn"
-                    onClick={(e) => {
-                      /* Handle button click */
-                      handleCancel()
+                  Cancel
+                </Button>
+                
+                <Button type="primary" htmlType="button" onClick={handleMappingItemSave}>
+                  Save
+                </Button> */}
+                {/* <Button type="primary" htmlType="button" disabled={true} onClick={()=>''}>
+                  Next
+                </Button> */}
+                {/* <div>{`% assign deactivateCustomerBusinessSurveyFlowUrl = settings["DeactivateCustomerBusinessSurveyFlowURL"]%`}
+                <input type="hidden" id="deactivateCustomerBusinessSurveyFlowUrl" value="{{deactivateCustomerBusinessSurveyFlowUrl}}" /></div> */}
+              </span>
+            </>
+          )}
+          {/* <TableComponent dataSource={dataSource} columns={columns} /> */}
+          {isModalOpen && (
+            <PopupComponent
+              visible={isModalOpen}
+              onOk={handleOk}
+              onClose={handleCancel}
+              buttons={[
+                { title: "Cancel", onClickHandler: "" },
+                { title: "Set as Default", onClickHandler: savePopupModelData },
+                { title: "Save", onClickHandler: savePopupModelData },
+              ]}
+              Content={
+                <div>
+                  <TableComponent
+                    dataSource={taskDataArr}
+                    columns={tableColumn}
+                    onMapping={() => {}}
+                    size="small"
+                    scroll={{ y: 300 }}
+                    modelAction={showModal}
+                    isModelopen={isModalOpen}
+                    setDataArr={setDataArr}
+                    setFieldDataArr={setFieldDataArr}
+                    isPicklistModel={false}
+                    currentPickListData ={dataArr}
+                    setMappingType={setmMppedField}
+                  />
+
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      marginTop: "20px",
                     }}
-                    style={{ marginLeft: "5px" }}
                   >
-                    Cancel
-                  </Button>
-                  <Button
-                    className="ant-btn-primary"
-                    onClick={(e) => {
-                      savePopupModelData("Default")
-                      /* Handle button click */
-                    }}
-                    style={{ marginLeft: "5px" }}
-                  >
-                    Set as Default
-                  </Button>
-                  <Button
-                    className="ant-btn-primary"
-                    onClick={()=>{
-                      savePopupModelData("Save")
-                    }}
-                    style={{ marginLeft: "5px" }}
-                  >
-                    Save
-                  </Button>
+                    <Button
+                    className="ant-btn-default cancel-btn"
+                      onClick={(e) => {
+                        /* Handle button click */
+                        handleCancel()
+                      }}
+                      style={{ marginLeft: "5px" }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      className="ant-btn-primary"
+                      onClick={(e) => {
+                        savePopupModelData("Default")
+                        /* Handle button click */
+                      }}
+                      style={{ marginLeft: "5px" }}
+                    >
+                      Set as Default
+                    </Button>
+                    <Button
+                      className="ant-btn-primary"
+                      onClick={()=>{
+                        savePopupModelData("Save")
+                      }}
+                      style={{ marginLeft: "5px" }}
+                    >
+                      Save
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            }
-          />
-        )}
+              }
+            />
+          )}
+        </div>
       </Spin>
     </div>
   );

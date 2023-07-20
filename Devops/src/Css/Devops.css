@@ -23,10 +23,19 @@ body {
  font-weight: 600;
  color:  #292D32;
  margin-top: 0;
+ margin-bottom: 10px;
 }
 
 .ant-table-wrapper {
   margin-bottom: 10px;
+}
+
+.ant-table-wrapper th {
+  font-size: 13px;
+}
+
+.ant-table-wrapper th:first-child , .ant-table-wrapper td:first-child {
+  padding-left: 0 !important;
 }
 
 .control-pane {
@@ -186,4 +195,42 @@ body {
   margin-bottom: 20px;
 }
 
+.disable-table td{
+  background-color: #e7e7e7;
+  pointer-events: none;
+  opacity: 0.5;
+}
 
+.crmEntityFormView {
+  background: transparent;
+  margin-top: 30px;
+}
+
+.devops-container .title {
+  font-size: 25px;
+  color: #292D32;
+  margin-bottom: 30px;
+}
+
+.devops-container .sub-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #292D32;
+}
+
+.actions {
+  border: none;
+  margin-top: 0;
+  padding: 0 40px;
+}
+
+.btn-submit {
+  float: right;
+  border-radius: 5px;
+  min-width: 100px;
+}
+
+.devops-container .bg-wrap {
+  background: white;
+    padding: 20px;
+}
