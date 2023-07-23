@@ -28,19 +28,15 @@ import {
 } from "../Api/devopsApis";
 import { convertByteArrayToJson } from "../Helper/Helper";
 
-
-
-
 declare global {
   interface Window {
     webapi: any;
-    devopsWorkItemTypes:any;
-    azureWorkItemTypeURL:any;
-    devopsWorkItemFields:any;
-    devopsWorkItemFieldURL:any;
+    devopsWorkItemTypes: any;
+    azureWorkItemTypeURL: any;
+    devopsWorkItemFields: any;
+    devopsWorkItemFieldURL: any;
   }
 }
-
 
 export default function ConnectionContainer() {
   const dataSource1 = [
@@ -130,7 +126,7 @@ export default function ConnectionContainer() {
     },
   ];
   const [dataArr, setDataArr] = useState<any>([]);
- 
+
   const [dataFieldArr, setFieldDataArr] = useState<any>([]);
   const [devopsWorkItemTypes, setDevopsWorkItemTypes] = useState<any>([]);
   const [crmWorkItemTypes, setCrmWorkItemTypes] = useState<any>([]);
@@ -139,42 +135,46 @@ export default function ConnectionContainer() {
   const [taskDataArr, setTaskDataArr]: any = useState([]);
   const [tableColumn, setColumns] = useState<any>([]);
   const [selectedWorkItem, setSelectedWorkItem] = useState<any>();
-  const [devopsResult,setDevopsResult] = useState<boolean>(false);
-  const [isLoading,setIsLoading] = useState<boolean>(false);
-  const [isMappedSaved,setIsMappedSaved] = useState<boolean>(false);
-  const [configureSettings,setConfigureSettings] = useState<any>("configureMapping");
-  const [savedFilteredData, setSavedFilteredData]  = useState<any>([]);
-  const [mappedWorkItems, setMappedWorkItems] : any = useState([]);
-  const [workitemTypesData, setWorkitemTypeData]  = useState<any>({
-    source:'Work item type',devOps:'Work item type'});
-  const [partnetType, setPartnerType] : any = useState("partner work item");
-  const [title,SetTitle] :any = useState('Title')
-  const [mappingType, setMappingType] : any = useState('');
-  const [mappedField, setmMppedField] = useState<any>('');
+  const [devopsResult, setDevopsResult] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isMappedSaved, setIsMappedSaved] = useState<boolean>(false);
+  const [configureSettings, setConfigureSettings] =
+    useState<any>("configureMapping");
+  const [savedFilteredData, setSavedFilteredData] = useState<any>([]);
+  const [mappedWorkItems, setMappedWorkItems]: any = useState([]);
+  const [workitemTypesData, setWorkitemTypeData] = useState<any>({
+    source: "Work item type",
+    devOps: "Work item type",
+  });
+  const [partnetType, setPartnerType]: any = useState("partner work item");
+  const [title, SetTitle]: any = useState("Title");
+  const [mappingType, setMappingType]: any = useState("");
+  const [mappedField, setmMppedField] = useState<any>("");
   const [isEnablePopUp, setIsEnablePopUp] = useState<boolean>(false);
   const [configurationData, setConfigurationData] = useState<any>();
-  const [loading , setLoading] = useState<boolean>(false);
-  const [visibleButton , setVisibleButton] = useState<boolean>(false);
-  const [defaultGuId,setDefaultGuId] :any = useState()
-  const [guId,setGuId] :any = useState()
+  const [loading, setLoading] = useState<boolean>(false);
+  const [visibleButton, setVisibleButton] = useState<boolean>(false);
+  const [defaultGuId, setDefaultGuId]: any = useState();
+  const [guId, setGuId]: any = useState();
   const url = new URL(window.location.href);
   const [retrieveDevopsMapping, setRetrieveDevopsMapping] = useState<any>([]);
   const [dataAfterSave, setDataAfterSave] = useState<any>([]);
-  const [isSavedCompleteFlag, setIsSavedCompleteFlag] = useState<any>({ key: '', value: '' });
+  const [isSavedCompleteFlag, setIsSavedCompleteFlag] = useState<any>({
+    key: "",
+    value: "",
+  });
 
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
-  console.log("queryParameters",queryParameters);
-  
-  const cusId = queryParameters.get("cusid")
-  const cbsId = queryParameters.get("cbsid")
-  const _pId = queryParameters.get("pid")
-  const _itemId = queryParameters.get("id")
-  const _navigateUrl = queryParameters.get("returnto")
-  console.log("cbs11",cbsId,cusId)
+  console.log("queryParameters", queryParameters);
+
+  const cusId = queryParameters.get("cusid");
+  const cbsId = queryParameters.get("cbsid");
+  const _pId = queryParameters.get("pid");
+  const _itemId = queryParameters.get("id");
+  const _navigateUrl = queryParameters.get("returnto");
   
   const showModal = () => {
-    console.log("shooo");
     const data: string | null = localStorage.getItem("items");
     const authData: any = data ? JSON.parse(data) : null;
     apiRequest(authData);
@@ -220,19 +220,22 @@ export default function ConnectionContainer() {
     }, // accordionContent: 'Additional info'
   ];
 
-  useEffect(()=>{
-    if(retrieveDevopsMapping?.length == 0){
-    const data = crmWorkItemTypes?.map((item: any, num: number) => {
-      return {
-        key: num,
-        name: item,
-        gyde_name: devopsWorkItemTypes?.find((res: any) => res == item),
-        enable:devopsWorkItemTypes?.find((res: any) => res == item) == item ? true : false,
-      };
-    });
-    setRetrieveDevopsMapping(data);
+  useEffect(() => {
+    if (retrieveDevopsMapping?.length == 0) {
+      const data = crmWorkItemTypes?.map((item: any, num: number) => {
+        return {
+          key: num,
+          name: item,
+          gyde_name: devopsWorkItemTypes?.find((res: any) => res == item),
+          enable:
+            devopsWorkItemTypes?.find((res: any) => res == item) == item
+              ? true
+              : false,
+        };
+      });
+      setRetrieveDevopsMapping(data);
     }
-  },[devopsWorkItemTypes])
+  }, [devopsWorkItemTypes]);
   console.log("data not saved initial data", retrieveDevopsMapping);
 
   useEffect(() => {
@@ -250,35 +253,39 @@ export default function ConnectionContainer() {
       projectName: authData?.projectName,
       workItemType: selectedWorkItem?.name,
     };
-    let devopsWorkItemFieldURL =  window?.parent?.devopsWorkItemFieldURL;
-    let devopsWorkItemFields =  window?.parent?.devopsWorkItemFields
-   
-    
+    let devopsWorkItemFieldURL = window?.parent?.devopsWorkItemFieldURL;
+    let devopsWorkItemFields = window?.parent?.devopsWorkItemFields;
+
     if (selectedWorkItem?.name != undefined && selectedWorkItem?.name != null) {
-      console.log("ff1",devopsWorkItemFieldURL);
-      console.log("fc",devopsWorkItemFields);
-      
-      const devopsData = await fetchDevopsFeildsData(authObj,devopsWorkItemFieldURL);
+      console.log("ff1", devopsWorkItemFieldURL);
+      console.log("fc", devopsWorkItemFields);
+
+      const devopsData = await fetchDevopsFeildsData(
+        authObj,
+        devopsWorkItemFieldURL
+      );
       console.log("apiDara,", devopsData, selectedWorkItem);
-     // const crmData = await FetchCrmFields();
+      let a = true
+      // const crmData = await FetchCrmFields();
       let sameDropdownFeild: any = [];
-      if (devopsData.status === "success") {
-       // console.log("crm", crmData);
-       const crmData = JSON.parse(devopsWorkItemFields)
-       console.log("CCCW",crmData);
-       
-        let tableData = crmData?.map((crm: any, key: any) => {
-          let dropdownArr: any = devopsData.data?.Value
-            .filter(
-              (devOps: any) =>
-                ((crm.AttributeType === "Memo" ||
-                  crm.AttributeType === "String" ||
-                  crm.AttributeType === "Lookup") &&
-                  (devOps.attributeType === "String" ||
-                    devOps.attributeType === "PlainText" ||
-                    devOps.attributeType === "TreePath" ||
-                    devOps.attributeType === "StringTreePath" ||
-                    devOps.attributeType === "Identity")) ||
+      if (a) {
+        // console.log("crm", crmData);
+        //const crmData = JSON.parse(devopsWorkItemFields);
+        //console.log("CCCW", crmData);
+
+        let tableData = exampleCRMData?.map((crm: any, key: any) => {
+          let dropdownArr: any = exampleDevOpsData.filter(
+            (devOps: any) =>
+              devOps.fieldName !== "Work Item Type" &&
+              devOps.fieldName !== "Title" &&
+              (((crm.AttributeType === "Memo" ||
+                crm.AttributeType === "String" ||
+                crm.AttributeType === "Lookup") &&
+                (devOps.attributeType === "String" ||
+                  devOps.attributeType === "PlainText" ||
+                  devOps.attributeType === "TreePath" ||
+                  devOps.attributeType === "StringTreePath" ||
+                  devOps.attributeType === "Identity")) ||
                 (crm.AttributeType === "Memo" &&
                   (devOps.attributeType === "Html" ||
                     devOps.attributeType === "History" ||
@@ -294,43 +301,45 @@ export default function ConnectionContainer() {
                     devOps.attributeType === "DoublePicklist")) ||
                 ((crm.AttributeType === "String" ||
                   crm.AttributeType === "Lookup") &&
-                  (devOps.attributeType = "defaultGuId")) ||
+                  devOps.attributeType === "defaultGuId") ||
                 (crm.AttributeType === "Boolean" &&
-                  devOps.attributeType === "Boolean") || (crm?.Options != undefined && crm?.Options?.length &&  devOps?.hasPicklist === true)
+                  devOps.attributeType === "Boolean") ||
+                (crm?.Options != undefined &&
+                  crm?.Options?.length &&
+                  devOps?.hasPicklist === true))
+          ).map((_data: any, key: any) => {
+            if (
+              crm.SchemaName === _data.fieldName &&
+              _data.allowedValues?.length &&
+              crm.Options?.length
             )
-            .map((_data: any, key: any) => {
-              if (
-                crm.SchemaName === _data.fieldName &&
-                _data.allowedValues?.length &&
-                crm.Options?.length
-              )
-                sameDropdownFeild.push({
-                  mappingName: _data.fieldName,
-                  defaultOptionList: [
-                    {
-                      crmOption: crm.Options,
-                      devOpsOption: _data.allowedValues,
-                    },
-                  ],
-                });
-              return {
-                key: key,
-                dropdownValue: _data.fieldName,
-                option:
-                  _data.allowedValues?.length && crm.Options?.length
-                    ? [
-                        {
-                          crmOption: crm.Options,
-                          devOpsOption: _data.allowedValues,
-                        },
-                      ]
-                    : [],
-                isPickList:
-                  _data.allowedValues?.length && crm.Options?.length
-                    ? true
-                    : false,
-              };
-            });
+              sameDropdownFeild.push({
+                mappingName: _data.fieldName,
+                defaultOptionList: [
+                  {
+                    crmOption: crm.Options,
+                    devOpsOption: _data.allowedValues,
+                  },
+                ],
+              });
+            return {
+              key: key,
+              dropdownValue: _data.fieldName,
+              option:
+                _data.allowedValues?.length && crm.Options?.length
+                  ? [
+                      {
+                        crmOption: crm.Options,
+                        devOpsOption: _data.allowedValues,
+                      },
+                    ]
+                  : [],
+              isPickList:
+                _data.allowedValues?.length && crm.Options?.length
+                  ? true
+                  : false,
+            };
+          });
 
           let isOptionList = sameDropdownFeild.some(
             (f: any) => f.mappingName === crm.SchemaName
@@ -344,8 +353,9 @@ export default function ConnectionContainer() {
             defaultOptionList: [],
             isText: false,
             isSelected: isOptionList ? true : false,
-            isPickListComplete:false,
-            isSavedType: "default"
+            isPickListComplete: false,
+            pickListArr: [],
+            isSavedType: "default",
           };
 
           // defaultOptionList: isOptionList
@@ -355,7 +365,7 @@ export default function ConnectionContainer() {
         let currentLength = tableData.length + 1;
         let _tableData = [
           {
-            key: currentLength+1,
+            key: currentLength + 1,
             sourceWorkItem: `${title}`,
             devopsWorkItem: `${title}`,
             dropdown: [],
@@ -366,7 +376,7 @@ export default function ConnectionContainer() {
             isSelected: true,
           },
           {
-            key: currentLength+2,
+            key: currentLength + 2,
             sourceWorkItem: `${workitemTypesData.source}`,
             devopsWorkItem: `${workitemTypesData.devOps}`,
             dropdown: [],
@@ -377,8 +387,8 @@ export default function ConnectionContainer() {
             isSelected: true,
           },
           {
-            key: currentLength+3,
-            sourceWorkItem:`${partnetType}`,
+            key: currentLength + 3,
+            sourceWorkItem: `${partnetType}`,
             devopsWorkItem: `${partnetType}`,
             dropdown: [],
             mapping: "",
@@ -389,47 +399,20 @@ export default function ConnectionContainer() {
           },
           ...tableData,
         ];
-        //console.log("devopsData", _tableData);
-    // setTaskDataArr(_tableData);
- 
-       // default Fetch 
-      //  console.log("_p");
-       
-          let updatedSavedData :any= await fetchFieldMappingData(mappedField)
-          let updatedDefaultData:any = await fetchDefaultSettingData(_pId);
 
-          console.log("updated1111",updatedSavedData,updatedDefaultData);
-           if(updatedSavedData?.length){
-            console.log("sa111");
-            
-            setTaskDataArr(updatedSavedData[0]["value"]);
-           }
-          else if(updatedDefaultData?.length){
-            setTaskDataArr(updatedDefaultData);
-            console.log("outter",updatedDefaultData);
+      
+        let updatedSavedData: any = await fetchFieldMappingData(mappedField);
+        let updatedDefaultData: any = await fetchDefaultSettingData(_pId);
 
-          }else {
-            console.log("innner",_tableData);
-            
-            setTaskDataArr(_tableData);
+        console.log("updated111112", updatedSavedData, updatedDefaultData);
+        if (updatedSavedData?.length) {
+          setTaskDataArr(updatedSavedData[0]["value"]);
+        } else if (updatedDefaultData?.length) {
+          setTaskDataArr(updatedDefaultData);
+        } else {
+          setTaskDataArr(_tableData);
+        }
 
-          }
-         //fetchDefaultSettingData(_pId);
-
-        // if(_savedObj){
-
-        // const _savedTableData:any =  _savedObj.filter(f =>  _tableData.filter((_savedData:any)=>{
-        //     f.sourceWorkItem === _savedData.sourceWorkItem
-
-        //   }))
-
-        //   console.log("*****_savedTableData",_savedTableData);
-          
-        //   setTaskDataArr(_savedTableData);
-        // }else {
-        //   setTaskDataArr(_tableData);
-        // }
-       
         const columns = [
           {
             title: "SOURCE WORK ITEM FIELD",
@@ -447,13 +430,12 @@ export default function ConnectionContainer() {
             dataIndex: "mapping",
             key: "mapping",
             buttonField: true,
-          }, // accordionContent: 'Additional info'
+          },
         ];
         setColumns(columns);
         setIsModalOpen(true);
         setIsLoading(false);
       } else if (devopsData.status === "error") {
-        // notification.error({message:devopsData.data,type:'error'})
         setIsLoading(false);
         setIsModalOpen(false);
       }
@@ -461,25 +443,18 @@ export default function ConnectionContainer() {
   };
 
   useEffect(() => {
+    console.log("tag123",isModalOpen, taskDataArr, taskDataArr.length);
+    
     isModalOpen && taskDataArr.length
       ? setIsLoading(true)
       : setIsLoading(false);
   }, [isModalOpen, taskDataArr]);
-  // console.log(" devopsWorkItemTypes :", devopsWorkItemTypes);
-  // console.log("dataSource",dataSource);
+
   useEffect(() => {
-    // fetchWorkItemTypesFromCRM().then((result: any) => {
-    //   console.log("crm work items :", result, result?.data?.value);
-    //   setCrmWorkItemTypes(result?.data?.value);
-    // });
-  }, []);
-
-  useEffect(()=>{
-    console.log("cbs******",cbsId,cusId,_pId,);
-
-    findDevopsConfigGuId(cusId,cbsId);
-    setLoading(false); 
-   getWorkitemNames(_itemId)
+    console.log("cbs******", cbsId, cusId, _pId);
+    findDevopsConfigGuId(cusId, cbsId);
+    setLoading(false);
+    getWorkitemNames(_itemId);
     // window.parent.webapi.safeAjax({
     //   type: "GET",
     //   url: "/_api/gyde_workitemtypes",
@@ -492,15 +467,12 @@ export default function ConnectionContainer() {
     //   }
     //   });
 
-      
+    // console.log("comparedData",comparedData,comparedData?.length,dataSource,dataSource?.length);
 
-      // console.log("comparedData",comparedData,comparedData?.length,dataSource,dataSource?.length);
-      
-      // if(comparedData?.length) setSavedFilteredData(comparedData);
-      // else {dataSource?.length} setSavedFilteredData(dataSource);
-      // console.log("comparedData...!@#", comparedData);
-
-  },[devopsWorkItemTypes])
+    // if(comparedData?.length) setSavedFilteredData(comparedData);
+    // else {dataSource?.length} setSavedFilteredData(dataSource);
+    // console.log("comparedData...!@#", comparedData);
+  }, [devopsWorkItemTypes]);
 
   // useEffect(()=>{
   //   // const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
@@ -517,138 +489,120 @@ export default function ConnectionContainer() {
   //  setInitialTableData(comparedData);
   // },[retrieveDevopsMapping])
 
-  const getWorkitemNames =  async(_itemId:any)=> {
-     console.log("_itemId",_itemId);
-     
-    let result : any =  await fetWorkItemsbyId(_itemId)
-    setConfigurationData(result?.data);
-    console.log("result",result);
-    
-  }
+  const getWorkitemNames = async (_itemId: any) => {
+    console.log("_itemId", _itemId);
 
-  const fetchFieldMappingData = async(itemKey:any) => {
-    if(guId){
-      let _result:any = await fetchFieldMapping(guId)
-    if(_result.type == "success"){
-      let JsonData = convertByteArrayToJson(_result.data)
-      console.log("fieldMAppQ",JsonData);
-    console.log("fieldMAppQ",itemKey);
-      const updatedData = JsonData.filter((item: any) => {
-        console.log("12",item.key,itemKey);
-         return item.key === itemKey
-      });
-      console.log("upppp",updatedData);
-      
-      return updatedData;
-    }else if(_result.type == "error")
-    return [];
-    
-    }else {
+    let result: any = await fetWorkItemsbyId(_itemId);
+    setConfigurationData(result?.data);
+    console.log("result", result);
+  };
+
+  const fetchFieldMappingData = async (itemKey: any) => {
+    if (guId) {
+      let _result: any = await fetchFieldMapping(guId);
+      if (_result.type == "success") {
+        console.log("33", _result.data);
+        const _resultData = JSON.parse(_result.data);
+        console.log("fieldMAppQ", itemKey);
+        const updatedData = _resultData.filter((item: any) => {
+          console.log("12", item.key, itemKey);
+          return item.key === itemKey;
+        });
+        console.log("upppp", updatedData);
+        return updatedData;
+      } else if (_result.type == "error") return [];
+    } else {
       return [];
     }
-  }
+  };
 
-  const callFetchMappedItemsApi = async() => {
-
-  }
-
-
-  const  findDevopsConfigGuId = async(cusId:any,bId:any)=> {
-   let _result:any =   await fetchDevopsConfig(cusId,bId);
-   setLoading(true);
-      console.log("devOpsCOnfig",_result);
-   if(_result.type === 'updateConfig'){
+  const findDevopsConfigGuId = async (cusId: any, bId: any) => {
+    let _result: any = await fetchDevopsConfig(cusId, bId);
+    setLoading(true);
+    console.log("devOpsCOnfig", _result);
+    if (_result.type === "updateConfig") {
       //filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))
-       setGuId(_result.id)
-       let result :any = await fetchDevOpsMappingField(_result.id)     
-         if(result.type == "success"){
-          let JsonMappedData = convertByteArrayToJson(result.data)
-          console.log("JsonDataFirst","load when saved data retrieving.....",JsonMappedData);
-          setRetrieveDevopsMapping(JsonMappedData);
-          setDataAfterSave(JsonMappedData);
-          console.log("JsonMappedData",JsonMappedData);
-          setIsLoading(false);
-          console.log("savedFilteredData...!@#", savedFilteredData);
-         }else if(result.type === "error"){
-          return [];
-         }
-    }else if(_result.type === 'createDefault'){
-      setGuId("")     
-      createDevConfig('newRecord');
+      setGuId(_result.id);
+      let result: any = await fetchDevOpsMappingField(_result.id);
+      if (result.type == "success") {
+        let JsonMappedData = convertByteArrayToJson(result.data);
+        console.log(
+          "JsonDataFirst",
+          "load when saved data retrieving.....",
+          JsonMappedData
+        );
+        setRetrieveDevopsMapping(JsonMappedData);
+        setDataAfterSave(JsonMappedData);
+        console.log("JsonMappedData", JsonMappedData);
+        setIsLoading(false);
+        console.log("savedFilteredData...!@#", savedFilteredData);
+      } else if (result.type === "error") {
+        return [];
+      }
+    } else if (_result.type === "createDefault") {
+      setGuId("");
+      createDevConfig("newRecord");
       setIsLoading(false);
     }
-    setLoading(false);  
-  }
-console.log("retrieveDevopsMapping", retrieveDevopsMapping);
-//CUSID ,BID if default = PID
+    setLoading(false);
+  };
+  console.log("retrieveDevopsMapping", retrieveDevopsMapping);
+  //CUSID ,BID if default = PID
   // useEffect(()=>{
 
-
-    
   //   if(isModalOpen){
   //   // fetchDefaultSettingData(_pId);
   //   }
   // },[isModalOpen])
 
-  const  fetchDefaultSettingData = async(pid:any) => {
-    console.log("pID",pid);
-    
-       let result:any = await fetchDefaultSetting(pid);
-       console.log("fetchSEtting",result);
-       
-       if(result.type=== 'updateDefault'){
-          setDefaultGuId(result.id)
-         let _result:any = await fetchFieldMapping(result.id)
-         console.log("RRRDF",_result);
-         
-         if(_result?.type === "success"){
-          let JsonData = convertByteArrayToJson(_result.data)
-          console.log("defaultQQQ",JsonData);
-     const updatedData = JsonData.filter((item: any) => {
-       console.log("OTem,",item);
-       if (item.key === mappedField) {
-        return item;
-        // return  { ...item, ["value"]:dataSource,};
-       }
-     });
- 
-      console.log("updated",updatedData.length);
-      if( updatedData.length){
-       return updatedData[0]["value"]
-      }else{
-              return [];
-      }  
-    
-         }
-         else{
+  const fetchDefaultSettingData = async (pid: any) => {
+    let result: any = await fetchDefaultSetting(pid);
+    console.log("fetchSEtting", result);
+    if (result.type === "updateDefault") {
+      setDefaultGuId(result.id);
+      let _result: any = await fetchFieldMapping(result.id);
+      console.log("RRRDF", _result);
+
+      if (_result?.type === "success") {
+        const _resultData = JSON.parse(_result.data);
+        const updatedData = _resultData?.filter((item: any) => {
+          if (item.key === mappedField) {
+            return item;
+          }
+        });
+        console.log("updated", updatedData.length);
+        if (updatedData.length) {
+          return updatedData[0]["value"];
+        } else {
           return [];
-  }  
-     
-       }else if (result.type=== 'createDefault'){
-        createDevConfig('default')
+        }
+      } else {
         return [];
-       }
-       else if (result.type=== 'error'){
-        //createDevConfig('default')
-        return [];
-       }
-  }
+      }
+    } else if (result.type === "createDefault") {
+      createDevConfig("default");
+      return [];
+    } else if (result.type === "error") {
+      //createDevConfig('default')
+      return [];
+    }
+  };
 
-  useEffect(()=>{ 
-    let devopsWorkItemTypes =  window?.parent?.devopsWorkItemTypes
-    let azureWorkItemTypeURL =  window?.parent?.azureWorkItemTypeURL
-    let devopsWorkItemFields =  window?.parent?.devopsWorkItemFields
-    let devopsWorkItemFieldURL =  window?.parent?.devopsWorkItemFieldURL
-    console.log("devopsWorkItemTypes*",devopsWorkItemTypes);
-    console.log("azureWorkItemTypeURL*",azureWorkItemTypeURL);
-    console.log("devopsWorkItemFields*",devopsWorkItemFields);
-    console.log("devopsWorkItemFieldURL*",devopsWorkItemFieldURL);
+  useEffect(() => {
+    let devopsWorkItemTypes = window?.parent?.devopsWorkItemTypes;
+    let azureWorkItemTypeURL = window?.parent?.azureWorkItemTypeURL;
+    let devopsWorkItemFields = window?.parent?.devopsWorkItemFields;
+    let devopsWorkItemFieldURL = window?.parent?.devopsWorkItemFieldURL;
+    console.log("devopsWorkItemTypes*", devopsWorkItemTypes);
+    console.log("azureWorkItemTypeURL*", azureWorkItemTypeURL);
+    console.log("devopsWorkItemFields*", devopsWorkItemFields);
+    console.log("devopsWorkItemFieldURL*", devopsWorkItemFieldURL);
     devopsWorkItemTypes && setCrmWorkItemTypes(JSON.parse(devopsWorkItemTypes));
-  },[])
+  }, []);
 
-   useEffect(()=>{
-    console.log("isSavedCompleteFlagA1",isSavedCompleteFlag);
-    
+  useEffect(() => {
+    console.log("isSavedCompleteFlagA1", isSavedCompleteFlag);
+
     // when saved data retrieved this will used...
     // const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
     // const comparedData = savedMappedData?.filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))?.map((data:any)=> {
@@ -663,22 +617,25 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
     // });
     // setSavedFilteredData(comparedData);
     // console.log("comparedData...!@#", comparedData);
-  },[isSavedCompleteFlag])
+  }, [isSavedCompleteFlag]);
 
-  useEffect(()=>{
+  useEffect(() => {
     console.log("isSavedCompleteFlag", isSavedCompleteFlag?.key);
-    const newData = retrieveDevopsMapping?.map((item:any)=>{
-      if(item?.name == isSavedCompleteFlag?.key){
-        return {...item, fieldMapping: isSavedCompleteFlag?.value}
+    const newData = retrieveDevopsMapping?.map((item: any) => {
+      if (item?.name == isSavedCompleteFlag?.key) {
+        return { ...item, fieldMapping: isSavedCompleteFlag?.value };
       }
-    return {...item,fieldMapping: item?.fieldMapping ? item?.fieldMapping : false}
-    })
+      return {
+        ...item,
+        fieldMapping: item?.fieldMapping ? item?.fieldMapping : false,
+      };
+    });
     console.log("data source inside use effect", newData);
     setRetrieveDevopsMapping(newData);
     setMappedWorkItems(newData);
-  },[isSavedCompleteFlag])
+  }, [isSavedCompleteFlag]);
 
-  useEffect(()=>{
+  useEffect(() => {
     // const hasFieldMapping:boolean = retrieveDevopsMapping?.some((item:any) => item.fieldMapping !== undefined);
     // if(hasFieldMapping){
     //   setVisibleButton(true);
@@ -686,296 +643,338 @@ console.log("retrieveDevopsMapping", retrieveDevopsMapping);
     //   setVisibleButton(false);
     // }
     // Toggle to devops Configuration once all mapped correctly...
-    if((dataAfterSave?.length > 0 && checkFinalMappingStatus(retrieveDevopsMapping,"fieldMapping") && 
-    checkFinalMappingStatus(retrieveDevopsMapping,"isCorrectlyMapped"))){
+    if (
+      dataAfterSave?.length > 0 &&
+      checkFinalMappingStatus(retrieveDevopsMapping, "fieldMapping") &&
+      checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
+    ) {
       setConfigureSettings("devopsGenerator");
     }
-  },[])
+  }, []);
 
-  const savePopupModelData = async (buttonType:any) => {
-    console.log("buttonType",buttonType,defaultGuId);
-    
-    console.log("SavedMainData",dataFieldArr,taskDataArr);
-    if(dataFieldArr.length){
-        console.log("API SAved");
-      let _isSelected =     dataFieldArr.every((field:any)=> field.isSelected)
-    
-      setTimeout(() => {
-        setIsSavedCompleteFlag({key:mappedField,value:_isSelected})
-      }, 1000);
-
-      console.log("_isSelected",_isSelected);
-      console.log("setIsSavedCompleteFlag",isSavedCompleteFlag);
-      if(buttonType === 'Save'){
-        if(guId){
-          let _result:any =await  fetchFieldMapping(guId)
-        let updatedData = dataFieldArr.map((item:any)=> {
-          return  { ...item, ["isSavedType"]:"saved",};
-        })
-          commonFieldMappingSave(guId,_result,mappedField,updatedData)
-        }else {
-          notification.error({message:"GUID Not found"})
+  const savePopupModelData = async (buttonType: any) => {
+    console.log("buttonType", buttonType, defaultGuId);
+    console.log("SavedMainData", dataFieldArr, taskDataArr);
+    if (dataFieldArr.length) {
+      if (buttonType === "Save") {
+        if (guId) {
+          let _result: any = await fetchFieldMapping(guId);
+          let updatedData = dataFieldArr.map((item: any) => {
+            return { ...item, ["isSavedType"]: "saved" };
+          });
+          commonFieldMappingSave(guId, _result, mappedField, updatedData,dataFieldArr);
+        } else {
+          notification.error({ message: "GUID Not found" });
         }
-      
-      }else if (buttonType === 'Default' ){
-        
-        if(defaultGuId){
-
-          let _result:any =await  fetchFieldMapping(defaultGuId)
-          let updatedData = dataFieldArr.map((item:any)=> {
-            return  { ...item, ["isSavedType"]:"setasDefault",};
-          })
+      } else if (buttonType === "Default") {
+        if (defaultGuId) {
+          let _result: any = await fetchFieldMapping(defaultGuId);
+          let updatedData = dataFieldArr.map((item: any) => {
+            return { ...item, ["isSavedType"]: "setasDefault" };
+          });
           saveDefaultMappingData(defaultGuId)
-          commonFieldMappingSave(defaultGuId,_result,mappedField,updatedData)
-          
-        }else {
-          notification.error({message:"GUID Not found"})
+            .then((response: any) => {
+              if (response.type === "success") {
+                commonFieldMappingSave(
+                  defaultGuId,
+                  _result,
+                  mappedField,
+                  updatedData,
+                  dataFieldArr
+                );
+              } else if (response.type === "error") {
+                console.error("Error:", response.error.message);
+              }
+            })
+            .catch((error: any) => {
+              console.error("Unexpected error:", error);
+            });
+        } else {
+          notification.error({ message: "GUID Not found" });
         }
-        
       }
-    //  setIsModalOpen(false);
-    }else if (taskDataArr.length){ 
-      let _isSelected =     taskDataArr.every((field:any)=> field.isSelected)
-
-      setTimeout(() => {
-        setIsSavedCompleteFlag({key:mappedField,value:_isSelected})
-      }, 1000);
-      console.log("setIsSavedCompleteFlag",isSavedCompleteFlag);
-      if(buttonType === 'Save'){
-        if(guId){
-          let _result =await  fetchFieldMapping(guId)
-          let updatedData = taskDataArr.map((item:any)=> {
-            return  { ...item, ["isSavedType"]:"saved",};
-          })
-        commonFieldMappingSave(guId,_result,mappedField,updatedData)
-        }else {
-          notification.error({message:"GUID Not found"})
+      //  setIsModalOpen(false);
+    } else if (taskDataArr.length) {
+      if (buttonType === "Save") {
+        if (guId) {
+          let _result = await fetchFieldMapping(guId);
+          let updatedData = taskDataArr.map((item: any) => {
+            return { ...item, ["isSavedType"]: "saved" };
+          });
+          commonFieldMappingSave(guId, _result, mappedField, updatedData,taskDataArr);
+        } else {
+          notification.error({ message: "GUID Not found" });
         }
-        
-       
-      }else if (buttonType === 'Default' ){
-        if(defaultGuId){
-          let _result =await  fetchFieldMapping(defaultGuId)
-          let updatedData = taskDataArr.map((item:any)=> {
-            return  { ...item, ["isSavedType"]:"setasDefault",};
-          })
+      } else if (buttonType === "Default") {
+        if (defaultGuId) {
+          let _result = await fetchFieldMapping(defaultGuId);
+          let updatedData = taskDataArr.map((item: any) => {
+            return { ...item, ["isSavedType"]: "setasDefault" };
+          });
           saveDefaultMappingData(defaultGuId)
-        commonFieldMappingSave(defaultGuId,_result,mappedField,updatedData)
-        }else {
-          notification.error({message:"GUID Not found"})
+            .then((response: any) => {
+              if (response.type === "success") {
+                commonFieldMappingSave(
+                  defaultGuId,
+                  _result,
+                  mappedField,
+                  updatedData,
+                  taskDataArr
+                );
+              } else if (response.type === "error") {
+                console.error("Error:", response.error.message);
+              }
+            })
+            .catch((error: any) => {
+              console.error("Unexpected error:", error);
+            });
+        } else {
+          notification.error({ message: "GUID Not found" });
         }
-       
       }
-
-      console.log("default");      
-  }
-  }
+    }
+  };
   const handleConfigure = ({ target: { value } }: RadioChangeEvent) => {
     setConfigureSettings(value);
   };
 
   const handleMappingItemSave = async () => {
-  //   console.log("mapped work items....",mappedWorkItems);
-  // let _result =  saveWorkItemTypes(mappedWorkItems);
-  // console.log("result",_result);
-  if(guId){
-    let response:any = await  createMappingFile(mappedWorkItems,guId); 
-   if(response.type === 'success'){
-    setIsMappedSaved(true);
-    findDevopsConfigGuId(cusId,cbsId);
-   }
-   else if(response.type === 'error'){
-    setIsMappedSaved(false)
-   }
-  }
-  else {
-    createDevConfig("newRecord",true);
-  }
-
-console.log("defaultGuId",defaultGuId); 
-  }
-
-console.log("call back :",mappedWorkItems);
-
-
-const createDevConfig = async(recordType:any ="newRecord",isCreateMapping:boolean =false)=> {
-
-  const currentTime = new Date();
-  const hours = currentTime.getHours();
-  const minutes = currentTime.getMinutes();
-  const seconds = currentTime.getSeconds();
-  
-  console.log("cbs******",cbsId,cusId);
-  
-  var record :any= {};
-  record.gyde_name = `react config ${recordType}${hours}${minutes}${seconds}`; 
-  record["gyde_customerorpartner@odata.bind"] = recordType ==='default' ? `/accounts(${_pId})` :  `/accounts(${cusId})`// Lookup
-  record["gyde_customerbusinesssurvey@odata.bind"] = `/gyde_customerbusinesssurveies(${cbsId})`; // Lookup
-  //add  name default true;
-  console.log("record1",record);
- let newId = await createDevConfigApi(record)
- console.log("newIDDEV",newId);
- 
- if(newId){
-  console.log("recordType",recordType);
-  
-  recordType ==='default' && setDefaultGuId(newId) ,saveDefaultMappingData(newId)
-  recordType ==='newRecord' &&  setGuId(newId);
-
-
-  if(isCreateMapping){
-   let response:any = await createMappingFile(mappedWorkItems,newId); 
-
-   if(response.type === 'success'){
-    setIsMappedSaved(true)
-   }
-   else if(response.type === 'error'){
-    setIsMappedSaved(false)
-   }
-  }
-
-  
-  console.log("newId",newId);
- }
-  // window.parent.webapi.safeAjax({
-  //     type: "POST",
-  //     contentType: "application/json",
-  //     url: "/_api/gyde_devopsconfigurations",
-  //     data: JSON.stringify(record),
-  //     success: function (data:any, textStatus:any, xhr:any) {
-  //         var newId = xhr.getResponseHeader("entityid");
-          // setDefaultGuId(newId)
-          // recordType ==='newRecord' &&  createMappingFile(mappedWorkItems,newId);
-          // console.log("newId",newId);
-  //     },
-  //     error: function (xhr:any, textStatus:any, errorThrown:any) {
-  //         console.log("hr",xhr);
-  //     }
-  // });
-}
-// var contactId = `${<p>{'request.params.id'}</p>}`;
-// console.log("liquid code..", contactId)
-
-
-const commonFieldMappingSave =(guId:any,_result:any,itemKey:any,dataSource:any) => {
-console.log("result101",guId,":",_result,":",itemKey,dataSource);
-
-  if(_result.type === 'success'){
-    let JsonData = convertByteArrayToJson(_result.data)
-    const updatedData = JsonData.map((item: any) => {
-      console.log("OTem,",item);
-      if (item.key === itemKey) {
-        return  { ...item, ["value"]:dataSource,};
+    //   console.log("mapped work items....",mappedWorkItems);
+    // let _result =  saveWorkItemTypes(mappedWorkItems);
+    // console.log("result",_result);
+    if (guId) {
+      let response: any = await createMappingFile(mappedWorkItems, guId);
+      if (response.type === "success") {
+        setIsMappedSaved(true);
+        findDevopsConfigGuId(cusId, cbsId);
+      } else if (response.type === "error") {
+        setIsMappedSaved(false);
       }
-      return item;
-      
-    });
-    console.log("xxJ",JsonData);
-    console.log("fetchFieldMapping",_result);
-    console.log("updated102",updatedData);
-    if (!updatedData.some((item:any) => item.key === itemKey)) {
-      updatedData.push({ key: itemKey, value: dataSource });
+    } else {
+      createDevConfig("newRecord", true);
     }
-    console.log("updated103",updatedData);
-   // let _structureData = [{key:itemKey,value:updatedData}]
-    saveMappingData(updatedData,guId)
-    setIsModalOpen(false)
-  }
- else if(_result.type === 'error'){
-  let _structureData = [{key:itemKey,value:dataSource}]
-  saveMappingData(_structureData,guId)
-  setIsModalOpen(false)
- }
-}
-// condition to Enable Final devops button to connect..
-const checkFinalMappingStatus = (array:[], column:string) => {
-  console.log("inside condition: ", array.every(element => element[column]));
-  return array.every(element => element[column] === true);
-};
-console.log("final condition ::", checkFinalMappingStatus(retrieveDevopsMapping,"fieldMapping"), checkFinalMappingStatus(retrieveDevopsMapping,"isCorrectlyMapped"))
+    console.log("defaultGuId", defaultGuId);
+  };
+
+  console.log("call back :", mappedWorkItems);
+
+  const createDevConfig = async (
+    recordType: any = "newRecord",
+    isCreateMapping: boolean = false
+  ) => {
+    const currentTime = new Date();
+    const hours = currentTime.getHours();
+    const minutes = currentTime.getMinutes();
+    const seconds = currentTime.getSeconds();
+
+    console.log("cbs******", cbsId, cusId);
+
+    var record: any = {};
+    record.gyde_name = `react config ${recordType}${hours}${minutes}${seconds}`;
+    record["gyde_customerorpartner@odata.bind"] =
+      recordType === "default" ? `/accounts(${_pId})` : `/accounts(${cusId})`; // Lookup
+    record[
+      "gyde_customerbusinesssurvey@odata.bind"
+    ] = `/gyde_customerbusinesssurveies(${cbsId})`; // Lookup
+    //add  name default true;
+    console.log("record1", record);
+    let newId = await createDevConfigApi(record);
+    if (newId) {
+      recordType === "default" && setDefaultGuId(newId),
+        saveDefaultMappingData(newId).then((response: any) => {
+          if (response.type === "success") {
+            console.error("success")
+          } else if (response.type === "error") {
+            console.error("Error:", response.error.message);
+          }
+        })
+        .catch((error: any) => {
+          console.error("Unexpected error:", error);
+        });
+      recordType === "newRecord" && setGuId(newId);
+      if (isCreateMapping) {
+        let response: any = await createMappingFile(mappedWorkItems, newId);
+
+        if (response.type === "success") {
+          setIsMappedSaved(true);
+        } else if (response.type === "error") {
+          setIsMappedSaved(false);
+        }
+      }
+      console.log("newId", newId);
+    }
+  };
+  const commonFieldMappingSave = (
+    guId: any,
+    _result: any,
+    itemKey: any,
+    dataSource: any,
+    _defaultDataSource:any = []
+  ) => {
+    console.log("result101", guId, ":", _result, ":", itemKey, dataSource);
+
+    console.log("tag33:", _defaultDataSource,_defaultDataSource.every((field: any) => {
+      console.log("A12", field.isSelected);
+      return  field.isSelected === true
+    }));
+    let _isSelectedField = _defaultDataSource.every((field: any) => field.isSelected);
+    const filteredObjects = _defaultDataSource.filter(
+      (item: any) => item.pickListArr?.length > 0
+    );
+    console.log("filterOv",filteredObjects);
+    
+    let _isCompletePickList = filteredObjects.every(
+      (field: any) => field.isPickListComplete
+    );
+    let isCompleted = _isSelectedField & _isCompletePickList;
+    let mappingStatus = {key: mappedField, value: isCompleted }
+    console.log("isCompleted:",mappingStatus, isCompleted,_isSelectedField ,_isCompletePickList,_isSelectedField & _isCompletePickList);
+    if (_result.type === "success") {
+      const _resultData = JSON.parse(_result.data);
+      const updatedData = _resultData.map((item: any) => {
+        if (item.key === itemKey) {
+          return { ...item, ["value"]: dataSource };
+        }
+        return item;
+      });
+      if (!updatedData.some((item: any) => item.key === itemKey)) {
+        updatedData.push({ key: itemKey, value: dataSource });
+      }
+      console.log("updated103", updatedData);
+      saveFieldmappingData(updatedData, guId,mappingStatus);
+    } else if (_result.type === "error") {
+      console.log("ABCCALLERR");
+      let _structureData = [{ key: itemKey, value: dataSource }];
+      saveFieldmappingData(_structureData, guId,mappingStatus);
+    }
+  };
+  // condition to Enable Final devops button to connect..
+  const checkFinalMappingStatus = (array: [], column: string) => {
+    console.log(
+      "inside condition: ",
+      array.every((element) => element[column])
+    );
+    return array.every((element) => element[column] === true);
+  };
+  console.log(
+    "final condition ::",
+    checkFinalMappingStatus(retrieveDevopsMapping, "fieldMapping"),
+    checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
+  );
+
+  const saveFieldmappingData = (data: any, guId: any,mappingStatus:any) => {
+    saveMappingData(data, guId)
+      .then((result: any) => {
+        if (result.type === "success") {
+          setIsSavedCompleteFlag(mappingStatus);
+          setIsModalOpen(false);
+        } else {
+          console.error("Save failed with status:", result.status);
+          setIsModalOpen(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Error occurred:", error);
+        setIsModalOpen(false);
+      });
+  };
+  
   return (
     <div className="devops-container">
       <Spin spinning={isLoading}>
         <h1 className="title">DevOps Work Items</h1>
         <div className="bg-wrap">
-        <h3 className="sub-title">
-          <span>Connection Details</span>
-          <span>
-            {" "}
-            <h5 className="sub-title2">{configurationData?.gyde_name} </h5>
-          </span>
-        </h3>
-        <ConnectionComponent
-          setWorkItemData={(res: any) => {
-            setDevopsWorkItemTypes(res?.data?.Value), setDevopsResult(res?.data?.Value ? true :false);
-          }}
-          connectionFetch={(res:any)=>setDevopsResult(res)}        />
-        <div className="text-left mb-20">
-        </div>
-        {devopsResult && (
-          <>
-            {(dataAfterSave?.length >0 && checkFinalMappingStatus(dataAfterSave,"fieldMapping") && checkFinalMappingStatus(dataAfterSave,"isCorrectlyMapped")) && <Radio.Group
-              options={[
-                { label: "DevOps Generator", value: "devopsGenerator" },
-                { label: "Configure Mapping", value: "configureMapping" },
-              ]}
-              onChange={handleConfigure}
-              value={configureSettings}
-              optionType="button"
-              buttonStyle="solid"
-            /> }
-
-            <h3 className="sub-title">Mapping - Work Item Types</h3>
-            <TableComponent
-              dataSource={retrieveDevopsMapping}
-              columns={workItemColumns}
-              onMapping={() => {}}
-              size="small"
-              scroll={{ y: 300 }}
-              isModelopen={false}
-              // loading={loading}
-              modelAction={showModal}
-              className={
-                configureSettings == "devopsGenerator" ? "disable-table" : ""
-              }
-              setDropDownValue={(data: any) => setSelectedWorkItem(data)}
-              
-
-              // rowClassName={
-              //   configureSettings == "devopsGenerator" ? "disable-table" : ""
-              // }
-              // disabled={configureSettings == "devopsGenerator" ? true : false}
-              saveMappingItems={(data:any)=>setMappedWorkItems(data)}
-              setMappingType={setmMppedField}
-              isPicklistModel={false}
-              setWorkitemTypeData={setWorkitemTypeData}
-              
-            />
-
+          <h3 className="sub-title">
+            <span>Connection Details</span>
             <span>
-              <Button
-                className="cancel-btn mr-10"
-                type="primary"
-                htmlType="button"   
-                onClick={() => {                
-                  window.location.href = `/${_navigateUrl}`               
-                }}
-              >
-                Cancel
-              </Button>
-              
-              {(dataAfterSave?.length >0 && checkFinalMappingStatus(dataAfterSave,"fieldMapping") && checkFinalMappingStatus(dataAfterSave,"isCorrectlyMapped") || configureSettings == "devopsGenerator" )? 
-              (<Button type="primary" htmlType="button" onClick={()=>''}>
-                Next
-              </Button>)
-              :(
-              <Button type="primary" htmlType="button" onClick={handleMappingItemSave}>
-                Save
-              </Button>)}
-              {/* <div>{`% assign deactivateCustomerBusinessSurveyFlowUrl = settings["DeactivateCustomerBusinessSurveyFlowURL"]%`}
+              {" "}
+              <h5 className="sub-title2">{configurationData?.gyde_name} </h5>
+            </span>
+          </h3>
+          <ConnectionComponent
+            setWorkItemData={(res: any) => {
+              setDevopsWorkItemTypes(res?.data?.Value),
+                setDevopsResult(res?.data?.Value ? true : false);
+            }}
+            connectionFetch={(res: any) => setDevopsResult(res)}
+          />
+          <div className="text-left mb-20"></div>
+          {devopsResult && (
+            <>
+              {dataAfterSave?.length > 0 &&
+                checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
+                checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") && (
+                  <Radio.Group
+                    options={[
+                      { label: "DevOps Generator", value: "devopsGenerator" },
+                      { label: "Configure Mapping", value: "configureMapping" },
+                    ]}
+                    onChange={handleConfigure}
+                    value={configureSettings}
+                    optionType="button"
+                    buttonStyle="solid"
+                  />
+                )}
+
+              <h3 className="sub-title">Mapping - Work Item Types</h3>
+              <TableComponent
+                dataSource={dataSource1}
+                columns={workItemColumns}
+                onMapping={() => {}}
+                size="small"
+                scroll={{ y: 300 }}
+                isModelopen={false}
+                // loading={loading}
+                modelAction={showModal}
+                className={
+                  configureSettings == "devopsGenerator" ? "disable-table" : ""
+                }
+                setDropDownValue={(data: any) => setSelectedWorkItem(data)}
+                // rowClassName={
+                //   configureSettings == "devopsGenerator" ? "disable-table" : ""
+                // }
+                // disabled={configureSettings == "devopsGenerator" ? true : false}
+                saveMappingItems={(data: any) => setMappedWorkItems(data)}
+                setMappingType={setmMppedField}
+                isPicklistModel={false}
+                setWorkitemTypeData={setWorkitemTypeData}
+              />
+
+              <span>
+                <Button
+                  className="cancel-btn mr-10"
+                  type="primary"
+                  htmlType="button"
+                  onClick={() => {
+                    window.location.href = `/${_navigateUrl}`;
+                  }}
+                >
+                  Cancel
+                </Button>
+
+                {(dataAfterSave?.length > 0 &&
+                  checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
+                  checkFinalMappingStatus(
+                    dataAfterSave,
+                    "isCorrectlyMapped"
+                  )) ||
+                configureSettings == "devopsGenerator" ? (
+                  <Button type="primary" htmlType="button" onClick={() => ""}>
+                    Next
+                  </Button>
+                ) : (
+                  <Button
+                    type="primary"
+                    htmlType="button"
+                    onClick={handleMappingItemSave}
+                  >
+                    Save
+                  </Button>
+                )}
+                {/* <div>{`% assign deactivateCustomerBusinessSurveyFlowUrl = settings["DeactivateCustomerBusinessSurveyFlowURL"]%`}
               <input type="hidden" id="deactivateCustomerBusinessSurveyFlowUrl" value="{{deactivateCustomerBusinessSurveyFlowUrl}}" /></div> */}
-       
-          {/* <h3 className="sub-title">
+
+                {/* <h3 className="sub-title">
             <span>Connection Details</span>
             <span>
               {" "}
@@ -1075,7 +1074,7 @@ console.log("final condition ::", checkFinalMappingStatus(retrieveDevopsMapping,
                     setDataArr={setDataArr}
                     setFieldDataArr={setFieldDataArr}
                     isPicklistModel={false}
-                    currentPickListData ={dataArr}
+                    currentPickListData={dataArr}
                     setMappingType={setmMppedField}
                   />
 
@@ -1087,10 +1086,10 @@ console.log("final condition ::", checkFinalMappingStatus(retrieveDevopsMapping,
                     }}
                   >
                     <Button
-                    className="ant-btn-default cancel-btn"
+                      className="ant-btn-default cancel-btn"
                       onClick={(e) => {
                         /* Handle button click */
-                        handleCancel()
+                        handleCancel();
                       }}
                       style={{ marginLeft: "5px" }}
                     >
@@ -1099,7 +1098,7 @@ console.log("final condition ::", checkFinalMappingStatus(retrieveDevopsMapping,
                     <Button
                       className="ant-btn-primary"
                       onClick={(e) => {
-                        savePopupModelData("Default")
+                        savePopupModelData("Default");
                         /* Handle button click */
                       }}
                       style={{ marginLeft: "5px" }}
@@ -1108,8 +1107,8 @@ console.log("final condition ::", checkFinalMappingStatus(retrieveDevopsMapping,
                     </Button>
                     <Button
                       className="ant-btn-primary"
-                      onClick={()=>{
-                        savePopupModelData("Save")
+                      onClick={() => {
+                        savePopupModelData("Save");
                       }}
                       style={{ marginLeft: "5px" }}
                     >

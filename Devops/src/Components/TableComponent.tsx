@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Table, Select, Input, Button, Collapse, Form ,Typography, Result} from "antd";
+import {
+  Table,
+  Select,
+  Input,
+  Button,
+  Collapse,
+  Form,
+  Typography,
+  Result,
+} from "antd";
 import { TableProps } from "antd/lib/table";
 import LinkOutLined from "@ant-design/icons";
 import PopupComponent from "./PopupComponent";
@@ -21,18 +30,19 @@ interface CommonTableProps extends TableProps<any> {
   modelAction: any;
   isModelopen: boolean;
   setDropDownValue?: any;
-  isPicklistModel?:boolean;
-  setDataArr?:any;
-  setFieldDataArr?:any;
-  disabled?:boolean;
-  FieldDataSource?:any[];
-  currentRecordKey?:any;
-  pickListDataSource?:any
-  currentPickListData?:any;
-  defaultPickListData?:any;
-  saveMappingItems?:any;
-  setMappingType?:any
-  setWorkitemTypeData?:any
+  isPicklistModel?: boolean;
+  setDataArr?: any;
+  setFieldDataArr?: any;
+  disabled?: boolean;
+  FieldDataSource?: any[];
+  currentRecordKey?: any;
+  pickListDataSource?: any;
+  currentPickListData?: any;
+  defaultPickListData?: any;
+  saveMappingItems?: any;
+  setMappingType?: any;
+  setWorkitemTypeData?: any;
+  setPickListArr?: any;
 }
 
 interface TableColumn {
@@ -43,7 +53,6 @@ interface TableColumn {
   textField?: boolean;
   buttonField?: boolean;
   accordionContent?: string;
-  
 }
 
 // const dataSource = [
@@ -76,6 +85,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   disabled,
   setMappingType,
   saveMappingItems,
+  setPickListArr,
   setWorkitemTypeData,
   ...rest
 }) => {
@@ -85,36 +95,35 @@ const TableComponent: React.FC<CommonTableProps> = ({
     [key: string]: string | null;
   }>({});
   const [dropDownOptions, setDropDownOptions] = useState<any>([]);
-  const [isPickListModelOpen,setIsPickLisModalOpen] = useState<boolean>(false);
-  const [pickListColoumn,setPickListColoumn] = useState<any>([]);
-  const [pickListData,setPickListData] = useState<any>([]);
-  const [pickListFlag,setPickListFlag] = useState<any>([]);
-  const [currentRecord,setCurrentRecord] = useState<any>([]);
-  const [defaultPickListRecord,setDefaultPickListRecord] = useState<any>([]);
-  
+  const [isPickListModelOpen, setIsPickLisModalOpen] = useState<boolean>(false);
+  const [pickListColoumn, setPickListColoumn] = useState<any>([]);
+  const [pickListData, setPickListData] = useState<any>([]);
+  const [pickListFlag, setPickListFlag] = useState<any>([]);
+  const [currentRecord, setCurrentRecord] = useState<any>([]);
+  const [defaultPickListRecord, setDefaultPickListRecord] = useState<any>([]);
+
   useEffect(() => {
     // Update the PCF control's context or notify changes here
     // Pass the updated tableData to the PCF framework
     // You may need to use specific PCF methods or update the control's properties/state
     console.log("data ===> ", tableData);
-    console.log("pickListFlag",pickListFlag);
-    
-  
-    console.log("isPicklist",isPickListModelOpen);
+    console.log("pickListFlag", pickListFlag);
+
+    console.log("isPicklist", isPickListModelOpen);
   }, [tableData]);
 
-  useEffect(()=>{
-    if(tableData && !isModelopen){
-      const mappingFlag = tableData?.map((data:any)=>{
-      return {
+  useEffect(() => {
+    if (tableData && !isModelopen) {
+      const mappingFlag = tableData?.map((data: any) => {
+        return {
           ...data,
-          isCorrectlyMapped: data?.gyde_name ? true : false
-      }
-    })
-    saveMappingItems(mappingFlag);
-    console.log("check mapping..",mappingFlag);
+          isCorrectlyMapped: data?.gyde_name ? true : false,
+        };
+      });
+      saveMappingItems(mappingFlag);
+      console.log("check mapping..", mappingFlag);
     }
-  },[tableData])
+  }, [tableData]);
 
   const renderDropdown = (
     options: string[],
@@ -125,28 +134,33 @@ const TableComponent: React.FC<CommonTableProps> = ({
     const error = dropdownErrors[dataIndex];
     const isError = !!error;
     setDropDownOptions(options);
-    console.log("crrt Now",record );
+    console.log("record Now", record);
     console.log("isModelopen Now", isModelopen ? record : "");
-    console.log(" record?.dropdown.length", isModelopen && record?.dropdown?.length);
-    
-    let currentValue = isModelopen && record?.dropdown?.length  ?   record?.dropdown?.find(
-        (dropDownData: any) =>
-          record.sourceWorkItem === dropDownData.dropdownValue
-      )
-      : "N/A"
+
+    let currentValue =
+      isModelopen && record?.dropdown?.length
+        ? record?.dropdown?.find(
+            (dropDownData: any) =>
+              record.sourceWorkItem === dropDownData.dropdownValue
+          )
+        : "N/A";
     console.log("currentValuecurrentValue", currentValue);
     console.log("options======> ", options);
 
-  
-    isPicklistModel && console.log("defaultData1:",record,":|",defaultPickListData);
-     let currentRecordValue =  isPicklistModel  && defaultPickListData.length ? defaultPickListData.filter((items:any) => items.crmOption === record.souruceOption).map((_data:any) => _data.devOpsOption ) : []
-console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
+    isPicklistModel &&
+      console.log("defaultData1:", record, ":|", defaultPickListData);
+    let currentRecordValue =
+      isPicklistModel && defaultPickListData.length
+        ? defaultPickListData
+            .filter((items: any) => items.crmOption === record.souruceOption)
+            .map((_data: any) => _data.devOpsOption)
+        : [];
 
-    return isModelopen && record?.isText  ?  <div>
-   <Text>{record?.devopsWorkItem}</Text>
-    
-    </div>   :(
-
+    return isModelopen && record?.isText ? (
+      <div>
+        <Text>{record?.devopsWorkItem}</Text>
+      </div>
+    ) : (
       <div
         style={{
           display: "flex",
@@ -166,8 +180,25 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
                     borderColor: isError ? "red" : undefined,
                   }}
                   defaultValue={
-                    isModelopen && record.isSavedType === "saved" ?  record?.devopsWorkItem ?  record?.devopsWorkItem : 
-                    currentValue?.dropdownValue ? currentValue?.dropdownValue : "N/A" :record.isSavedType === "setasDefault" ?  record?.devopsWorkItem ? record?.devopsWorkItem : currentValue?.dropdownValue ? currentValue?.dropdownValue :"N/A" :record.isSavedType === "default"? currentValue?.dropdownValue ? currentValue?.dropdownValue  :record?.devopsWorkItem ? record?.devopsWorkItem: "N/A" : "N/A"
+                    isModelopen && record.isSavedType === "saved"
+                      ? record?.devopsWorkItem
+                        ? record?.devopsWorkItem
+                        : currentValue?.dropdownValue
+                        ? currentValue?.dropdownValue
+                        : ""
+                      : record.isSavedType === "setasDefault"
+                      ? record?.devopsWorkItem
+                        ? record?.devopsWorkItem
+                        : currentValue?.dropdownValue
+                        ? currentValue?.dropdownValue
+                        : ""
+                      : record.isSavedType === "default"
+                      ? currentValue?.dropdownValue
+                        ? currentValue?.dropdownValue
+                        : record?.devopsWorkItem
+                        ? record?.devopsWorkItem
+                        : ""
+                      : ""
                   }
                   onChange={(value) => {
                     handleFieldChange(record.key, dataIndex, value);
@@ -186,52 +217,54 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
                       {_data.dropdownValue}
                     </Option>
                   ))}
-                   <Option key={"NA"} value={"N/A"}>
-                N/A
-              </Option>
+                  <Option key={"NA"} value={"N/A"}>
+                    N/A
+                  </Option>
                 </Select>
               </>
             ) : (
               <Select
-              style={{
-                width: "100%",
-                borderColor: isError ? "red" : undefined,
-              }}
-               value={isModelopen ? currentValue?.dropdownValue : record?.gyde_name}
-              defaultValue= {isPicklistModel ? currentRecordValue[0]:record?.gyde_name}
-              onChange={(value) => {
-                handleFieldChange(record.key, dataIndex, value);
-              }}
-              disabled={disabled}
-              // onBlur={() => handleDropdownBlur(dataIndex)}
-            >
-              {options.map((option: any) => {
-               
-              // console.log("CCCCC",record?.souruceOption)
-          //      let _value =  defaultPickListData?.length && defaultPickListData.find((defaultValue:any) => defaultValue=== option) 
-          //  console.log("_value1",_value);
-         
-                return (
-                  <Option key={option} value={option} >
-                  {option}
-                </Option>
-                )
-              }
-                
-                
-              )}
-                {!isPicklistModel ? <Option key={"NA"} value={"N/A"}>
-                N/A
-              </Option> : "" }
+                style={{
+                  width: "100%",
+                  borderColor: isError ? "red" : undefined,
+                }}
+                value={
+                  isModelopen ? currentValue?.dropdownValue : record?.gyde_name
+                }
+                defaultValue={
+                  isPicklistModel ? currentRecordValue[0] : record?.gyde_name
+                }
+                onChange={(value) => {
+                  handleFieldChange(record.key, dataIndex, value);
+                }}
+                disabled={disabled}
+                // onBlur={() => handleDropdownBlur(dataIndex)}
+              >
+                {options.map((option: any) => {
+                  // console.log("CCCCC",record?.souruceOption)
+                  //      let _value =  defaultPickListData?.length && defaultPickListData.find((defaultValue:any) => defaultValue=== option)
+                  //  console.log("_value1",_value);
 
-            </Select>
+                  return (
+                    <Option key={option} value={option}>
+                      {option}
+                    </Option>
+                  );
+                })}
+                {!isPicklistModel ? (
+                  <Option key={"NA"} value={"N/A"}>
+                    N/A
+                  </Option>
+                ) : (
+                  ""
+                )}
+              </Select>
             )}
-            
+
             {isError && <div style={{ color: "red" }}>{error}</div>}
           </>
         )}
       </div>
-     
     );
   };
 
@@ -247,33 +280,37 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
       (item: any) => item == record?.country
     );
     const notNull = Boolean(record?.country);
-    console.log("qqqqq", text);
     console.log("recordBTN", record);
 
-    let pickListCompletedFlag =  isModelopen && Object.keys(record?.defaultOptionList).length && record?.defaultOptionList.defaultOptionList.filter((pickList:any)=>pickList.devOpsOption).every((f:any) => f !==  undefined)
-   console.log("pickListCompletedFlag",pickListCompletedFlag);
-   
-   const checkMappedStatus = () => {
-    if(isModelopen){
-      if(record?.isPickListComplete){
-        return "https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1";
-      }else{
-        return "https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png" ;
+    let pickListCompletedFlag =
+      isModelopen &&
+      Object.keys(record?.defaultOptionList).length &&
+      record?.defaultOptionList.defaultOptionList
+        .filter((pickList: any) => pickList.devOpsOption)
+        .every((f: any) => f !== undefined);
+    console.log("pickListCompletedFlag", pickListCompletedFlag);
+
+    const checkMappedStatus = () => {
+      if (isModelopen) {
+        if (record?.isPickListComplete) {
+          return "https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1";
+        } else {
+          return "https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png";
+        }
+      } else {
+        if (record?.fieldMapping) {
+          return "https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1";
+        } else {
+          return "https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png";
+        }
       }
-    }else{
-      if(record?.fieldMapping){
-        return "https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1";
-      }else{
-        return "https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png" ;
-      }
-    }
-   }
+    };
 
     return (
       <div>
         {record?.enable && (
           <img
-            src= {checkMappedStatus()}
+            src={checkMappedStatus()}
             alt="1"
             style={{ marginLeft: 100 }}
             width={20}
@@ -289,11 +326,11 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
   const handleButtonClick = (record: any) => {
     console.log("Button clicked for record:", record);
     //setWorkitemTypeData({source:record.name,devOps:record.gyde_name})
-     record?.gyde_name &&setMappingType(record.gyde_name) 
-    if(!disabled){
-        isModelopen ?  showPickListModal(record) :  setDropDownValue(record);  modelAction()
+    record?.name && setMappingType(record.name);
+    if (!disabled) {
+      isModelopen ? showPickListModal(record) : setDropDownValue(record);
+      modelAction();
     }
-
   };
 
   const renderAccordion = (content: string) => (
@@ -306,65 +343,63 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
 
   const handleFieldChange = (key: string, dataIndex: string, value: any) => {
     // handleDropdownBlur(dataIndex);
-  console.log("qqqwq",FieldDataSource,currentRecordKey);
- if(isPicklistModel){
-  let currentValue = isModelopen && value !== "N/A" && JSON.parse(value);
-  const updatedData = tablePickListData.map((item: any) => {
-    console.log("OTem,",item);
-    
-    if (item.key === key) {
-      return value == "N/A"
-        ? { ...item, [dataIndex]: value, enable: false,isSelected:true }
-        : { ...item, [dataIndex]:value, enable: true ,isSelected:true};
+    console.log("handleFieldChange", FieldDataSource, currentRecordKey);
+    if (isPicklistModel) {
+      const updatedData = tablePickListData.map((item: any) => {
+        if (item.key === key) {
+          return value == "N/A"
+            ? { ...item, [dataIndex]: value, enable: false, isSelected: true }
+            : { ...item, [dataIndex]: value, enable: true, isSelected: true };
+        }
+        return item;
+      });
+
+      console.log("updatedData PickList", updatedData);
+      setTablePickData(updatedData);
+      setDataArr(updatedData);
+      console.log("tablePi", tablePickListData);
+    } else {
+      console.log("all params :", key, dataIndex, value);
+      const changedField = tableData?.find((item: any) => item?.key == key);
+      let currentValue = isModelopen && value !== "N/A" && JSON.parse(value);
+      const updatedData = tableData.map((item: any) => {
+        if (item.key === key) {
+          return value == "N/A"
+            ? { ...item, [dataIndex]: value, enable: false, isSelected: true }
+            : isModelopen
+            ? currentValue?.isPicklist
+              ? {
+                  ...item,
+                  [dataIndex]: currentValue.value,
+                  ["defaultOptionList"]: [],
+                  enable: true,
+                  isSelected: true,
+                  ["isPickListComplete"]: false,
+                }
+              : {
+                  ...item,
+                  [dataIndex]: currentValue.value,
+                  ["defaultOptionList"]: [],
+                  enable: false,
+                  isSelected: true,
+                  ["isPickListComplete"]: false,
+                }
+            : { ...item, [dataIndex]: value, enable: true, isSelected: true };
+        }
+        return item;
+      });
+      console.log("changedField  ===> ", changedField);
+      console.log("updatedDataupdatedData", updatedData);
+
+      setTableData(updatedData);
+      isModelopen && setFieldDataArr(updatedData);
     }
-    return item;
-    
-  });
-  
 
-  console.log("updatedData PickList",updatedData);
-  console.log("qqqwq",FieldDataSource,currentRecordKey,updatedData,isPicklistModel)
-  setTablePickData(updatedData)
-  setDataArr(updatedData)
-  console.log("tablePi",tablePickListData);
-  
-
- }
- else {
-  console.log("all params :", key, dataIndex, value);
-  console.log("come field change =======> ", key, dataIndex, value);
-  const changedField = tableData?.find((item: any) => item?.key == key);
-  let currentValue = isModelopen && value !== "N/A" && JSON.parse(value);
-  console.log("come field change =======> ", key, dataIndex, value);
-
-  const updatedData = tableData.map((item: any) => {
-    if (item.key === key) {
-      return value == "N/A"
-        ? { ...item, [dataIndex]: value, enable: false,isSelected:true }
-        : isModelopen
-        ? currentValue?.isPicklist
-          ? { ...item, [dataIndex]: currentValue.value,  ["defaultOptionList"]: [],enable: true, isSelected:true,["isPickListComplete"] :false}
-          : { ...item, [dataIndex]: currentValue.value, ["defaultOptionList"]: [],enable: false,isSelected:true ,["isPickListComplete"]:false}
-        : { ...item, [dataIndex]: value, enable: true ,isSelected:true};
-    }
-    return item;
-  });
-  console.log("changedField  ===> ", changedField);
-  console.log("updatedDataupdatedData",updatedData);
-
-  setTableData(updatedData);
-  isModelopen && setFieldDataArr(updatedData)
- }
-   
     // isPicklistModel === false &&  setFieldDataArr(updatedData)
 
-    
     //savePopupModelData(updatedData)
-    
-   
-    
+
     // handleDropdownBlur(dataIndex);
-    
   };
 
   const handleDropdownBlur = (dataIndex: string) => {
@@ -397,12 +432,15 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
     } = column;
 
     let renderCell;
-    console.log("xxcccc",dataIndex,
-    dropdownOptions,
-    textField,
-    buttonField,
-    accordionContent,);
-    
+    console.log(
+      "xxcccc",
+      dataIndex,
+      dropdownOptions,
+      textField,
+      buttonField,
+      accordionContent
+    );
+
     if (dropdownOptions) {
       renderCell = (text: string, record: any) =>
         renderDropdown(dropdownOptions, record, dataIndex, column);
@@ -415,7 +453,6 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
       renderCell = (text: string, record: any) =>
         renderButton(text, record, dataIndex);
     }
-    console.log("aq", dataIndex, renderCell);
 
     return {
       dataIndex,
@@ -426,46 +463,59 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
 
   /** picklist popup model */
   const workItemColumns = [
-    { title: 'SOURCE OPTION', dataIndex: 'souruceOption', key: 'souruceOption' },
-    { title: 'DEVOPS TARGET OPTION', dataIndex: 'devopsOption', key: 'devopsOption', dropdownOptions: pickListColoumn },
+    {
+      title: "SOURCE OPTION",
+      dataIndex: "souruceOption",
+      key: "souruceOption",
+    },
+    {
+      title: "DEVOPS TARGET OPTION",
+      dataIndex: "devopsOption",
+      key: "devopsOption",
+      dropdownOptions: pickListColoumn,
+    },
   ];
-  const showPickListModal = (record:any) => { 
-    console.log("picklistmodel record:",record);
-    record &&  setCurrentRecord(record?.key)
-    console.log("picklistModel current Record:",currentRecord);
-    
- 
-    if(record.isText === false){
-  
-       const _optionDataSource = record.dropdown.filter((option:any)=> {
-        if(record.devopsWorkItem) return option.dropdownValue === record?.devopsWorkItem
-        else  return option.dropdownValue === record?.sourceWorkItem
-       }).map((item:any,key:any)=> {
-       let crm =   item.option[0].crmOption.map((crmoption:any,key:any) => {
-          return {key:key,souruceOption:crmoption}
-        } )
-        let devops =   item.option[0].devOpsOption.map((devOpsoption:any) => {
-          return devOpsoption;
-        } )
-        return  {tableDataSource:crm,optionList:devops}
-      })
-      console.log("_optionataSource",_optionDataSource);
-      setPickListData(_optionDataSource[0].tableDataSource)
-      setPickListColoumn(_optionDataSource[0].optionList)
+  const showPickListModal = (record: any) => {
+    console.log("picklistmodel record:", record);
+    record && setCurrentRecord(record?.key);
+    console.log("picklistModel current Record:", currentRecord);
 
-      
+    if (record.isText === false) {
+      const _optionDataSource = record.dropdown
+        .filter((option: any) => {
+          if (record.devopsWorkItem)
+            return option.dropdownValue === record?.devopsWorkItem;
+          else return option.dropdownValue === record?.sourceWorkItem;
+        })
+        .map((item: any, key: any) => {
+          let crm = item.option[0].crmOption.map((crmoption: any, key: any) => {
+            return { key: key, souruceOption: crmoption };
+          });
+          let devops = item.option[0].devOpsOption.map((devOpsoption: any) => {
+            return devOpsoption;
+          });
+          return { tableDataSource: crm, optionList: devops };
+        });
+      console.log("_optionataSource", _optionDataSource);
+      setPickListData(_optionDataSource[0].tableDataSource);
+      setPickListColoumn(_optionDataSource[0].optionList);
 
-      const { crmOption =[], devOpsOption =[] } =  Object.keys(record.defaultOptionList).length && record.defaultOptionList.defaultOptionList[0];
-     const result =crmOption.length && crmOption.map((value:any, index:any) => ({ crmOption: value, devOpsOption: devOpsOption[index] === undefined ? null: devOpsOption[index]}));
-     
-     console.log(result);
-     
-      
-        console.log("defaultRecord",result);
-        setDefaultPickListRecord(result)
+      const { crmOption = [], devOpsOption = [] } =
+        Object.keys(record.defaultOptionList).length &&
+        record.defaultOptionList.defaultOptionList[0];
+      const result =
+        crmOption.length &&
+        crmOption.map((value: any, index: any) => ({
+          crmOption: value,
+          devOpsOption:
+            devOpsOption[index] === undefined ? null : devOpsOption[index],
+        }));
+
+      console.log(result);
+
+      console.log("defaultRecord", result);
+      setDefaultPickListRecord(result);
       setIsPickLisModalOpen(true);
-
-
     }
     //else{
     //   const _defaultOptionDataSource = record?.defaultOptionList.defaultOptionList.map((option:any) => {
@@ -482,24 +532,22 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
     // setPickListColoumn(_defaultOptionDataSource[0].optionList)
     //   setIsPickLisModalOpen(true);
     //   console.log("open",isPickListModelOpen);
-      
-    // } 
-    
+
+    // }
   };
 
   const handleOk = () => {
     setIsPickLisModalOpen(false);
   };
 
-  const handleCancel = () => {    
+  const handleCancel = () => {
     setIsPickLisModalOpen(false);
-    
   };
 
-  const savePickListData = () =>{
-    console.log("click",isPicklistModel, currentPickListData)
-    if(currentPickListData.length){
-    console.log("picListDataArr",tableData,currentRecordKey)
+  const savePickListData = () => {
+    console.log("tag800", isPicklistModel, currentPickListData);
+    if (currentPickListData.length) {
+      console.log("picListDataArr", tableData, currentRecordKey);
       let devopsPickListData = currentPickListData.map(
         (f: any) => f.devopsOption
       );
@@ -511,98 +559,113 @@ console.log("ZZZZZZZZZZZZZZ",currentRecordValue);
       );
       console.log("devopsPickListData", devopsPickListData);
       console.log("devopsPickListData", _picklistFlag);
-    
-      const _result = tableData.filter((_data)=> _data.key === currentRecord
-      ).map((_field)=>{
-            if(Object.keys(_field.defaultOptionList).length){
-              const { crmOption, devOpsOption } =   _field.defaultOptionList.defaultOptionList[0]    
-              const result = crmOption.map((value:any, index:any) => ({ crmOption: value, devOpsOption: devOpsOption[index] }));
-       return result;
-      
-            } else {
-              return [];
-            }     
-      })
-      console.log("RRRRR",_result);
-      
-if(_result[0].length){
-        const updatedR = currentPickListData.map((xObj:any) => {
-          const rObj = _result[0].find((rObj:any) => rObj.crmOption === xObj.souruceOption);
+
+      const _result = tableData
+        .filter((_data) => _data.key === currentRecord)
+        .map((_field) => {
+          if (Object.keys(_field.defaultOptionList).length) {
+            const { crmOption, devOpsOption } =
+              _field.defaultOptionList.defaultOptionList[0];
+            const result = crmOption.map((value: any, index: any) => ({
+              crmOption: value,
+              devOpsOption: devOpsOption[index],
+            }));
+            return result;
+          } else {
+            return [];
+          }
+        });
+
+      console.log("RRRRR", _result);
+
+      if (_result[0].length) {
+        const updatedR = currentPickListData.map((xObj: any) => {
+          const rObj = _result[0].find(
+            (rObj: any) => rObj.crmOption === xObj.souruceOption
+          );
           if (rObj && xObj.devopsOption !== undefined) {
-              return { ...rObj, devOpsOption: xObj.devopsOption };
+            return { ...rObj, devOpsOption: xObj.devopsOption };
           }
           return rObj;
-      });
+        });
 
-      console.log("updatedR",currentRecord,currentPickListData,_result,updatedR);
+        console.log('updatedR',
+          updatedR
+        );
+
+        let _matchDevopsPickListData = updatedR.map((f: any) => f.devOpsOption);
+        let _updatedpicklistFlag = _matchDevopsPickListData.every(
+          (f: any) => f !== undefined && f !== null
+        );
+        let matchCrmPickListData = updatedR.map((f: any) => f.crmOption);
 
 
-      let _matchDevopsPickListData = updatedR.map(
-        (f: any) => f.devOpsOption
-      );
-      let _updatedpicklistFlag = updatedR.every(
-        (f: any) => f.devOpsOption !== undefined
-      );
-      let matchCrmPickListData = updatedR.map(
-        (f: any) => f.crmOption
-      );
+        console.log("tg4",_matchDevopsPickListData,matchCrmPickListData ,_updatedpicklistFlag);
+        
 
-      let pickListItems = [
-        {
-          crmOption: matchCrmPickListData,
-          devOpsOption: _matchDevopsPickListData,
-        },
-      ];
+        let pickListItems = [
+          {
+            crmOption: matchCrmPickListData,
+            devOpsOption: _matchDevopsPickListData,
+          },
+        ];
 
-      let updateditems = tableData?.map((field: any) => {
-        if (field.key == currentRecord) {
-          return {
-            ...field,
-            ["defaultOptionList"]: { defaultOptionList: pickListItems },
-            ["isPickListComplete"]:_updatedpicklistFlag
-          };
-        }
-        console.log("field", field);
+        let updateditems = tableData?.map((field: any) => {
+          if (field.key == currentRecord) {
+            const updatedPickListName = field.isPickListComplete
+              ? [...field.isPickListComplete, currentRecord]
+              : [currentRecord];
+            return {
+              ...field,
+              ["defaultOptionList"]: { defaultOptionList: pickListItems },
+              ["isPickListComplete"]: _updatedpicklistFlag,
+              ["pickListArr"]: updatedPickListName,
+            };
+          }
+          console.log("field", field);
 
-        return field;
-      });
-      console.log("picklistSave",updateditems);
+          return field;
+        });
+        console.log("picklistSave", updateditems);
 
-      setTableData(updateditems)
-      setFieldDataArr(updateditems)
-      setPickListFlag(_picklistFlag)
-}else {
-  console.log(" default");
-  
-          let pickListItems = [
-            {
-              crmOption: crmPickListData,
-              devOpsOption: devopsPickListData,
-            },
-          ];
-          
-          let updateditems = tableData?.map((field: any) => {
-            if (field.key == currentRecord) {
-              return {
-                ...field,
-                ["defaultOptionList"]: { defaultOptionList: pickListItems },
-                ["isPickListComplete"]:_picklistFlag
-              };
-            }
-            console.log("field", field);
+        setTableData(updateditems);
+        setFieldDataArr(updateditems);
+        setPickListFlag(_picklistFlag);
+      } else {
+        console.log(" default");
 
-            return field;
-          });
-          console.log("picklistSave",updateditems);
+        let pickListItems = [
+          {
+            crmOption: crmPickListData,
+            devOpsOption: devopsPickListData,
+          },
+        ];
 
-          setTableData(updateditems)
-          setFieldDataArr(updateditems)
-          setPickListFlag(_picklistFlag)
-}
-  
+        let updateditems = tableData?.map((field: any) => {
+          if (field.key == currentRecord) {
+            const updatedPickListName = field.isPickListComplete
+              ? [...field.isPickListComplete, currentRecord]
+              : [currentRecord];
+            return {
+              ...field,
+              ["defaultOptionList"]: { defaultOptionList: pickListItems },
+              ["isPickListComplete"]: _picklistFlag,
+              ["pickListArr"]: updatedPickListName,
+            };
+          }
+          console.log("field", field);
 
-     // setDataArr({key:currentRecordKey,updatedData})
-    }else{
+          return field;
+        });
+        console.log("picklistSave", updateditems);
+
+        setTableData(updateditems);
+        setFieldDataArr(updateditems);
+        setPickListFlag(_picklistFlag);
+      }
+
+      // setDataArr({key:currentRecordKey,updatedData})
+    } else {
       console.log("not default");
       let updateditems = tableData?.map((field: any) => {
         if (field.key == currentRecord) {
@@ -615,53 +678,77 @@ if(_result[0].length){
 
         return field;
       });
-      console.log("picklistSave",updateditems);
+      console.log("picklistSave", updateditems);
 
-      setTableData(updateditems)
-      setFieldDataArr(updateditems)
-
+      setTableData(updateditems);
+      setFieldDataArr(updateditems);
     }
-    setIsPickLisModalOpen(false)
+    setIsPickLisModalOpen(false);
     //console.log("pickListSavedData",pickListSavedData);
-    setIsPickLisModalOpen(false)
-  }
-
+    setIsPickLisModalOpen(false);
+  };
 
   return (
     <div>
-       {isPickListModelOpen  &&  <PopupComponent 
-        visible={isPickListModelOpen} onOk={handleOk} onClose={handleCancel}
-         buttons={[{title: "Cancel", onClickHandler: ""}, {title: "Set as Default", onClickHandler: ""} ,{title: "Save", onClickHandler: ""}]} 
-         Content={ <>
-         <TableComponent 
-                    dataSource={tableData} 
-                    pickListDataSource ={pickListData}
-                    columns={workItemColumns} 
-                    onMapping={() => {}}   
-                    size='small'scroll={{ y: 300 }} 
-                    modelAction={showPickListModal} 
-                    isModelopen= {false}
-                    isPicklistModel ={true}
-                     FieldDataSource ={tableData}
-                     currentRecordKey ={currentRecord}
-                     setDataArr={setDataArr}
-                     currentPickListData={currentPickListData}
-                     defaultPickListData={defaultPickListRecord}
-                     saveMappingItems={()=>{}}                  
-                  />
-                
-                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '20px' }}>
-                  <Button className='cancel-btn mr-10'  onClick={(e) => { /* Handle button click */ }} style={{marginLeft:'5px'}}>
+      {isPickListModelOpen && (
+        <PopupComponent
+          visible={isPickListModelOpen}
+          onOk={handleOk}
+          onClose={handleCancel}
+          buttons={[
+            { title: "Cancel", onClickHandler: "" },
+            { title: "Set as Default", onClickHandler: "" },
+            { title: "Save", onClickHandler: "" },
+          ]}
+          Content={
+            <>
+              <TableComponent
+                dataSource={tableData}
+                pickListDataSource={pickListData}
+                columns={workItemColumns}
+                onMapping={() => {}}
+                size="small"
+                scroll={{ y: 300 }}
+                modelAction={showPickListModal}
+                isModelopen={false}
+                isPicklistModel={true}
+                FieldDataSource={tableData}
+                currentRecordKey={currentRecord}
+                setDataArr={setDataArr}
+                currentPickListData={currentPickListData}
+                defaultPickListData={defaultPickListRecord}
+                saveMappingItems={() => {}}
+              />
+
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "flex-end",
+                  marginTop: "20px",
+                }}
+              >
+                <Button
+                  className="cancel-btn mr-10"
+                  onClick={(e) => {
+                    /* Handle button click */
+                  }}
+                  style={{ marginLeft: "5px" }}
+                >
                   Cancel
-                    </Button>
-                    <Button className='ant-btn-primary'  onClick={savePickListData} style={{marginLeft:'5px'}}>
-                    Save
-                    </Button>
-                    </div>
-         
-         </>}
-                  Ispicklist={true}
-      /> }
+                </Button>
+                <Button
+                  className="ant-btn-primary"
+                  onClick={savePickListData}
+                  style={{ marginLeft: "5px" }}
+                >
+                  Save
+                </Button>
+              </div>
+            </>
+          }
+          Ispicklist={true}
+        />
+      )}
       {Object.entries(dropdownErrors).map(([dataIndex, error]) => (
         <div key={dataIndex}>
           {error}
@@ -670,7 +757,7 @@ if(_result[0].length){
       ))}
       <Table
         className={isModelopen ? "pop-up-Table" : ""}
-        dataSource={isPicklistModel ? tablePickListData :tableData}
+        dataSource={isPicklistModel ? tablePickListData : tableData}
         columns={updatedColumns}
         pagination={false}
         {...rest}
