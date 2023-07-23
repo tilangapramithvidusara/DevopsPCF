@@ -247,6 +247,7 @@ export default function ConnectionContainer() {
   }, [selectedWorkItem]);
 
   const apiRequest = async (authData: any) => {
+    setIsLoading(true)
     const authObj = {
       organizationUri: authData?.organizationUri,
       personalAccessToken: authData?.personalAccessToken,
@@ -265,17 +266,16 @@ export default function ConnectionContainer() {
         devopsWorkItemFieldURL
       );
       console.log("apiDara,", devopsData, selectedWorkItem);
-      let a = true
-      // const crmData = await FetchCrmFields();
+     // const crmData = await FetchCrmFields();
       let sameDropdownFeild: any = [];
-      if (a) {
-        // console.log("crm", crmData);
-        //const crmData = JSON.parse(devopsWorkItemFields);
-        //console.log("CCCW", crmData);
+      if (devopsData.status === "success") {
+         //console.log("crm", crmData);
+        const crmData = JSON.parse(devopsWorkItemFields);
+        console.log("CCCW", crmData);
 
-        let tableData = exampleCRMData?.map((crm: any, key: any) => {
-          let dropdownArr: any = exampleDevOpsData.filter(
-            (devOps: any) =>
+        let tableData = crmData?.map((crm: any, key: any) => {
+          let dropdownArr: any =devopsData.data?.Value.filter(
+            (devOps: any) => 
               devOps.fieldName !== "Work Item Type" &&
               devOps.fieldName !== "Title" &&
               (((crm.AttributeType === "Memo" ||
@@ -453,19 +453,7 @@ export default function ConnectionContainer() {
   useEffect(() => {
     console.log("cbs******", cbsId, cusId, _pId);
     findDevopsConfigGuId(cusId, cbsId);
-    setLoading(false);
     getWorkitemNames(_itemId);
-    // window.parent.webapi.safeAjax({
-    //   type: "GET",
-    //   url: "/_api/gyde_workitemtypes",
-    //   contentType: "application/json",
-    //   success: function (res:any, status:any, xhr:any) {
-    //   console.log("all fetch",res);
-    //   },
-    //   error: function(error:any, status:any, xhr:any) {
-    //   console.log('error', error);
-    //   }
-    //   });
 
     // console.log("comparedData",comparedData,comparedData?.length,dataSource,dataSource?.length);
 
@@ -622,8 +610,11 @@ export default function ConnectionContainer() {
   useEffect(() => {
     console.log("isSavedCompleteFlag", isSavedCompleteFlag?.key);
     const newData = retrieveDevopsMapping?.map((item: any) => {
+      console.log("tem?.name == isSavedCompleteFlag?.key",item?.name ,isSavedCompleteFlag?.key,item?.name == isSavedCompleteFlag?.key);
+      
       if (item?.name == isSavedCompleteFlag?.key) {
-        return { ...item, fieldMapping: isSavedCompleteFlag?.value };
+        const fieldMappingValue = isSavedCompleteFlag?.value === 1 ? true : false;
+        return { ...item, fieldMapping: fieldMappingValue };
       }
       return {
         ...item,
@@ -655,6 +646,7 @@ export default function ConnectionContainer() {
   const savePopupModelData = async (buttonType: any) => {
     console.log("buttonType", buttonType, defaultGuId);
     console.log("SavedMainData", dataFieldArr, taskDataArr);
+    setIsLoading(true)
     if (dataFieldArr.length) {
       if (buttonType === "Save") {
         if (guId) {
@@ -867,14 +859,17 @@ export default function ConnectionContainer() {
       .then((result: any) => {
         if (result.type === "success") {
           setIsSavedCompleteFlag(mappingStatus);
+          setIsLoading(false)
           setIsModalOpen(false);
         } else {
           console.error("Save failed with status:", result.status);
+          setIsLoading(false)
           setIsModalOpen(false);
         }
       })
       .catch((error) => {
         console.error("Error occurred:", error);
+        setIsLoading(false)
         setIsModalOpen(false);
       });
   };
@@ -918,7 +913,7 @@ export default function ConnectionContainer() {
 
               <h3 className="sub-title">Mapping - Work Item Types</h3>
               <TableComponent
-                dataSource={dataSource1}
+                dataSource={retrieveDevopsMapping}
                 columns={workItemColumns}
                 onMapping={() => {}}
                 size="small"
