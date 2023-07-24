@@ -631,8 +631,8 @@ export default function ConnectionContainer() {
         return prevState;
       }
     })
-
-  }, [dataAfterSave]);
+    console.log("configurationData", configurationData)
+  }, [dataAfterSave,retrieveDevopsMapping]);
 
   const savePopupModelData = async (buttonType: any) => {
     console.log("buttonType", buttonType, defaultGuId);
