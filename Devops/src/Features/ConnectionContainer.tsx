@@ -163,7 +163,7 @@ export default function ConnectionContainer() {
     key: "",
     value: "",
   });
-
+  const [draftData, setDraftData] = useState<any>([]);
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
   console.log("queryParameters", queryParameters);
@@ -624,6 +624,7 @@ export default function ConnectionContainer() {
     console.log("data source inside use effect", newData);
     setRetrieveDevopsMapping(newData);
     setMappedWorkItems(newData);
+    setDraftData(newData)
   }, [isSavedCompleteFlag]);
 
   useEffect(() => {
@@ -734,6 +735,7 @@ export default function ConnectionContainer() {
     //   console.log("mapped work items....",mappedWorkItems);
     // let _result =  saveWorkItemTypes(mappedWorkItems);
     // console.log("result",_result);
+    setIsLoading(true)
     if (guId) {
       let response: any = await createMappingFile(mappedWorkItems, guId);
       if (response.type === "success") {
@@ -745,6 +747,7 @@ export default function ConnectionContainer() {
     } else {
       createDevConfig("newRecord", true);
     }
+    setDraftData([])
     console.log("defaultGuId", defaultGuId);
   };
 
@@ -775,13 +778,16 @@ export default function ConnectionContainer() {
       recordType === "default" && setDefaultGuId(newId),
         saveDefaultMappingData(newId).then((response: any) => {
           if (response.type === "success") {
-            console.error("success")
+            console.log("success")
+            setIsLoading(false)
           } else if (response.type === "error") {
             console.error("Error:", response.error.message);
+            setIsLoading(false)
           }
         })
         .catch((error: any) => {
           console.error("Unexpected error:", error);
+          setIsLoading(false)
         });
       recordType === "newRecord" && setGuId(newId);
       if (isCreateMapping) {
@@ -789,8 +795,10 @@ export default function ConnectionContainer() {
 
         if (response.type === "success") {
           setIsMappedSaved(true);
+          setIsLoading(false)
         } else if (response.type === "error") {
           setIsMappedSaved(false);
+          setIsLoading(false)
         }
       }
       console.log("newId", newId);
@@ -811,7 +819,7 @@ export default function ConnectionContainer() {
     }));
     let _isSelectedField = _defaultDataSource.every((field: any) => field.isSelected);
     const filteredObjects = _defaultDataSource.filter(
-      (item: any) => item.pickListArr?.length > 0
+      (item: any) => item.pickListArr?.length > 0 || item.enable === true
     );
     console.log("filterOv",filteredObjects);
     
@@ -848,11 +856,21 @@ export default function ConnectionContainer() {
     );
     return array.every((element) => element[column] === true);
   };
+
+  useEffect(()=> {
+  console.log("tag700",retrieveDevopsMapping,draftData);
+  
+  },[retrieveDevopsMapping,draftData])
+  useEffect(()=> {
+    console.log("tg71",devopsResult,dataAfterSave);
+    
+    },[devopsResult,dataAfterSave])
   console.log(
     "final condition ::",
     checkFinalMappingStatus(retrieveDevopsMapping, "fieldMapping"),
     checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
   );
+console.log("caal Iit",devopsResult,dataAfterSave);
 
   const saveFieldmappingData = (data: any, guId: any,mappingStatus:any) => {
     saveMappingData(data, guId)
@@ -913,7 +931,7 @@ export default function ConnectionContainer() {
 
               <h3 className="sub-title">Mapping - Work Item Types</h3>
               <TableComponent
-                dataSource={retrieveDevopsMapping}
+                dataSource={...retrieveDevopsMapping}
                 columns={workItemColumns}
                 onMapping={() => {}}
                 size="small"
@@ -952,8 +970,8 @@ export default function ConnectionContainer() {
                   checkFinalMappingStatus(
                     dataAfterSave,
                     "isCorrectlyMapped"
-                  )) ||
-                configureSettings == "devopsGenerator" ? (
+                  )
+                  && configureSettings == "devopsGenerator")  ? (
                   <Button type="primary" htmlType="button" onClick={() => ""}>
                     Next
                   </Button>
@@ -1058,6 +1076,7 @@ export default function ConnectionContainer() {
               ]}
               Content={
                 <div>
+                   <Spin spinning={isLoading}>
                   <TableComponent
                     dataSource={taskDataArr}
                     columns={tableColumn}
@@ -1110,6 +1129,7 @@ export default function ConnectionContainer() {
                       Save
                     </Button>
                   </div>
+                  </Spin>
                 </div>
               }
             />

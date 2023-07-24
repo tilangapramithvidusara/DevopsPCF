@@ -102,15 +102,29 @@ const TableComponent: React.FC<CommonTableProps> = ({
   const [currentRecord, setCurrentRecord] = useState<any>([]);
   const [defaultPickListRecord, setDefaultPickListRecord] = useState<any>([]);
 
+  
   useEffect(() => {
     // Update the PCF control's context or notify changes here
     // Pass the updated tableData to the PCF framework
     // You may need to use specific PCF methods or update the control's properties/state
+ 
+    console.log("dataSource ===> ", dataSource);
     console.log("data ===> ", tableData);
     console.log("pickListFlag", pickListFlag);
 
     console.log("isPicklist", isPickListModelOpen);
-  }, [tableData]);
+    console.log( "tag81", !isModelopen  && !isPicklistModel, ":",isModelopen ,":",isPicklistModel);
+    
+   //!isModelopen  || !isPicklistModel && setTableData(dataSource)
+   !isModelopen  && !isPicklistModel && setTableData(dataSource)
+      
+  }, [dataSource]);
+
+
+  useEffect(()=>{
+
+    console.log("dataChanged ===> ", tableData);
+  },[tableData])
 
   useEffect(() => {
     if (tableData && !isModelopen) {
