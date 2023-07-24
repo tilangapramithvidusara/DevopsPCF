@@ -139,7 +139,7 @@ export default function ConnectionContainer() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isMappedSaved, setIsMappedSaved] = useState<boolean>(false);
   const [configureSettings, setConfigureSettings] =
-    useState<any>("configureMapping");
+    useState<any>("");
   const [savedFilteredData, setSavedFilteredData] = useState<any>([]);
   const [mappedWorkItems, setMappedWorkItems]: any = useState([]);
   const [workitemTypesData, setWorkitemTypeData] = useState<any>({
@@ -152,8 +152,8 @@ export default function ConnectionContainer() {
   const [mappedField, setmMppedField] = useState<any>("");
   const [isEnablePopUp, setIsEnablePopUp] = useState<boolean>(false);
   const [configurationData, setConfigurationData] = useState<any>();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [visibleButton, setVisibleButton] = useState<boolean>(false);
+  // const [loading, setLoading] = useState<boolean>(false);
+  // const [visibleButton, setVisibleButton] = useState<boolean>(false);
   const [defaultGuId, setDefaultGuId]: any = useState();
   const [guId, setGuId]: any = useState();
   const url = new URL(window.location.href);
@@ -188,16 +188,6 @@ export default function ConnectionContainer() {
     setIsModalOpen(false);
     setSelectedWorkItem({});
   };
-
-  // const dataSource = crmWorkItemTypes?.map((item: any, num: number) => {
-  //   return {
-  //     key: num,
-  //     name: item,
-  //     gyde_name: devopsWorkItemTypes?.find((res: any) => res == item),
-  //     mapping: "Mapping",
-  //     enable:devopsWorkItemTypes?.find((res: any) => res == item) == item ? true : false,
-  //   };
-  // });
 
   const workItemColumns = [
     {
@@ -506,7 +496,6 @@ export default function ConnectionContainer() {
 
   const findDevopsConfigGuId = async (cusId: any, bId: any) => {
     let _result: any = await fetchDevopsConfig(cusId, bId);
-    setLoading(true);
     console.log("devOpsCOnfig", _result);
     if (_result.type === "updateConfig") {
       //filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))
@@ -520,7 +509,7 @@ export default function ConnectionContainer() {
           JsonMappedData
         );
         setRetrieveDevopsMapping(JsonMappedData);
-        setDataAfterSave(JsonMappedData);
+        setDataAfterSave(JsonMappedData);  
         console.log("JsonMappedData", JsonMappedData);
         setIsLoading(false);
         console.log("savedFilteredData...!@#", savedFilteredData);
@@ -532,7 +521,6 @@ export default function ConnectionContainer() {
       createDevConfig("newRecord");
       setIsLoading(false);
     }
-    setLoading(false);
   };
   console.log("retrieveDevopsMapping", retrieveDevopsMapping);
   //CUSID ,BID if default = PID
@@ -628,13 +616,6 @@ export default function ConnectionContainer() {
   }, [isSavedCompleteFlag]);
 
   useEffect(() => {
-    // const hasFieldMapping:boolean = retrieveDevopsMapping?.some((item:any) => item.fieldMapping !== undefined);
-    // if(hasFieldMapping){
-    //   setVisibleButton(true);
-    // }else{
-    //   setVisibleButton(false);
-    // }
-    // Toggle to devops Configuration once all mapped correctly...
     if (
       dataAfterSave?.length > 0 &&
       checkFinalMappingStatus(retrieveDevopsMapping, "fieldMapping") &&
@@ -642,7 +623,16 @@ export default function ConnectionContainer() {
     ) {
       setConfigureSettings("devopsGenerator");
     }
-  }, []);
+
+    setDataAfterSave((prevState:any)=>{
+      if(prevState != dataAfterSave ){
+        return dataAfterSave;
+      }else{
+        return prevState;
+      }
+    })
+
+  }, [dataAfterSave]);
 
   const savePopupModelData = async (buttonType: any) => {
     console.log("buttonType", buttonType, defaultGuId);
@@ -739,16 +729,17 @@ export default function ConnectionContainer() {
     if (guId) {
       let response: any = await createMappingFile(mappedWorkItems, guId);
       if (response.type === "success") {
-        setIsMappedSaved(true);
         findDevopsConfigGuId(cusId, cbsId);
+        setIsLoading(false);
       } else if (response.type === "error") {
-        setIsMappedSaved(false);
+        setIsLoading(false);
       }
     } else {
       createDevConfig("newRecord", true);
     }
     setDraftData([])
     console.log("defaultGuId", defaultGuId);
+    setIsLoading(false);
   };
 
   console.log("call back :", mappedWorkItems);
@@ -773,6 +764,7 @@ export default function ConnectionContainer() {
     ] = `/gyde_customerbusinesssurveies(${cbsId})`; // Lookup
     //add  name default true;
     console.log("record1", record);
+    setIsLoading(true);
     let newId = await createDevConfigApi(record);
     if (newId) {
       recordType === "default" && setDefaultGuId(newId),
@@ -802,6 +794,7 @@ export default function ConnectionContainer() {
         }
       }
       console.log("newId", newId);
+      setIsLoading(false);
     }
   };
   const commonFieldMappingSave = (
@@ -937,15 +930,11 @@ console.log("caal Iit",devopsResult,dataAfterSave);
                 size="small"
                 scroll={{ y: 300 }}
                 isModelopen={false}
-                // loading={loading}
                 modelAction={showModal}
                 className={
                   configureSettings == "devopsGenerator" ? "disable-table" : ""
                 }
                 setDropDownValue={(data: any) => setSelectedWorkItem(data)}
-                // rowClassName={
-                //   configureSettings == "devopsGenerator" ? "disable-table" : ""
-                // }
                 // disabled={configureSettings == "devopsGenerator" ? true : false}
                 saveMappingItems={(data: any) => setMappedWorkItems(data)}
                 setMappingType={setmMppedField}
@@ -967,11 +956,8 @@ console.log("caal Iit",devopsResult,dataAfterSave);
 
                 {(dataAfterSave?.length > 0 &&
                   checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
-                  checkFinalMappingStatus(
-                    dataAfterSave,
-                    "isCorrectlyMapped"
-                  )
-                  && configureSettings == "devopsGenerator")  ? (
+                  checkFinalMappingStatus(dataAfterSave,"isCorrectlyMapped")&& 
+                  configureSettings == "devopsGenerator")  ? (
                   <Button type="primary" htmlType="button" onClick={() => ""}>
                     Next
                   </Button>
@@ -986,80 +972,6 @@ console.log("caal Iit",devopsResult,dataAfterSave);
                 )}
                 {/* <div>{`% assign deactivateCustomerBusinessSurveyFlowUrl = settings["DeactivateCustomerBusinessSurveyFlowURL"]%`}
               <input type="hidden" id="deactivateCustomerBusinessSurveyFlowUrl" value="{{deactivateCustomerBusinessSurveyFlowUrl}}" /></div> */}
-
-                {/* <h3 className="sub-title">
-            <span>Connection Details</span>
-            <span>
-              {" "}
-              <h5 className="sub-title2">{configurationData?.gyde_name} </h5>
-            </span>
-          </h3>
-          <ConnectionComponent
-            setWorkItemData={(res: any) => {
-              setDevopsWorkItemTypes(res?.data?.Value), setDevopsResult(res?.data?.Value ? true :false);
-            }}
-            connectionFetch={(res:any)=>setDevopsResult(res)}        />
-          <div className="text-left mb-20">
-          </div>
-          {devopsResult && (
-            <>
-            {(isMappedSaved || retrieveDevopsMapping?.length>0) && <div className="text-left"><Radio.Group
-                options={[
-                  { label: "DevOps Generator", value: "devopsGenerator" },
-                  { label: "Configure Mapping", value: "configureMapping" },
-                ]}
-                onChange={handleConfigure}
-                value={configureSettings}
-                optionType="button"
-                buttonStyle="solid"
-            /></div> }
-
-              <h3 className="sub-title">Mapping - Work Item Types</h3>
-              <TableComponent
-                dataSource={retrieveDevopsMapping?.length>0 ? retrieveDevopsMapping : dataSource}
-                columns={workItemColumns}
-                onMapping={() => {}}
-                size="small"
-                scroll={{ y: 300 }}
-                isModelopen={false}
-                modelAction={showModal}
-                className={
-                  configureSettings == "devopsGenerator" ? "disable-table" : ""
-                }
-                setDropDownValue={(data: any) => setSelectedWorkItem(data)}
-                
-
-                // rowClassName={
-                //   configureSettings == "devopsGenerator" ? "disable-table" : ""
-                // }
-                // disabled={configureSettings == "devopsGenerator" ? true : false}
-                saveMappingItems={(data:any)=>setMappedWorkItems(data)}
-                setMappingType={setmMppedField}
-                isPicklistModel={false}
-                setWorkitemTypeData={setWorkitemTypeData}
-                
-              />
-
-              <span>
-                <Button
-                  className="cancel-btn mr-10"
-                  type="primary"
-                  htmlType="button"   
-                  onClick={() => {                
-                    window.location.href = `/${_navigateUrl}`               
-                  }}
-                >
-                  Cancel
-                </Button>
-                
-                <Button type="primary" htmlType="button" onClick={handleMappingItemSave}>
-                  Save
-                </Button> */}
-                {/* <Button type="primary" htmlType="button" disabled={true} onClick={()=>''}>
-                  Next
-                </Button> */}
-                {/* <div>{`% assign deactivateCustomerBusinessSurveyFlowUrl = settings["DeactivateCustomerBusinessSurveyFlowURL"]%`}
-                <input type="hidden" id="deactivateCustomerBusinessSurveyFlowUrl" value="{{deactivateCustomerBusinessSurveyFlowUrl}}" /></div> */}
               </span>
             </>
           )}
