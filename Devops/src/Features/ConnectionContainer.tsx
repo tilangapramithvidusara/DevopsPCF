@@ -916,7 +916,7 @@ export default function ConnectionContainer() {
                     type="primary"
                     htmlType="button"
                     onClick={handleMappingItemSave}
-                    disabled={checkFinalMappingStatus(mappedWorkItems, "isCorrectlyMapped")}
+                    // disabled={checkFinalMappingStatus(mappedWorkItems, "isCorrectlyMapped")}
                   >
                     Save
                   </Button>
