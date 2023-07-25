@@ -126,7 +126,6 @@ export default function ConnectionContainer() {
     },
   ];
   const [dataArr, setDataArr] = useState<any>([]);
-
   const [dataFieldArr, setFieldDataArr] = useState<any>([]);
   const [devopsWorkItemTypes, setDevopsWorkItemTypes] = useState<any>([]);
   const [crmWorkItemTypes, setCrmWorkItemTypes] = useState<any>([]);
@@ -138,8 +137,7 @@ export default function ConnectionContainer() {
   const [devopsResult, setDevopsResult] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isMappedSaved, setIsMappedSaved] = useState<boolean>(false);
-  const [configureSettings, setConfigureSettings] =
-    useState<any>("");
+  const [configureSettings, setConfigureSettings] = useState<any>("");
   const [savedFilteredData, setSavedFilteredData] = useState<any>([]);
   const [mappedWorkItems, setMappedWorkItems]: any = useState([]);
   const [workitemTypesData, setWorkitemTypeData] = useState<any>({
@@ -173,7 +171,7 @@ export default function ConnectionContainer() {
   const _pId = queryParameters.get("pid");
   const _itemId = queryParameters.get("id");
   const _navigateUrl = queryParameters.get("returnto");
-  
+
   const showModal = () => {
     const data: string | null = localStorage.getItem("items");
     const authData: any = data ? JSON.parse(data) : null;
@@ -237,7 +235,7 @@ export default function ConnectionContainer() {
   }, [selectedWorkItem]);
 
   const apiRequest = async (authData: any) => {
-    setIsLoading(true)
+    setIsLoading(true);
     const authObj = {
       organizationUri: authData?.organizationUri,
       personalAccessToken: authData?.personalAccessToken,
@@ -246,26 +244,19 @@ export default function ConnectionContainer() {
     };
     let devopsWorkItemFieldURL = window?.parent?.devopsWorkItemFieldURL;
     let devopsWorkItemFields = window?.parent?.devopsWorkItemFields;
-
     if (selectedWorkItem?.name != undefined && selectedWorkItem?.name != null) {
-      console.log("ff1", devopsWorkItemFieldURL);
-      console.log("fc", devopsWorkItemFields);
-
       const devopsData = await fetchDevopsFeildsData(
         authObj,
         devopsWorkItemFieldURL
       );
       console.log("apiDara,", devopsData, selectedWorkItem);
-     // const crmData = await FetchCrmFields();
       let sameDropdownFeild: any = [];
       if (devopsData.status === "success") {
-         //console.log("crm", crmData);
         const crmData = JSON.parse(devopsWorkItemFields);
         console.log("CCCW", crmData);
-
         let tableData = crmData?.map((crm: any, key: any) => {
-          let dropdownArr: any =devopsData.data?.Value.filter(
-            (devOps: any) => 
+          let dropdownArr: any = devopsData.data?.Value.filter(
+            (devOps: any) =>
               devOps.fieldName !== "Work Item Type" &&
               devOps.fieldName !== "Title" &&
               (((crm.AttributeType === "Memo" ||
@@ -347,10 +338,6 @@ export default function ConnectionContainer() {
             pickListArr: [],
             isSavedType: "default",
           };
-
-          // defaultOptionList: isOptionList
-          // ? sameDropdownFeild.find((f: any) => f.defaultOptionList)
-          // : [],
         });
         let currentLength = tableData.length + 1;
         let _tableData = [
@@ -390,11 +377,10 @@ export default function ConnectionContainer() {
           ...tableData,
         ];
 
-      
         let updatedSavedData: any = await fetchFieldMappingData(mappedField);
         let updatedDefaultData: any = await fetchDefaultSettingData(_pId);
 
-        console.log("updated111112", updatedSavedData, updatedDefaultData);
+        console.log("updatedSavedData====*", updatedSavedData, updatedDefaultData);
         if (updatedSavedData?.length) {
           setTaskDataArr(updatedSavedData[0]["value"]);
         } else if (updatedDefaultData?.length) {
@@ -433,8 +419,6 @@ export default function ConnectionContainer() {
   };
 
   useEffect(() => {
-    console.log("tag123",isModalOpen, taskDataArr, taskDataArr.length);
-    
     isModalOpen && taskDataArr.length
       ? setIsLoading(true)
       : setIsLoading(false);
@@ -444,28 +428,7 @@ export default function ConnectionContainer() {
     console.log("cbs******", cbsId, cusId, _pId);
     findDevopsConfigGuId(cusId, cbsId);
     getWorkitemNames(_itemId);
-
-    // console.log("comparedData",comparedData,comparedData?.length,dataSource,dataSource?.length);
-
-    // if(comparedData?.length) setSavedFilteredData(comparedData);
-    // else {dataSource?.length} setSavedFilteredData(dataSource);
-    // console.log("comparedData...!@#", comparedData);
   }, [devopsWorkItemTypes]);
-
-  // useEffect(()=>{
-  //   // const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
-  //   const comparedData = retrieveDevopsMapping?.map((data:any)=> {
-  //    console.log("options: saved data", options?.find((item:any)=> item), data?.gyde_name)
-  //    return {
-  //      key: data?.key,
-  //      name:data?.name,
-  //      gyde_name:data?.gyde_name == "N/A" ? data?.gyde_name : options?.find((item:any)=> item == data?.gyde_name),
-  //      mapping:data?.mapping,
-  //      enable: options?.find((item:any)=> item == data?.gyde_name) ? true : false
-  //    }
-  //  });
-  //  setInitialTableData(comparedData);
-  // },[retrieveDevopsMapping])
 
   const getWorkitemNames = async (_itemId: any) => {
     console.log("_itemId", _itemId);
@@ -498,7 +461,6 @@ export default function ConnectionContainer() {
     let _result: any = await fetchDevopsConfig(cusId, bId);
     console.log("devOpsCOnfig", _result);
     if (_result.type === "updateConfig") {
-      //filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))
       setGuId(_result.id);
       let result: any = await fetchDevOpsMappingField(_result.id);
       if (result.type == "success") {
@@ -509,7 +471,7 @@ export default function ConnectionContainer() {
           JsonMappedData
         );
         setRetrieveDevopsMapping(JsonMappedData);
-        setDataAfterSave(JsonMappedData);  
+        setDataAfterSave(JsonMappedData);
         console.log("JsonMappedData", JsonMappedData);
         setIsLoading(false);
         console.log("savedFilteredData...!@#", savedFilteredData);
@@ -522,15 +484,6 @@ export default function ConnectionContainer() {
       setIsLoading(false);
     }
   };
-  console.log("retrieveDevopsMapping", retrieveDevopsMapping);
-  //CUSID ,BID if default = PID
-  // useEffect(()=>{
-
-  //   if(isModalOpen){
-  //   // fetchDefaultSettingData(_pId);
-  //   }
-  // },[isModalOpen])
-
   const fetchDefaultSettingData = async (pid: any) => {
     let result: any = await fetchDefaultSetting(pid);
     console.log("fetchSEtting", result);
@@ -559,7 +512,6 @@ export default function ConnectionContainer() {
       createDevConfig("default");
       return [];
     } else if (result.type === "error") {
-      //createDevConfig('default')
       return [];
     }
   };
@@ -577,31 +529,10 @@ export default function ConnectionContainer() {
   }, []);
 
   useEffect(() => {
-    console.log("isSavedCompleteFlagA1", isSavedCompleteFlag);
-
-    // when saved data retrieved this will used...
-    // const crmWorkItemTypesData = crmWorkItemTypes?.map((item:any)=>item?.gyde_name);
-    // const comparedData = savedMappedData?.filter((element:any)=>crmWorkItemTypesData?.includes(element?.gyde_name))?.map((data:any)=> {
-    //   console.log("options: saved data", options?.find((item:any)=> item), data?.gyde_name)
-    //   return {
-    //     key: data?.key,
-    //     name:data?.name,
-    //     gyde_name:data?.gyde_name == "N/A" ? data?.gyde_name : options?.find((item:any)=> item == data?.gyde_name),
-    //     mapping:data?.mapping,
-    //     enable: options?.find((item:any)=> item == data?.gyde_name) ? true : false
-    //   }
-    // });
-    // setSavedFilteredData(comparedData);
-    // console.log("comparedData...!@#", comparedData);
-  }, [isSavedCompleteFlag]);
-
-  useEffect(() => {
-    console.log("isSavedCompleteFlag", isSavedCompleteFlag?.key);
     const newData = retrieveDevopsMapping?.map((item: any) => {
-      console.log("tem?.name == isSavedCompleteFlag?.key",item?.name ,isSavedCompleteFlag?.key,item?.name == isSavedCompleteFlag?.key);
-      
       if (item?.name == isSavedCompleteFlag?.key) {
-        const fieldMappingValue = isSavedCompleteFlag?.value === 1 ? true : false;
+        const fieldMappingValue =
+          isSavedCompleteFlag?.value === 1 ? true : false;
         return { ...item, fieldMapping: fieldMappingValue };
       }
       return {
@@ -609,10 +540,9 @@ export default function ConnectionContainer() {
         fieldMapping: item?.fieldMapping ? item?.fieldMapping : false,
       };
     });
-    console.log("data source inside use effect", newData);
     setRetrieveDevopsMapping(newData);
     setMappedWorkItems(newData);
-    setDraftData(newData)
+    setDraftData(newData);
   }, [isSavedCompleteFlag]);
 
   useEffect(() => {
@@ -624,20 +554,20 @@ export default function ConnectionContainer() {
       setConfigureSettings("devopsGenerator");
     }
 
-    setDataAfterSave((prevState:any)=>{
-      if(prevState != dataAfterSave ){
+    setDataAfterSave((prevState: any) => {
+      if (prevState != dataAfterSave) {
         return dataAfterSave;
-      }else{
+      } else {
         return prevState;
       }
-    })
+    });
     console.log("configurationData", configureSettings);
-  }, [dataAfterSave,retrieveDevopsMapping]);
+  }, [dataAfterSave, retrieveDevopsMapping]);
 
   const savePopupModelData = async (buttonType: any) => {
     console.log("buttonType", buttonType, defaultGuId);
     console.log("SavedMainData", dataFieldArr, taskDataArr);
-    setIsLoading(true)
+    setIsLoading(true);
     if (dataFieldArr.length) {
       if (buttonType === "Save") {
         if (guId) {
@@ -645,7 +575,13 @@ export default function ConnectionContainer() {
           let updatedData = dataFieldArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "saved" };
           });
-          commonFieldMappingSave(guId, _result, mappedField, updatedData,dataFieldArr);
+          commonFieldMappingSave(
+            guId,
+            _result,
+            mappedField,
+            updatedData,
+            dataFieldArr
+          );
         } else {
           notification.error({ message: "GUID Not found" });
         }
@@ -676,7 +612,6 @@ export default function ConnectionContainer() {
           notification.error({ message: "GUID Not found" });
         }
       }
-      //  setIsModalOpen(false);
     } else if (taskDataArr.length) {
       if (buttonType === "Save") {
         if (guId) {
@@ -684,7 +619,13 @@ export default function ConnectionContainer() {
           let updatedData = taskDataArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "saved" };
           });
-          commonFieldMappingSave(guId, _result, mappedField, updatedData,taskDataArr);
+          commonFieldMappingSave(
+            guId,
+            _result,
+            mappedField,
+            updatedData,
+            taskDataArr
+          );
         } else {
           notification.error({ message: "GUID Not found" });
         }
@@ -722,10 +663,7 @@ export default function ConnectionContainer() {
   };
 
   const handleMappingItemSave = async () => {
-    //   console.log("mapped work items....",mappedWorkItems);
-    // let _result =  saveWorkItemTypes(mappedWorkItems);
-    // console.log("result",_result);
-    setIsLoading(true)
+    setIsLoading(true);
     if (guId) {
       let response: any = await createMappingFile(mappedWorkItems, guId);
       if (response.type === "success") {
@@ -737,12 +675,10 @@ export default function ConnectionContainer() {
     } else {
       createDevConfig("newRecord", true);
     }
-    setDraftData([])
+    setDraftData([]);
     console.log("defaultGuId", defaultGuId);
     setIsLoading(false);
   };
-
-  console.log("call back :", mappedWorkItems);
 
   const createDevConfig = async (
     recordType: any = "newRecord",
@@ -752,9 +688,6 @@ export default function ConnectionContainer() {
     const hours = currentTime.getHours();
     const minutes = currentTime.getMinutes();
     const seconds = currentTime.getSeconds();
-
-    console.log("cbs******", cbsId, cusId);
-
     var record: any = {};
     record.gyde_name = `react config ${recordType}${hours}${minutes}${seconds}`;
     record["gyde_customerorpartner@odata.bind"] =
@@ -768,29 +701,30 @@ export default function ConnectionContainer() {
     let newId = await createDevConfigApi(record);
     if (newId) {
       recordType === "default" && setDefaultGuId(newId),
-        saveDefaultMappingData(newId).then((response: any) => {
-          if (response.type === "success") {
-            console.log("success")
-            setIsLoading(false)
-          } else if (response.type === "error") {
-            console.error("Error:", response.error.message);
-            setIsLoading(false)
-          }
-        })
-        .catch((error: any) => {
-          console.error("Unexpected error:", error);
-          setIsLoading(false)
-        });
+        saveDefaultMappingData(newId)
+          .then((response: any) => {
+            if (response.type === "success") {
+              console.log("success");
+              setIsLoading(false);
+            } else if (response.type === "error") {
+              console.error("Error:", response.error.message);
+              setIsLoading(false);
+            }
+          })
+          .catch((error: any) => {
+            console.error("Unexpected error:", error);
+            setIsLoading(false);
+          });
       recordType === "newRecord" && setGuId(newId);
       if (isCreateMapping) {
         let response: any = await createMappingFile(mappedWorkItems, newId);
 
         if (response.type === "success") {
           setIsMappedSaved(true);
-          setIsLoading(false)
+          setIsLoading(false);
         } else if (response.type === "error") {
           setIsMappedSaved(false);
-          setIsLoading(false)
+          setIsLoading(false);
         }
       }
       console.log("newId", newId);
@@ -802,26 +736,38 @@ export default function ConnectionContainer() {
     _result: any,
     itemKey: any,
     dataSource: any,
-    _defaultDataSource:any = []
+    _defaultDataSource: any = []
   ) => {
     console.log("result101", guId, ":", _result, ":", itemKey, dataSource);
-
-    console.log("tag33:", _defaultDataSource,_defaultDataSource.every((field: any) => {
-      console.log("A12", field.isSelected);
-      return  field.isSelected === true
-    }));
-    let _isSelectedField = _defaultDataSource.every((field: any) => field.isSelected);
+    console.log(
+      "tag33:",
+      _defaultDataSource,
+      _defaultDataSource.every((field: any) => {
+        console.log("A12", field.isSelected);
+        return field.isSelected === true;
+      })
+    );
+    let _isSelectedField = _defaultDataSource.every(
+      (field: any) => field.isSelected
+    );
     const filteredObjects = _defaultDataSource.filter(
       (item: any) => item.pickListArr?.length > 0 || item.enable === true
     );
-    console.log("filterOv",filteredObjects);
-    
+    console.log("filterOv", filteredObjects);
+
     let _isCompletePickList = filteredObjects.every(
       (field: any) => field.isPickListComplete
     );
     let isCompleted = _isSelectedField & _isCompletePickList;
-    let mappingStatus = {key: mappedField, value: isCompleted }
-    console.log("isCompleted:",mappingStatus, isCompleted,_isSelectedField ,_isCompletePickList,_isSelectedField & _isCompletePickList);
+    let mappingStatus = { key: mappedField, value: isCompleted };
+    console.log(
+      "isCompleted:",
+      mappingStatus,
+      isCompleted,
+      _isSelectedField,
+      _isCompletePickList,
+      _isSelectedField & _isCompletePickList
+    );
     if (_result.type === "success") {
       const _resultData = JSON.parse(_result.data);
       const updatedData = _resultData.map((item: any) => {
@@ -834,11 +780,11 @@ export default function ConnectionContainer() {
         updatedData.push({ key: itemKey, value: dataSource });
       }
       console.log("updated103", updatedData);
-      saveFieldmappingData(updatedData, guId,mappingStatus);
+      saveFieldmappingData(updatedData, guId, mappingStatus);
     } else if (_result.type === "error") {
       console.log("ABCCALLERR");
       let _structureData = [{ key: itemKey, value: dataSource }];
-      saveFieldmappingData(_structureData, guId,mappingStatus);
+      saveFieldmappingData(_structureData, guId, mappingStatus);
     }
   };
   // condition to Enable Final devops button to connect..
@@ -850,41 +796,39 @@ export default function ConnectionContainer() {
     return array.every((element) => element[column] === true);
   };
 
-  useEffect(()=> {
-  console.log("tag700",retrieveDevopsMapping,draftData);
-  
-  },[retrieveDevopsMapping,draftData])
-  useEffect(()=> {
-    console.log("tg71",devopsResult,dataAfterSave);
-    
-    },[devopsResult,dataAfterSave])
+  useEffect(() => {
+    console.log("tag700", retrieveDevopsMapping, draftData);
+  }, [retrieveDevopsMapping, draftData]);
+  useEffect(() => {
+    console.log("tg71", devopsResult, dataAfterSave);
+  }, [devopsResult, dataAfterSave]);
   console.log(
     "final condition ::",
     checkFinalMappingStatus(retrieveDevopsMapping, "fieldMapping"),
     checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
   );
-console.log("caal Iit",devopsResult,dataAfterSave);
+  console.log("caal Iit", devopsResult, dataAfterSave);
 
-  const saveFieldmappingData = (data: any, guId: any,mappingStatus:any) => {
+  const saveFieldmappingData = (data: any, guId: any, mappingStatus: any) => {
     saveMappingData(data, guId)
       .then((result: any) => {
         if (result.type === "success") {
           setIsSavedCompleteFlag(mappingStatus);
-          setIsLoading(false)
+          setIsLoading(false);
           setIsModalOpen(false);
         } else {
           console.error("Save failed with status:", result.status);
-          setIsLoading(false)
+          setIsLoading(false);
           setIsModalOpen(false);
         }
       })
       .catch((error) => {
         console.error("Error occurred:", error);
-        setIsLoading(false)
+        setIsLoading(false);
         setIsModalOpen(false);
       });
   };
-  
+
   return (
     <div className="devops-container">
       <Spin spinning={isLoading}>
@@ -932,7 +876,10 @@ console.log("caal Iit",devopsResult,dataAfterSave);
                 isModelopen={false}
                 modelAction={showModal}
                 className={
-                 (checkFinalMappingStatus(dataAfterSave,"isCorrectlyMapped") && configureSettings == "devopsGenerator") ? "disable-table" : ""
+                  checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
+                  configureSettings == "devopsGenerator"
+                    ? "disable-table"
+                    : ""
                 }
                 setDropDownValue={(data: any) => setSelectedWorkItem(data)}
                 // disabled={configureSettings == "devopsGenerator" ? true : false}
@@ -954,10 +901,10 @@ console.log("caal Iit",devopsResult,dataAfterSave);
                   Cancel
                 </Button>
 
-                {(dataAfterSave?.length > 0 &&
-                  checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
-                  checkFinalMappingStatus(dataAfterSave,"isCorrectlyMapped")&& 
-                  configureSettings == "devopsGenerator")  ? (
+                {dataAfterSave?.length > 0 &&
+                checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
+                checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
+                configureSettings == "devopsGenerator" ? (
                   <Button type="primary" htmlType="button" onClick={() => ""}>
                     Next
                   </Button>
@@ -970,12 +917,9 @@ console.log("caal Iit",devopsResult,dataAfterSave);
                     Save
                   </Button>
                 )}
-                {/* <div>{`% assign deactivateCustomerBusinessSurveyFlowUrl = settings["DeactivateCustomerBusinessSurveyFlowURL"]%`}
-              <input type="hidden" id="deactivateCustomerBusinessSurveyFlowUrl" value="{{deactivateCustomerBusinessSurveyFlowUrl}}" /></div> */}
               </span>
             </>
           )}
-          {/* <TableComponent dataSource={dataSource} columns={columns} /> */}
           {isModalOpen && (
             <PopupComponent
               visible={isModalOpen}
@@ -988,59 +932,59 @@ console.log("caal Iit",devopsResult,dataAfterSave);
               ]}
               Content={
                 <div>
-                   <Spin spinning={isLoading}>
-                  <TableComponent
-                    dataSource={taskDataArr}
-                    columns={tableColumn}
-                    onMapping={() => {}}
-                    size="small"
-                    scroll={{ y: 300 }}
-                    modelAction={showModal}
-                    isModelopen={isModalOpen}
-                    setDataArr={setDataArr}
-                    setFieldDataArr={setFieldDataArr}
-                    isPicklistModel={false}
-                    currentPickListData={dataArr}
-                    setMappingType={setmMppedField}
-                  />
+                  <Spin spinning={isLoading}>
+                    <TableComponent
+                      dataSource={taskDataArr}
+                      columns={tableColumn}
+                      onMapping={() => {}}
+                      size="small"
+                      scroll={{ y: 300 }}
+                      modelAction={showModal}
+                      isModelopen={isModalOpen}
+                      setDataArr={setDataArr}
+                      setFieldDataArr={setFieldDataArr}
+                      isPicklistModel={false}
+                      currentPickListData={dataArr}
+                      setMappingType={setmMppedField}
+                    />
 
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "flex-end",
-                      marginTop: "20px",
-                    }}
-                  >
-                    <Button
-                      className="ant-btn-default cancel-btn"
-                      onClick={(e) => {
-                        /* Handle button click */
-                        handleCancel();
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        marginTop: "20px",
                       }}
-                      style={{ marginLeft: "5px" }}
                     >
-                      Cancel
-                    </Button>
-                    <Button
-                      className="ant-btn-primary"
-                      onClick={(e) => {
-                        savePopupModelData("Default");
-                        /* Handle button click */
-                      }}
-                      style={{ marginLeft: "5px" }}
-                    >
-                      Set as Default
-                    </Button>
-                    <Button
-                      className="ant-btn-primary"
-                      onClick={() => {
-                        savePopupModelData("Save");
-                      }}
-                      style={{ marginLeft: "5px" }}
-                    >
-                      Save
-                    </Button>
-                  </div>
+                      <Button
+                        className="ant-btn-default cancel-btn"
+                        onClick={(e) => {
+                          /* Handle button click */
+                          handleCancel();
+                        }}
+                        style={{ marginLeft: "5px" }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        className="ant-btn-primary"
+                        onClick={(e) => {
+                          savePopupModelData("Default");
+                          /* Handle button click */
+                        }}
+                        style={{ marginLeft: "5px" }}
+                      >
+                        Set as Default
+                      </Button>
+                      <Button
+                        className="ant-btn-primary"
+                        onClick={() => {
+                          savePopupModelData("Save");
+                        }}
+                        style={{ marginLeft: "5px" }}
+                      >
+                        Save
+                      </Button>
+                    </div>
                   </Spin>
                 </div>
               }

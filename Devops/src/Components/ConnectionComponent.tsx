@@ -56,7 +56,7 @@ interface ConnectionProps {
   };
 
   return (
-    <Form form={form} initialValues={obj} className='connection-form'>
+    <Form form={form}  className='connection-form'>
       <Row gutter={20}>
         <Col span={12}>
           <Form.Item className="custom-form-wrap" name="organizationUri" label="Organization URL" rules={[{ required: true, message: 'Please enter Organization URL' }]}>
@@ -64,7 +64,7 @@ interface ConnectionProps {
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item className="custom-form-wrap" name="projectName" label="DevOps Project" rules={[{ required: true, message: 'Please enter Devops Project' }]}>
+          <Form.Item className="custom-form-wrap" name="projectName" label="DevOps Project" rules={[{ required: true, message: 'Please enter DevOps Project' }]}>
             <Input />
           </Form.Item>
         </Col>

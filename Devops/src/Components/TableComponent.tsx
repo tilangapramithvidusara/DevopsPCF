@@ -102,29 +102,29 @@ const TableComponent: React.FC<CommonTableProps> = ({
   const [currentRecord, setCurrentRecord] = useState<any>([]);
   const [defaultPickListRecord, setDefaultPickListRecord] = useState<any>([]);
 
-  
   useEffect(() => {
     // Update the PCF control's context or notify changes here
     // Pass the updated tableData to the PCF framework
     // You may need to use specific PCF methods or update the control's properties/state
- 
     console.log("dataSource ===> ", dataSource);
     console.log("data ===> ", tableData);
     console.log("pickListFlag", pickListFlag);
-
     console.log("isPicklist", isPickListModelOpen);
-    console.log( "tag81", !isModelopen  && !isPicklistModel, ":",isModelopen ,":",isPicklistModel);
-    
-   //!isModelopen  || !isPicklistModel && setTableData(dataSource)
-   !isModelopen  && !isPicklistModel && setTableData(dataSource)
-      
+    console.log(
+      "tag81",
+      !isModelopen && !isPicklistModel,
+      ":",
+      isModelopen,
+      ":",
+      isPicklistModel
+    );
+    //!isModelopen  || !isPicklistModel && setTableData(dataSource)
+    !isModelopen && !isPicklistModel && setTableData(dataSource);
   }, [dataSource]);
 
-
-  useEffect(()=>{
-
+  useEffect(() => {
     console.log("dataChanged ===> ", tableData);
-  },[tableData])
+  }, [tableData]);
 
   useEffect(() => {
     if (tableData && !isModelopen) {
@@ -150,7 +150,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
     setDropDownOptions(options);
     console.log("record Now", record);
     console.log("isModelopen Now", isModelopen ? record : "");
-
     let currentValue =
       isModelopen && record?.dropdown?.length
         ? record?.dropdown?.find(
@@ -160,7 +159,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
         : "N/A";
     console.log("currentValuecurrentValue", currentValue);
     console.log("options======> ", options);
-
     isPicklistModel &&
       console.log("defaultData1:", record, ":|", defaultPickListData);
     let currentRecordValue =
@@ -255,10 +253,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
                 // onBlur={() => handleDropdownBlur(dataIndex)}
               >
                 {options.map((option: any) => {
-                  // console.log("CCCCC",record?.souruceOption)
-                  //      let _value =  defaultPickListData?.length && defaultPickListData.find((defaultValue:any) => defaultValue=== option)
-                  //  console.log("_value1",_value);
-
                   return (
                     <Option key={option} value={option}>
                       {option}
@@ -332,14 +326,12 @@ const TableComponent: React.FC<CommonTableProps> = ({
             onClick={() => handleButtonClick(record)}
           />
         )}
-        {/* {isModelopen && record?.isPickListComplete&& <h1>hiii</h1>} */}
       </div>
     );
   };
 
   const handleButtonClick = (record: any) => {
     console.log("Button clicked for record:", record);
-    //setWorkitemTypeData({source:record.name,devOps:record.gyde_name})
     record?.name && setMappingType(record.name);
     if (!disabled) {
       isModelopen ? showPickListModal(record) : setDropDownValue(record);
@@ -356,7 +348,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
   );
 
   const handleFieldChange = (key: string, dataIndex: string, value: any) => {
-    // handleDropdownBlur(dataIndex);
     console.log("handleFieldChange", FieldDataSource, currentRecordKey);
     if (isPicklistModel) {
       const updatedData = tablePickListData.map((item: any) => {
@@ -408,12 +399,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
       setTableData(updatedData);
       isModelopen && setFieldDataArr(updatedData);
     }
-
-    // isPicklistModel === false &&  setFieldDataArr(updatedData)
-
-    //savePopupModelData(updatedData)
-
-    // handleDropdownBlur(dataIndex);
   };
 
   const handleDropdownBlur = (dataIndex: string) => {
@@ -430,7 +415,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
     } else {
       updatedErrors[dataIndex] = null;
     }
-
     setDropdownErrors(updatedErrors);
   };
 
@@ -531,23 +515,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
       setDefaultPickListRecord(result);
       setIsPickLisModalOpen(true);
     }
-    //else{
-    //   const _defaultOptionDataSource = record?.defaultOptionList.defaultOptionList.map((option:any) => {
-    //     let crm =     option.crmOption.map((crmoption:any,key:any) => {
-    //       return {key:key,souruceOption:crmoption,option:option.devOpsOption}
-    //     })
-    //     let devops =     option.devOpsOption.map((devOpsOption:any) => {
-    //       return devOpsOption;
-    //     })
-    //     return  {tableDataSource:crm,optionList:devops}
-    // } );
-    // console.log("11222",_defaultOptionDataSource);
-    // setPickListData(_defaultOptionDataSource[0].tableDataSource)
-    // setPickListColoumn(_defaultOptionDataSource[0].optionList)
-    //   setIsPickLisModalOpen(true);
-    //   console.log("open",isPickListModelOpen);
-
-    // }
   };
 
   const handleOk = () => {
@@ -590,7 +557,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
           }
         });
 
-      console.log("RRRRR", _result);
+      console.log("savePickListData RR", _result);
 
       if (_result[0].length) {
         const updatedR = currentPickListData.map((xObj: any) => {
@@ -603,9 +570,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
           return rObj;
         });
 
-        console.log('updatedR',
-          updatedR
-        );
+        console.log("updatedR", updatedR);
 
         let _matchDevopsPickListData = updatedR.map((f: any) => f.devOpsOption);
         let _updatedpicklistFlag = _matchDevopsPickListData.every(
@@ -613,9 +578,12 @@ const TableComponent: React.FC<CommonTableProps> = ({
         );
         let matchCrmPickListData = updatedR.map((f: any) => f.crmOption);
 
-
-        console.log("tg4",_matchDevopsPickListData,matchCrmPickListData ,_updatedpicklistFlag);
-        
+        console.log(
+          "tg4",
+          _matchDevopsPickListData,
+          matchCrmPickListData,
+          _updatedpicklistFlag
+        );
 
         let pickListItems = [
           {
@@ -637,11 +605,9 @@ const TableComponent: React.FC<CommonTableProps> = ({
             };
           }
           console.log("field", field);
-
           return field;
         });
         console.log("picklistSave", updateditems);
-
         setTableData(updateditems);
         setFieldDataArr(updateditems);
         setPickListFlag(_picklistFlag);
@@ -677,8 +643,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
         setFieldDataArr(updateditems);
         setPickListFlag(_picklistFlag);
       }
-
-      // setDataArr({key:currentRecordKey,updatedData})
     } else {
       console.log("not default");
       let updateditems = tableData?.map((field: any) => {
@@ -698,7 +662,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
       setFieldDataArr(updateditems);
     }
     setIsPickLisModalOpen(false);
-    //console.log("pickListSavedData",pickListSavedData);
     setIsPickLisModalOpen(false);
   };
 
@@ -743,9 +706,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
               >
                 <Button
                   className="cancel-btn mr-10"
-                  onClick={(e) => {
-                    /* Handle button click */
-                  }}
+                  onClick={handleCancel}
                   style={{ marginLeft: "5px" }}
                 >
                   Cancel
