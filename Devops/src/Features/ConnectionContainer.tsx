@@ -144,7 +144,10 @@ export default function ConnectionContainer() {
     source: "Work item type",
     devOps: "Work item type",
   });
-  const [partnetType, setPartnerType]: any = useState("parent work item");
+  const [partnetType, setPartnerType]: any = useState({
+    source: "Parent item type",
+    devOps: "Parent item type",
+  });
   const [title, SetTitle]: any = useState("Title");
   const [mappingType, setMappingType]: any = useState("");
   const [mappedField, setmMppedField] = useState<any>("");
@@ -365,8 +368,8 @@ export default function ConnectionContainer() {
           },
           {
             key: currentLength + 3,
-            sourceWorkItem: `${partnetType}`,
-            devopsWorkItem: `${partnetType}`,
+            sourceWorkItem: `${partnetType.source}`,
+            devopsWorkItem: `${partnetType.devOps}`,
             dropdown: [],
             mapping: "",
             enable: false,
