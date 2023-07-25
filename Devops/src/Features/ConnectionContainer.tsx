@@ -966,6 +966,7 @@ console.log("caal Iit",devopsResult,dataAfterSave);
                     type="primary"
                     htmlType="button"
                     onClick={handleMappingItemSave}
+                    disabled={checkFinalMappingStatus(mappedWorkItems, "isCorrectlyMapped")}
                   >
                     Save
                   </Button>
