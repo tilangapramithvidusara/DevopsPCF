@@ -144,7 +144,7 @@ export default function ConnectionContainer() {
     source: "Work item type",
     devOps: "Work item type",
   });
-  const [partnetType, setPartnerType]: any = useState("partner work item");
+  const [partnetType, setPartnerType]: any = useState("parent work item");
   const [title, SetTitle]: any = useState("Title");
   const [mappingType, setMappingType]: any = useState("");
   const [mappedField, setmMppedField] = useState<any>("");
