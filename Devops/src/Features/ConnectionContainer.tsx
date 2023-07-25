@@ -631,7 +631,7 @@ export default function ConnectionContainer() {
         return prevState;
       }
     })
-    console.log("configurationData", configurationData)
+    console.log("configurationData", configureSettings);
   }, [dataAfterSave,retrieveDevopsMapping]);
 
   const savePopupModelData = async (buttonType: any) => {
@@ -932,7 +932,7 @@ console.log("caal Iit",devopsResult,dataAfterSave);
                 isModelopen={false}
                 modelAction={showModal}
                 className={
-                  configureSettings == "devopsGenerator" ? "disable-table" : ""
+                 (checkFinalMappingStatus(dataAfterSave,"isCorrectlyMapped") && configureSettings == "devopsGenerator") ? "disable-table" : ""
                 }
                 setDropDownValue={(data: any) => setSelectedWorkItem(data)}
                 // disabled={configureSettings == "devopsGenerator" ? true : false}
