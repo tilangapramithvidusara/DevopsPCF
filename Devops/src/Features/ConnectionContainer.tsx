@@ -552,7 +552,7 @@ export default function ConnectionContainer() {
     if (
       dataAfterSave?.length > 0 &&
       checkFinalMappingStatus(retrieveDevopsMapping, "fieldMapping") &&
-      checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
+      checkFinalMappingStatus(retrieveDevopsMapping, "enable")
     ) {
       setConfigureSettings("devopsGenerator");
     }
@@ -564,7 +564,6 @@ export default function ConnectionContainer() {
         return prevState;
       }
     });
-    console.log("configurationData", configureSettings);
   }, [dataAfterSave, retrieveDevopsMapping]);
 
   const savePopupModelData = async (buttonType: any) => {
@@ -808,7 +807,7 @@ export default function ConnectionContainer() {
   console.log(
     "final condition ::",
     checkFinalMappingStatus(retrieveDevopsMapping, "fieldMapping"),
-    checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
+    checkFinalMappingStatus(retrieveDevopsMapping, "enable")
   );
   console.log("caal Iit", devopsResult, dataAfterSave);
 
@@ -856,7 +855,7 @@ export default function ConnectionContainer() {
             <>
               {dataAfterSave?.length > 0 &&
                 checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
-                checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") && (
+                checkFinalMappingStatus(dataAfterSave, "enable") && (
                   <Radio.Group
                     options={[
                       { label: "DevOps Generator", value: "devopsGenerator" },
@@ -879,7 +878,7 @@ export default function ConnectionContainer() {
                 isModelopen={false}
                 modelAction={showModal}
                 className={
-                  checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
+                  checkFinalMappingStatus(dataAfterSave, "enable") &&
                   configureSettings == "devopsGenerator"
                     ? "disable-table"
                     : ""
@@ -906,7 +905,7 @@ export default function ConnectionContainer() {
 
                 {dataAfterSave?.length > 0 &&
                 checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
-                checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
+                checkFinalMappingStatus(dataAfterSave, "enable") &&
                 configureSettings == "devopsGenerator" ? (
                   <Button type="primary" htmlType="button" onClick={() => ""}>
                     Next
@@ -916,7 +915,7 @@ export default function ConnectionContainer() {
                     type="primary"
                     htmlType="button"
                     onClick={handleMappingItemSave}
-                    // disabled={checkFinalMappingStatus(mappedWorkItems, "isCorrectlyMapped")}
+                    disabled={!checkFinalMappingStatus(mappedWorkItems, "enable")}
                   >
                     Save
                   </Button>
