@@ -552,7 +552,7 @@ export default function ConnectionContainer() {
     if (
       dataAfterSave?.length > 0 &&
       checkFinalMappingStatus(retrieveDevopsMapping, "fieldMapping") &&
-      checkFinalMappingStatus(retrieveDevopsMapping, "enable")
+      checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
     ) {
       setConfigureSettings("devopsGenerator");
     }
@@ -807,7 +807,7 @@ export default function ConnectionContainer() {
   console.log(
     "final condition ::",
     checkFinalMappingStatus(retrieveDevopsMapping, "fieldMapping"),
-    checkFinalMappingStatus(retrieveDevopsMapping, "enable")
+    checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
   );
   console.log("caal Iit", devopsResult, dataAfterSave);
 
@@ -855,7 +855,7 @@ export default function ConnectionContainer() {
             <>
               {dataAfterSave?.length > 0 &&
                 checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
-                checkFinalMappingStatus(dataAfterSave, "enable") && (
+                checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") && (
                   <Radio.Group
                     options={[
                       { label: "DevOps Generator", value: "devopsGenerator" },
@@ -878,7 +878,7 @@ export default function ConnectionContainer() {
                 isModelopen={false}
                 modelAction={showModal}
                 className={
-                  checkFinalMappingStatus(dataAfterSave, "enable") &&
+                  checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
                   configureSettings == "devopsGenerator"
                     ? "disable-table"
                     : ""
@@ -905,7 +905,7 @@ export default function ConnectionContainer() {
 
                 {dataAfterSave?.length > 0 &&
                 checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
-                checkFinalMappingStatus(dataAfterSave, "enable") &&
+                checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
                 configureSettings == "devopsGenerator" ? (
                   <Button type="primary" htmlType="button" onClick={() => ""}>
                     Next
@@ -915,7 +915,7 @@ export default function ConnectionContainer() {
                     type="primary"
                     htmlType="button"
                     onClick={handleMappingItemSave}
-                    disabled={!checkFinalMappingStatus(mappedWorkItems, "enable")}
+                    disabled={!checkFinalMappingStatus(mappedWorkItems, "isCorrectlyMapped")}
                   >
                     Save
                   </Button>
