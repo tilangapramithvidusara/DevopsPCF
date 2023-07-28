@@ -145,8 +145,8 @@ export default function ConnectionContainer() {
     devOps: "Work item type",
   });
   const [partnetType, setPartnerType]: any = useState({
-    source: "Parent item type",
-    devOps: "Parent item type",
+    source: "Parent Work Item",
+    devOps: "Parent Work Item",
   });
   const [title, SetTitle]: any = useState("Title");
   const [mappingType, setMappingType]: any = useState("");
@@ -381,13 +381,15 @@ export default function ConnectionContainer() {
         ];
 
         let updatedSavedData: any = await fetchFieldMappingData(mappedField);
-        let updatedDefaultData: any = await fetchDefaultSettingData(_pId);
+        let updatedDefaultData: any = await fetchDefaultSettingData(_pId,false);
 
-        console.log("updatedSavedData====*", updatedSavedData, updatedDefaultData);
+        console.log("updatedSavedData====*", updatedSavedData, updatedDefaultData,updatedDefaultData?.data?.length);
         if (updatedSavedData?.length) {
           setTaskDataArr(updatedSavedData[0]["value"]);
-        } else if (updatedDefaultData?.length) {
-          setTaskDataArr(updatedDefaultData);
+        } else if (updatedDefaultData?.data?.length) {
+          console.log("tag1232",updatedDefaultData?.data?.length);
+          
+          setTaskDataArr(updatedDefaultData?.data);
         } else {
           setTaskDataArr(_tableData);
         }
@@ -429,7 +431,7 @@ export default function ConnectionContainer() {
 
   useEffect(() => {
     console.log("cbs******", cbsId, cusId, _pId);
-    findDevopsConfigGuId(cusId, cbsId);
+    findDevopsConfigGuId(cusId, cbsId,"",false);
     getWorkitemNames(_itemId);
   }, [devopsWorkItemTypes]);
 
@@ -460,14 +462,14 @@ export default function ConnectionContainer() {
     }
   };
 
-  const findDevopsConfigGuId = async (cusId: any, bId: any) => {
+  const findDevopsConfigGuId = async (cusId: any, bId: any,requestType: string,isCreate:boolean= false) => {
     let _result: any = await fetchDevopsConfig(cusId, bId);
     console.log("devOpsCOnfig", _result);
     if (_result.type === "updateConfig") {
       setGuId(_result.id);
       let result: any = await fetchDevOpsMappingField(_result.id);
       if (result.type == "success") {
-        let JsonMappedData = convertByteArrayToJson(result.data);
+        let JsonMappedData = JSON.parse(result.data);
         console.log(
           "JsonDataFirst",
           "load when saved data retrieving.....",
@@ -483,11 +485,18 @@ export default function ConnectionContainer() {
       }
     } else if (_result.type === "createDefault") {
       setGuId("");
-      createDevConfig("newRecord");
+      console.log("isCreate",isCreate);
+      
+     const _data = isCreate && await createDevConfig(requestType);
+     findDevopsConfigGuId(cusId, cbsId,"",false);
       setIsLoading(false);
+      
+      console.log("_data",_data);
+      
+      return "config"
     }
   };
-  const fetchDefaultSettingData = async (pid: any) => {
+  const fetchDefaultSettingData = async (pid: any,actionType:boolean =false) => {
     let result: any = await fetchDefaultSetting(pid);
     console.log("fetchSEtting", result);
     if (result.type === "updateDefault") {
@@ -504,18 +513,23 @@ export default function ConnectionContainer() {
         });
         console.log("updated", updatedData.length);
         if (updatedData.length) {
-          return updatedData[0]["value"];
+          return  {type:"updateDefault",data:updatedData[0]["value"]}
         } else {
-          return [];
+          return  {type:"updateDefault",data:[]}
         }
       } else {
-        return [];
+        return  {type:"updateDefault",data:[]}
       }
     } else if (result.type === "createDefault") {
-      createDevConfig("default");
-      return [];
+       if(actionType){
+          const resultId = await createDevConfig("default")
+          console.log("tag6780",result);
+          
+          return  {type:"createDefault",data:[], id:resultId}
+       }
+      return  {type:"createDefault",data:[]}
     } else if (result.type === "error") {
-      return [];
+      return  {type:"ErrorcreateDefault",data:[]}
     }
   };
 
@@ -588,7 +602,12 @@ export default function ConnectionContainer() {
           notification.error({ message: "GUID Not found" });
         }
       } else if (buttonType === "Default") {
+
+        let updatedDefaultData: any = await fetchDefaultSettingData(_pId,true);
+        console.log("defaultGuIdTag1",updatedDefaultData,defaultGuId);
+        
         if (defaultGuId) {
+          
           let _result: any = await fetchFieldMapping(defaultGuId);
           let updatedData = dataFieldArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "setasDefault" };
@@ -611,7 +630,31 @@ export default function ConnectionContainer() {
               console.error("Unexpected error:", error);
             });
         } else {
-          notification.error({ message: "GUID Not found" });
+
+          console.log("initalReocrdTag782");
+          
+          let _result: any = await fetchFieldMapping(updatedDefaultData?.id);
+          let updatedData = dataFieldArr.map((item: any) => {
+            return { ...item, ["isSavedType"]: "setasDefault" };
+          });
+          saveDefaultMappingData(updatedDefaultData?.id)
+            .then((response: any) => {
+              if (response.type === "success") {
+                commonFieldMappingSave(
+                  updatedDefaultData?.id,
+                  _result,
+                  mappedField,
+                  updatedData,
+                  dataFieldArr
+                );
+              } else if (response.type === "error") {
+                console.error("Error:", response.error.message);
+              }
+            })
+            .catch((error: any) => {
+              console.error("Unexpected error:", error);
+            });
+         // notification.error({ message: "GUID Not found" });
         }
       }
     } else if (taskDataArr.length) {
@@ -669,13 +712,14 @@ export default function ConnectionContainer() {
     if (guId) {
       let response: any = await createMappingFile(mappedWorkItems, guId);
       if (response.type === "success") {
-        findDevopsConfigGuId(cusId, cbsId);
+        findDevopsConfigGuId(cusId, cbsId,"",false);
         setIsLoading(false);
       } else if (response.type === "error") {
         setIsLoading(false);
       }
     } else {
       createDevConfig("newRecord", true);
+      findDevopsConfigGuId(cusId, cbsId,"",false);
     }
     setDraftData([]);
     console.log("defaultGuId", defaultGuId);
@@ -683,7 +727,7 @@ export default function ConnectionContainer() {
   };
 
   const createDevConfig = async (
-    recordType: any = "newRecord",
+    recordType: any ,
     isCreateMapping: boolean = false
   ) => {
     const currentTime = new Date();
@@ -691,32 +735,35 @@ export default function ConnectionContainer() {
     const minutes = currentTime.getMinutes();
     const seconds = currentTime.getSeconds();
     var record: any = {};
-    record.gyde_name = `react config ${recordType}${hours}${minutes}${seconds}`;
+    record.gyde_name = `gyde devOps config ${recordType}${hours}${minutes}${seconds}`;
     record["gyde_customerorpartner@odata.bind"] =
       recordType === "default" ? `/accounts(${_pId})` : `/accounts(${cusId})`; // Lookup
     record[
       "gyde_customerbusinesssurvey@odata.bind"
     ] = `/gyde_customerbusinesssurveies(${cbsId})`; // Lookup
+
+    record.gyde_defaultsetting = false
     //add  name default true;
-    console.log("record1", record);
+    console.log("record1", record,recordType);
     setIsLoading(true);
     let newId = await createDevConfigApi(record);
     if (newId) {
+
       recordType === "default" && setDefaultGuId(newId),
-        saveDefaultMappingData(newId)
-          .then((response: any) => {
-            if (response.type === "success") {
-              console.log("success");
-              setIsLoading(false);
-            } else if (response.type === "error") {
-              console.error("Error:", response.error.message);
-              setIsLoading(false);
-            }
-          })
-          .catch((error: any) => {
-            console.error("Unexpected error:", error);
-            setIsLoading(false);
-          });
+        // saveDefaultMappingData(newId)
+        //   .then((response: any) => {
+        //     if (response.type === "success") {
+        //       console.log("defaultsuccess");
+        //       setIsLoading(false);
+        //     } else if (response.type === "error") {
+        //       console.error("defaultError:", response.error.message);
+        //       setIsLoading(false);
+        //     }
+        //   })
+        //   .catch((error: any) => {
+        //     console.error("defaultUnexpected error:", error);
+        //     setIsLoading(false);
+        //   });
       recordType === "newRecord" && setGuId(newId);
       if (isCreateMapping) {
         let response: any = await createMappingFile(mappedWorkItems, newId);
@@ -731,6 +778,7 @@ export default function ConnectionContainer() {
       }
       console.log("newId", newId);
       setIsLoading(false);
+      return newId;
     }
   };
   const commonFieldMappingSave = (
@@ -889,6 +937,7 @@ export default function ConnectionContainer() {
                 setMappingType={setmMppedField}
                 isPicklistModel={false}
                 setWorkitemTypeData={setWorkitemTypeData}
+                isGuid = {guId ? true :false}
               />
 
               <span>
@@ -949,6 +998,7 @@ export default function ConnectionContainer() {
                       isPicklistModel={false}
                       currentPickListData={dataArr}
                       setMappingType={setmMppedField}
+                      isGuid = {guId ? true :false}
                     />
 
                     <div

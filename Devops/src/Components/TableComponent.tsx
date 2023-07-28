@@ -43,6 +43,7 @@ interface CommonTableProps extends TableProps<any> {
   setMappingType?: any;
   setWorkitemTypeData?: any;
   setPickListArr?: any;
+  isGuid?:any
 }
 
 interface TableColumn {
@@ -87,6 +88,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   saveMappingItems,
   setPickListArr,
   setWorkitemTypeData,
+  isGuid,
   ...rest
 }) => {
   const [tableData, setTableData] = useState(dataSource);
@@ -316,7 +318,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
 
     return (
       <div>
-        {record?.enable && (
+        {isGuid ? <>{record?.enable && (
           <img
             src={checkMappedStatus()}
             alt="1"
@@ -325,7 +327,8 @@ const TableComponent: React.FC<CommonTableProps> = ({
             height={20}
             onClick={() => handleButtonClick(record)}
           />
-        )}
+        )}  </> :""}
+        
       </div>
     );
   };
@@ -695,6 +698,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
                 currentPickListData={currentPickListData}
                 defaultPickListData={defaultPickListRecord}
                 saveMappingItems={() => {}}
+                isGuid ={isGuid}
               />
 
               <div

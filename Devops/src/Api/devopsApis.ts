@@ -344,31 +344,38 @@ export const saveWorkItemTypes = async (mappingData: any) => {
   }
 };
 
-export const createMappingFile = async (data: any, guid: any) => {
+export const createMappingFile = async (_data: any, guid: any) => {
+
   try {
-    return new Promise((resolve, rejects) => {
-      const base64Data = encodeJSONToBase64(data);
-      const byteArrayData = base64ToByteArray(base64Data);
-      console.log("byteArrayData", guid, byteArrayData);
-
-      window.parent.webapi.safeAjax({
-        type: "PUT",
-        url: `/_api/gyde_devopsconfigurations(${guid})/gyde_devopsmappings`,
-        contentType: "application/octet-stream",
-        data: byteArrayData,
-        success: function (data: any, textStatus: any, xhr: any) {
-          console.log("dataxhr", data, "textStatus", textStatus, "xhr", xhr);
-
-          resolve({ type: "success" });
-        },
-        error: function (error: any, status: any, xhr: any) {
-          console.log("error", error);
-          resolve({ type: "error" });
-        },
-      });
+    const reader = new FileReader();
+    const savePromise = new Promise((resolve, reject) => {
+      reader.onload = function (e) {
+        console.log("Saving", e);
+        const bodyContents: any = e?.target?.result;
+        const buffer = new Uint8Array(bodyContents);
+        window.parent.webapi.safeAjax({
+          type: "PUT",
+          url: `/_api/gyde_devopsconfigurations(${guid})/gyde_devopsmappings`,
+          contentType: "application/octet-stream",
+          processData: false,
+          data: buffer,
+          success: function (data: any, textStatus: any, xhr: any) {
+            resolve({ type: "success", data });
+          },
+          error: function (request: any, status: any, thrown: any) {
+            reject({ type: "error", status: request.status });
+          },
+        });
+      };
+      let _tableDataStringify = JSON.stringify(_data);
+      const blob = new Blob([_tableDataStringify], { type: "application/json" });
+      const file = new File([blob], "foo.txt", { type: "text/plain" });
+      reader.readAsArrayBuffer(file);
     });
+    return savePromise;
   } catch (error) {
-    console.log(" Save Error", error);
-    return { status: "error", data: error };
+    console.error("Error creating account:", error);
+    throw error;
   }
+
 };
