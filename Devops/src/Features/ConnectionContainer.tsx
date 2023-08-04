@@ -150,7 +150,7 @@ export default function ConnectionContainer() {
   });
   const [title, SetTitle]: any = useState("Title");
   const [mappingType, setMappingType]: any = useState("");
-  const [mappedField, setmMppedField] = useState<any>("");
+  const [mappedField, setmMppedField] = useState<any>({devOps:"",source:""});
   const [isEnablePopUp, setIsEnablePopUp] = useState<boolean>(false);
   const [configurationData, setConfigurationData] = useState<any>();
   // const [loading, setLoading] = useState<boolean>(false);
@@ -243,17 +243,18 @@ export default function ConnectionContainer() {
       organizationUri: authData?.organizationUri,
       personalAccessToken: authData?.personalAccessToken,
       projectName: authData?.projectName,
-      workItemType: selectedWorkItem?.name,
+      workItemType: selectedWorkItem?.gyde_name,
     };
     let devopsWorkItemFieldURL = window?.parent?.devopsWorkItemFieldURL;
     let devopsWorkItemFields = window?.parent?.devopsWorkItemFields;
-    if (selectedWorkItem?.name != undefined && selectedWorkItem?.name != null) {
+    if (selectedWorkItem?.gyde_name != undefined && selectedWorkItem?.gyde_name != null) {
       const devopsData = await fetchDevopsFeildsData(
         authObj,
         devopsWorkItemFieldURL
       );
       console.log("apiDara,", devopsData, selectedWorkItem);
       let sameDropdownFeild: any = [];
+      let fieldReferenceArr: any = [];
       if (devopsData.status === "success") {
         const crmData = JSON.parse(devopsWorkItemFields);
         console.log("CCCW", crmData);
@@ -306,6 +307,11 @@ export default function ConnectionContainer() {
                   },
                 ],
               });
+
+              
+              crm.SchemaName === _data.fieldName && fieldReferenceArr.push({name:_data.fieldName ,ref :_data?.fieldReferenceName })
+              
+              
             return {
               key: key,
               dropdownValue: _data.fieldName,
@@ -322,12 +328,19 @@ export default function ConnectionContainer() {
                 _data.allowedValues?.length && crm.Options?.length
                   ? true
                   : false,
+              fieldReferenceName  :_data?.fieldReferenceName
             };
           });
 
           let isOptionList = sameDropdownFeild.some(
             (f: any) => f.mappingName === crm.SchemaName
           );
+          let referenceName = fieldReferenceArr.find(
+            (f: any) => f.name === crm.SchemaName
+          );
+          console.log("fieldReferenceArr**67",fieldReferenceArr,"name",referenceName);
+          
+          
           return {
             key: key,
             sourceWorkItem: crm.SchemaName,
@@ -340,6 +353,7 @@ export default function ConnectionContainer() {
             isPickListComplete: false,
             pickListArr: [],
             isSavedType: "default",
+            fieldReferenceName  :referenceName !== undefined && typeof referenceName &&  Object.keys(referenceName).length ? referenceName.ref  : ""
           };
         });
         let currentLength = tableData.length + 1;
@@ -354,6 +368,7 @@ export default function ConnectionContainer() {
             defaultOptionList: [],
             isText: true,
             isSelected: true,
+            fieldReferenceName:"System.Title"
           },
           {
             key: currentLength + 2,
@@ -365,6 +380,7 @@ export default function ConnectionContainer() {
             defaultOptionList: [],
             isText: true,
             isSelected: true,
+            fieldReferenceName:"System.WorkItemType"
           },
           {
             key: currentLength + 3,
@@ -376,11 +392,14 @@ export default function ConnectionContainer() {
             defaultOptionList: [],
             isText: true,
             isSelected: true,
+            fieldReferenceName:""
           },
           ...tableData,
         ];
 
-        let updatedSavedData: any = await fetchFieldMappingData(mappedField);
+        console.log("_TTTTT",tableData);
+        
+        let updatedSavedData: any = await fetchFieldMappingData(mappedField?.source);
         let updatedDefaultData: any = await fetchDefaultSettingData(_pId,false);
 
         console.log("updatedSavedData====*", updatedSavedData, updatedDefaultData,updatedDefaultData?.data?.length);
@@ -488,7 +507,7 @@ export default function ConnectionContainer() {
       console.log("isCreate",isCreate);
       
      const _data = isCreate && await createDevConfig(requestType);
-     findDevopsConfigGuId(cusId, cbsId,"",false);
+     //findDevopsConfigGuId(cusId, cbsId,"",false);
       setIsLoading(false);
       
       console.log("_data",_data);
@@ -507,7 +526,7 @@ export default function ConnectionContainer() {
       if (_result?.type === "success") {
         const _resultData = JSON.parse(_result.data);
         const updatedData = _resultData?.filter((item: any) => {
-          if (item.key === mappedField) {
+          if (item.key === mappedField?.source) {
             return item;
           }
         });
@@ -809,7 +828,7 @@ export default function ConnectionContainer() {
       (field: any) => field.isPickListComplete
     );
     let isCompleted = _isSelectedField & _isCompletePickList;
-    let mappingStatus = { key: mappedField, value: isCompleted };
+    let mappingStatus = { key: mappedField?.source, value: isCompleted };
     console.log(
       "isCompleted:",
       mappingStatus,
@@ -821,19 +840,21 @@ export default function ConnectionContainer() {
     if (_result.type === "success") {
       const _resultData = JSON.parse(_result.data);
       const updatedData = _resultData.map((item: any) => {
-        if (item.key === itemKey) {
+        console.log("tag798",item.key === itemKey?.source);
+        
+        if (item.key === itemKey?.source) {
           return { ...item, ["value"]: dataSource };
         }
         return item;
       });
-      if (!updatedData.some((item: any) => item.key === itemKey)) {
-        updatedData.push({ key: itemKey, value: dataSource });
+      if (!updatedData.some((item: any) => item.key === itemKey?.source)) {
+        updatedData.push({ key: itemKey?.source,targetTable: itemKey?.devOps, value: dataSource });
       }
       console.log("updated103", updatedData);
       saveFieldmappingData(updatedData, guId, mappingStatus);
     } else if (_result.type === "error") {
       console.log("ABCCALLERR");
-      let _structureData = [{ key: itemKey, value: dataSource }];
+      let _structureData = [{ key: itemKey?.source,targetTable: itemKey?.devOps, value: dataSource }];
       saveFieldmappingData(_structureData, guId, mappingStatus);
     }
   };

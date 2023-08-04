@@ -170,6 +170,37 @@ const TableComponent: React.FC<CommonTableProps> = ({
             .map((_data: any) => _data.devOpsOption)
         : [];
 
+        //console.log("currentValuecurrentValuea",Object.keys(currentValue));
+        
+        // if (isModelopen && Object.keys(currentValue).length) {
+
+        //   const isAutoMapped = record?.dropdown?.some(
+        //     (dropDownData: any) =>
+        //       record.sourceWorkItem === dropDownData.dropdownValue
+        //   )
+        //   console.log("isAutoMapped",isAutoMapped);
+          
+        //   const updatedData = tableData.map((item :any) => {
+        //     if (item.key === currentValue?.key) {
+        //       return  {
+        //         ...item,
+        //         [dataIndex]: currentValue.value,
+        //         ["defaultOptionList"]: [],
+        //         enable: true,
+        //         isSelected: true,
+        //         ["isPickListComplete"]: false,
+        //         fieldReferenceName: currentValue?.fieldReferenceName
+        //       }
+        //     }
+        //     return item;
+        //   });
+
+        //   console.log("aitoUpdated",updatedData);
+        //   isAutoMapped &&  setTableData(updatedData);
+        //   isModelopen && setFieldDataArr(updatedData);
+        //   // Do something with updatedData if needed
+        // } 
+
     return isModelopen && record?.isText ? (
       <div>
         <Text>{record?.devopsWorkItem}</Text>
@@ -226,6 +257,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
                         value: _data.dropdownValue,
                         isPicklist: _data.isPickList,
                         option: _data.option,
+                        fieldReferenceName  :_data?.fieldReferenceName
                       })}
                     >
                       {_data.dropdownValue}
@@ -335,7 +367,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
 
   const handleButtonClick = (record: any) => {
     console.log("Button clicked for record:", record);
-    record?.name && setMappingType(record.name);
+    record?.name && setMappingType({devOps:record?.gyde_name,source:record?.name});
     if (!disabled) {
       isModelopen ? showPickListModal(record) : setDropDownValue(record);
       modelAction();
@@ -370,6 +402,8 @@ const TableComponent: React.FC<CommonTableProps> = ({
       console.log("all params :", key, dataIndex, value);
       const changedField = tableData?.find((item: any) => item?.key == key);
       let currentValue = isModelopen && value !== "N/A" && JSON.parse(value);
+      console.log("Tag84",currentValue);
+      
       const updatedData = tableData.map((item: any) => {
         if (item.key === key) {
           return value == "N/A"
@@ -383,6 +417,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
                   enable: true,
                   isSelected: true,
                   ["isPickListComplete"]: false,
+                  fieldReferenceName: currentValue?.fieldReferenceName
                 }
               : {
                   ...item,
@@ -391,6 +426,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
                   enable: false,
                   isSelected: true,
                   ["isPickListComplete"]: false,
+                  fieldReferenceName: currentValue?.fieldReferenceName
                 }
             : { ...item, [dataIndex]: value, enable: true, isSelected: true };
         }
