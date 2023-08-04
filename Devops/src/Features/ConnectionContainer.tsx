@@ -940,7 +940,7 @@ export default function ConnectionContainer() {
                 isGuid = {guId ? true :false}
               />
 
-              <span>
+              <div className="flex-end-wrap">
                 <Button
                   className="cancel-btn mr-10"
                   type="primary"
@@ -969,7 +969,7 @@ export default function ConnectionContainer() {
                     Save
                   </Button>
                 )}
-              </span>
+              </div>
             </>
           )}
           {isModalOpen && (
