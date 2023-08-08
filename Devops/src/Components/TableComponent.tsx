@@ -170,6 +170,17 @@ const TableComponent: React.FC<CommonTableProps> = ({
             .map((_data: any) => _data.devOpsOption)
         : [];
 
+        const updatedDropDown = isModelopen
+        && record?.dropdown.filter((item1:any) => {
+          // Check if there's an object in array2 with devopsWorkItem equal to item1.dropdownValue
+          const matchingArray2Item = tableData.find((item2:any) => item2.devopsWorkItem === item1.dropdownValue);
+          
+          // If the matching item in array2 doesn't exist or devopsWorkItem is missing in array2 item, keep the item from array1
+          return !matchingArray2Item;
+      });
+      console.log("tagNo6", isModelopen && record ,updatedDropDown,tableData);
+      console.log("ag44",tableData);
+     // {record?.dropdown.map
         //console.log("currentValuecurrentValuea",Object.keys(currentValue));
         
         // if (isModelopen && Object.keys(currentValue).length) {
@@ -250,7 +261,8 @@ const TableComponent: React.FC<CommonTableProps> = ({
                   }}
                   // onBlur={() => handleDropdownBlur(dataIndex)}
                 >
-                  {record?.dropdown.map((_data: any, key: any) => (
+                  {updatedDropDown.map((_data: any, key: any) => (
+                   //record?.devopsWorkItem !== _data.dropdownValue &&
                     <Option
                       key={key}
                       value={JSON.stringify({
@@ -260,7 +272,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
                         fieldReferenceName  :_data?.fieldReferenceName
                       })}
                     >
-                      {_data.dropdownValue}
+                       {_data.dropdownValue}
                     </Option>
                   ))}
                   <Option key={"NA"} value={"N/A"}>
