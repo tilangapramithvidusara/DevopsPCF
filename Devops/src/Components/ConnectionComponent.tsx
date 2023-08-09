@@ -59,30 +59,31 @@ interface ConnectionProps {
     <Form form={form}  className='connection-form'>
       <Row gutter={20}>
         <Col span={12}>
-          <Form.Item className="custom-form-wrap" name="organizationUri" label="Organization URL" rules={[{ required: true, message: 'Please enter Organization URL' }]}>
+          <span className='label'>Organization URL</span>
+          <Form.Item className="custom-form-wrap" name="organizationUri" label="" rules={[{ required: true, message: 'Please enter Organization URL' }]}>
             <Input />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item className="custom-form-wrap" name="projectName" label="DevOps Project" rules={[{ required: true, message: 'Please enter DevOps Project' }]}>
+        <span className='label'>DevOps Project</span>
+          <Form.Item className="custom-form-wrap" name="projectName" rules={[{ required: true, message: 'Please enter DevOps Project' }]}>
             <Input />
           </Form.Item>
         </Col>
-      </Row>
-      <Row gutter={16}>
         <Col span={12}>
-          <Form.Item className="custom-form-wrap mt-20" name="personalAccessToken" label="Authorization Token" rules={[{ required: true, message: 'Please enter Authorization Token' }]}>
+        <span className='label'>Authorization Token</span>
+          <Form.Item className="custom-form-wrap mt-20" name="personalAccessToken" rules={[{ required: true, message: 'Please enter Authorization Token' }]}>
             <Input />
           </Form.Item>
         </Col>
       </Row>
-      <div className="button-form">
-        <Form.Item>
-          <Button type="primary" htmlType="submit" onClick={handleFormSubmit}>
-            Connect
-          </Button>
-        </Form.Item>
-      </div>
+        <div className="button-form">
+          <Form.Item>
+            <Button type="primary" htmlType="submit" onClick={handleFormSubmit}>
+              Connect
+            </Button>
+          </Form.Item>
+        </div>
     </Form>
   );
 }

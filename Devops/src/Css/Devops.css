@@ -1,24 +1,21 @@
-body {
-  background-color: #F5F8FA;
-}
 
 .control-container {
   border: none;
   background-color: #ffffff !important;
 }
 
-.button-form {
+.devops-container .button-form {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   height: 100%;
 }
 
-.button-form .ant-form-item:last-child {
+.devops-container .button-form .ant-form-item:last-child {
   margin-top: auto;
 }
 
-.modal-title {
+.devops-container .modal-title {
  font-size: 20px;
  font-weight: 600;
  color:  #292D32;
@@ -26,65 +23,81 @@ body {
  margin-bottom: 10px;
 }
 
-.ant-table-wrapper {
+.devops-container .ant-table-wrapper {
   margin-bottom: 10px;
 }
 
-.ant-table-wrapper th {
+.devops-container .ant-table-wrapper th {
   font-size: 13px;
 }
 
-.ant-table-wrapper th:first-child , .ant-table-wrapper td:first-child {
+.devops-container .ant-table-wrapper th:first-child , .ant-table-wrapper td:first-child {
   padding-left: 0 !important;
 }
 
-.control-pane {
+.devops-container .label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #616161;
+  text-align: left;
+  position: relative;
+}
+
+.devops-container .label::after {
+  display: inline-block;
+  margin-inline-end: 4px;
+  color: #ff4d4f;
+  font-size: 14px;
+  content: "*";
+  position: absolute;
+  top: -2px;
+  margin-left: 2px;
+}
+
+.devops-container .control-pane {
   text-align: right;
   padding: 20px 30px;
 }
 
-.devops-container {
-  padding: 20px 30px;
-}
-
-.sub-title {
+.devops-container .sub-title {
   display: flex;
   margin-bottom: 10px;
   text-align: left;
+  margin-top: 0;
 }
 
-.sub-title2 {
+.devops-container .sub-title2 {
   font-size: 14px;
   margin: 2px 0 0px 5px;
   font-weight: 400;
 }
 
-.title {
+.devops-container .title {
   text-align: left;
   margin-top: 0;
 }
 
 /* Table component styles */
-.ant-table-wrapper .ant-table-thead >tr>th {
+.devops-container .ant-table-wrapper .ant-table-thead >tr>th {
   background: #f2f2f2;
   border-bottom: none !important;
 }
 
-.ant-table-tbody >tr >td, .ant-table-thead >tr>td {
+.devops-container .ant-table-tbody >tr >td, .ant-table-thead >tr>td {
  border-bottom: none !important;
 }
 
-.ant-table-wrapper .ant-table-tbody >tr >td:last-child {
+.devops-container .ant-table-wrapper .ant-table-tbody >tr >td:last-child {
   text-align: center;
 }
-/*ant - table */
 
-.pop-up-Table .ant-table-body {
-   /* overflow-y: hidden !important; */
+
+.devops-container .pop-up-Table .ant-table-body {
   max-height: 438px !important;
 }
 
-.ant-btn-primary {
+.devops-container .ant-btn-primary {
   height: 35px;
   background-color: #00AEA7;
   border-radius: 5px;
@@ -97,11 +110,11 @@ body {
   min-width: 100px;
 }
 
-.ant-btn-primary:hover, .ant-btn-primary:active {
+.devops-container .ant-btn-primary:hover, .ant-btn-primary:active {
   background-color: #00AEA7 !important;
 }
 
-.cancel-btn {
+.devops-container .cancel-btn {
   height: 35px;
   background-color: transparent !important;
   border-radius: 5px;
@@ -114,12 +127,12 @@ body {
   min-width: 100px;
 }
 
-.cancel-btn:hover, .cancel-btn:active {
+.devops-container .cancel-btn:hover, .cancel-btn:active {
   background-color: transparent !important;
   color: #00AEA7 !important;
 }
 
-.ant-input, .ant-select-selector{
+.devops-container .ant-input, .ant-select-selector{
   background: #ffffff;
   box-shadow: none;
   border-radius: 5px;
@@ -129,79 +142,85 @@ body {
   height: 35px;
 }
 
-.ant-form-item {
-  margin-bottom: 20px !important;
+.devops-container .ant-form-item {
+  margin-bottom: 15px !important;
 }
 
-.mr-10 {
+.devops-container .mr-10 {
   margin-right: 10px;
 }
 
-.ant-table tbody>tr:nth-of-type(odd) {
+.devops-container .ant-table tbody>tr:nth-of-type(odd) {
   background-color: #F6F8FA;
 }
 
-.ant-table th {
+.devops-container .ant-table th {
   background-color: transparent !important;
   color: #292D32;
   font-weight: 700;
   font-size: 14px;
 }
 
-.ant-table td {
+.devops-container .ant-table td {
   background-color: transparent !important;
   color: #292D32;
   font-size: 14px;
 }
 
-.custom-form-wrap.mt-20{
+.devops-container .ant-form-item-explain-error {
+  text-align: left;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+/* .devops-container .custom-form-wrap.mt-20{
   margin-top: 20px;
 }
 
-.custom-form-wrap .ant-row {
+.devops-container .custom-form-wrap .ant-row {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   width: 100%;
-}
+} */
 
-.custom-form-wrap .ant-form-item-control {
+.devops-container .custom-form-wrap .ant-form-item-control {
   width: 100%;
 }
 
-.text-left {
+.devops-container .text-left {
   text-align: left;
 }
 
-.ant-radio-button {
+.devops-container .ant-radio-button {
   color: #00AEA7;
 }
 
-.ant-radio-button-wrapper:hover {
+.devops-container .ant-radio-button-wrapper:hover {
   color: #00AEA7;
 }
 
-.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
+.devops-container .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
   color: #00AEA7;
   border-color:#00AEA7 !important;
   background-color: #00AEA7 !important;
 }
 
-.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
+.devops-container .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled)::before {
   background-color: #00AEA7;
 }
 
-.mb-20 {
+.devops-container .mb-20 {
   margin-bottom: 20px;
 }
 
-.disable-table td{
+.devops-container .disable-table td{
   background-color: #e7e7e7;
   pointer-events: none;
   opacity: 0.5;
 }
 
-.crmEntityFormView {
+.devops-container .crmEntityFormView {
   background: transparent;
   margin-top: 30px;
 }
@@ -218,13 +237,13 @@ body {
   color: #292D32;
 }
 
-.actions {
+.devops-container .actions {
   border: none;
   margin-top: 0;
   padding: 0 40px;
 }
 
-.btn-submit {
+.devops-container .btn-submit {
   float: right;
   border-radius: 5px;
   min-width: 100px;
@@ -233,4 +252,10 @@ body {
 .devops-container .bg-wrap {
   background: white;
     padding: 20px;
+}
+
+.devops-container .flex-end-wrap {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
 }
