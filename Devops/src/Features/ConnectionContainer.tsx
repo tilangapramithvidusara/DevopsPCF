@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Button, notification, Radio, RadioChangeEvent, Spin } from "antd";
-// import $ from 'jquery';
+import { useNavigate } from 'react-router-dom';
 import TableComponent from "../Components/TableComponent";
 import PopupComponent from "../Components/PopupComponent";
 import ConnectionComponent from "../Components/ConnectionComponent";
@@ -165,6 +165,8 @@ export default function ConnectionContainer() {
     value: "",
   });
   const [draftData, setDraftData] = useState<any>([]);
+  const navigate = useNavigate();
+
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
   console.log("queryParameters", queryParameters);
@@ -900,6 +902,12 @@ export default function ConnectionContainer() {
       });
   };
 
+  const handleNavigate = () => {
+    const updatedPathname = url.pathname.replace("/devops/", "/devops-migrate/");
+    navigate(`${updatedPathname}`);
+    console.log("navigate clicked:",updatedPathname);
+  }
+
   return (
     <div className="devops-container">
       <Spin spinning={isLoading}>
@@ -977,7 +985,7 @@ export default function ConnectionContainer() {
                 checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
                 checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
                 configureSettings == "devopsGenerator" ? (
-                  <Button type="primary" htmlType="button" onClick={() => ""}>
+                  <Button type="primary" htmlType="button" onClick={handleNavigate}>
                     Next
                   </Button>
                 ) : (

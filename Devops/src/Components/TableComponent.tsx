@@ -178,6 +178,10 @@ const TableComponent: React.FC<CommonTableProps> = ({
           // If the matching item in array2 doesn't exist or devopsWorkItem is missing in array2 item, keep the item from array1
           return !matchingArray2Item;
       });
+      const alreadySelectedValues = isModelopen && isPicklistModel ?
+        tablePickListData?.map((item:any)=> item?.devopsOption) 
+      : tableData?.map((item:any)=>item?.gyde_name);
+      const dropDownFilter = options?.filter((item:any)=> alreadySelectedValues?.includes(item));
       console.log("tagNo6", isModelopen && record ,updatedDropDown,tableData);
       console.log("ag44",tableData);
      // {record?.dropdown.map
@@ -228,94 +232,94 @@ const TableComponent: React.FC<CommonTableProps> = ({
           <>{record[columnData.key]}</>
         ) : (
           <>
-            {isModelopen ? (
-              <>
+              {isModelopen ? (
+                <>             
+                  <Select
+                    style={{
+                      width: "100%",
+                      borderColor: isError ? "red" : undefined,
+                    }}
+                    defaultValue={
+                      isModelopen && record.isSavedType === "saved"
+                        ? record?.devopsWorkItem
+                          ? record?.devopsWorkItem
+                          : currentValue?.dropdownValue
+                          ? currentValue?.dropdownValue
+                          : ""
+                        : record.isSavedType === "setasDefault"
+                        ? record?.devopsWorkItem
+                          ? record?.devopsWorkItem
+                          : currentValue?.dropdownValue
+                          ? currentValue?.dropdownValue
+                          : ""
+                        : record.isSavedType === "default"
+                        ? currentValue?.dropdownValue
+                          ? currentValue?.dropdownValue
+                          : record?.devopsWorkItem
+                          ? record?.devopsWorkItem
+                          : ""
+                        : ""
+                    }
+                    onChange={(value) => {
+                      handleFieldChange(record.key, dataIndex, value);
+                    }}
+                    // onBlur={() => handleDropdownBlur(dataIndex)}
+                  >
+                    {updatedDropDown.map((_data: any, key: any) => (
+                    //record?.devopsWorkItem !== _data.dropdownValue &&
+                      <Option
+                        key={key}
+                        value={JSON.stringify({
+                          value: _data.dropdownValue,
+                          isPicklist: _data.isPickList,
+                          option: _data.option,
+                          fieldReferenceName  :_data?.fieldReferenceName
+                        })}
+                      >
+                        {_data.dropdownValue}
+                      </Option>
+                    ))}
+                    <Option key={"NA"} value={"N/A"}>
+                      N/A
+                    </Option>
+                  </Select>
+                </>
+              ) : (
                 <Select
                   style={{
                     width: "100%",
                     borderColor: isError ? "red" : undefined,
                   }}
+                  value={
+                    isModelopen ? currentValue?.dropdownValue : record?.gyde_name
+                  }
                   defaultValue={
-                    isModelopen && record.isSavedType === "saved"
-                      ? record?.devopsWorkItem
-                        ? record?.devopsWorkItem
-                        : currentValue?.dropdownValue
-                        ? currentValue?.dropdownValue
-                        : ""
-                      : record.isSavedType === "setasDefault"
-                      ? record?.devopsWorkItem
-                        ? record?.devopsWorkItem
-                        : currentValue?.dropdownValue
-                        ? currentValue?.dropdownValue
-                        : ""
-                      : record.isSavedType === "default"
-                      ? currentValue?.dropdownValue
-                        ? currentValue?.dropdownValue
-                        : record?.devopsWorkItem
-                        ? record?.devopsWorkItem
-                        : ""
-                      : ""
+                    isPicklistModel ? currentRecordValue[0] : record?.gyde_name
                   }
                   onChange={(value) => {
                     handleFieldChange(record.key, dataIndex, value);
                   }}
+                  disabled={disabled}
                   // onBlur={() => handleDropdownBlur(dataIndex)}
                 >
-                  {updatedDropDown.map((_data: any, key: any) => (
-                   //record?.devopsWorkItem !== _data.dropdownValue &&
-                    <Option
-                      key={key}
-                      value={JSON.stringify({
-                        value: _data.dropdownValue,
-                        isPicklist: _data.isPickList,
-                        option: _data.option,
-                        fieldReferenceName  :_data?.fieldReferenceName
-                      })}
-                    >
-                       {_data.dropdownValue}
+                  {dropDownFilter?.map((option: any) => {
+                    return (
+                      <Option key={option} value={option}>
+                        {option}
+                      </Option>
+                    );
+                  })}
+                  {/* {!isPicklistModel ? ( */}
+                    <Option key={"NA"} value={"N/A"}>
+                      N/A
                     </Option>
-                  ))}
-                  <Option key={"NA"} value={"N/A"}>
-                    N/A
-                  </Option>
+                  {/* ) : (
+                    ""
+                  )} */}
                 </Select>
-              </>
-            ) : (
-              <Select
-                style={{
-                  width: "100%",
-                  borderColor: isError ? "red" : undefined,
-                }}
-                value={
-                  isModelopen ? currentValue?.dropdownValue : record?.gyde_name
-                }
-                defaultValue={
-                  isPicklistModel ? currentRecordValue[0] : record?.gyde_name
-                }
-                onChange={(value) => {
-                  handleFieldChange(record.key, dataIndex, value);
-                }}
-                disabled={disabled}
-                // onBlur={() => handleDropdownBlur(dataIndex)}
-              >
-                {options.map((option: any) => {
-                  return (
-                    <Option key={option} value={option}>
-                      {option}
-                    </Option>
-                  );
-                })}
-                {!isPicklistModel ? (
-                  <Option key={"NA"} value={"N/A"}>
-                    N/A
-                  </Option>
-                ) : (
-                  ""
-                )}
-              </Select>
-            )}
+              )}
 
-            {isError && <div style={{ color: "red" }}>{error}</div>}
+              {isError && <div style={{ color: "red" }}>{error}</div>}
           </>
         )}
       </div>
@@ -347,15 +351,15 @@ const TableComponent: React.FC<CommonTableProps> = ({
     const checkMappedStatus = () => {
       if (isModelopen) {
         if (record?.isPickListComplete) {
-          return "https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1";
+          return "/blue-link.png";
         } else {
-          return "https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png";
+          return "/black-link.png";
         }
       } else {
         if (record?.fieldMapping) {
-          return "https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1";
+          return "/blue-link.png";
         } else {
-          return "https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png";
+          return "/black-link.png";
         }
       }
     };

@@ -1,4 +1,5 @@
 import React from 'react';
+import {  BrowserRouter as Router, Route, Routes  } from 'react-router-dom';
 import ConnectionContainer from './Features/ConnectionContainer';
 // import configProperties from '../config.properties';
 
@@ -13,7 +14,9 @@ interface AppProps {
 
 const App: React.FC<AppProps> = ({ config }) => {
   console.log("configv ======> ", config);
-
+  const baseUrl = new URL(window.location.href);
+  const updatedPathname = baseUrl.pathname.replace("/devops/", "/devops-migrate/");
+  const updatedUrl = `${baseUrl.protocol}//${baseUrl.hostname}${updatedPathname}${baseUrl.search}${baseUrl.hash}`;
   // const fetchProperties = async () => {
   //   const response = await fetch(configProperties);
   //   const fileContent = await response.text();
@@ -37,10 +40,17 @@ const App: React.FC<AppProps> = ({ config }) => {
   //       console.error('Failed to fetch properties:', error);
   //     });
   // }, []);
+  console.log("url => ", baseUrl,updatedPathname, updatedUrl);
   
   return (
     <div>
-      <ConnectionContainer/>
+       <Router>
+        <Routes>
+          {/* <ConnectionContainer/> */}
+          <Route path={`${baseUrl}`}  element={<ConnectionContainer/>} />
+          <Route path={`${updatedUrl}`} element={""} />
+        </Routes>
+      </Router>
     </div>
   )
 };
