@@ -1,3 +1,6 @@
+.custom-content-wrap {
+  margin-top: 30px;
+}
 
 .control-container {
   border: none;
@@ -75,7 +78,6 @@
 
 .devops-container .title {
   text-align: left;
-  margin-top: 0;
 }
 
 /* Table component styles */
@@ -228,7 +230,6 @@
 .devops-container .title {
   font-size: 25px;
   color: #292D32;
-  margin-bottom: 30px;
 }
 
 .devops-container .sub-title {

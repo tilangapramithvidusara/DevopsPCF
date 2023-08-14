@@ -975,7 +975,7 @@ export default function ConnectionContainer() {
                 >
                   Cancel
                 </Button>
-                <Button type="primary" htmlType="button" onClick={() =>setIsTreeViewVisible(true)}>
+                <Button type="primary" className="mr-10" htmlType="button" onClick={() =>setIsTreeViewVisible(true)}>
                     Next
                 </Button>
                 {dataAfterSave?.length > 0 &&

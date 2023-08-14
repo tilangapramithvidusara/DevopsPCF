@@ -22,6 +22,7 @@ const PopupComponent: React.FC<PopupProps> = ({ visible, onClose, buttons, Conte
   return (
     <Modal
       open={visible}
+      wrapClassName='devops-container'
       //  onOk={onOk}
        onCancel={onClose}
       footer={null}
