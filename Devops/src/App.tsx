@@ -1,6 +1,5 @@
 import React from 'react';
 import ConnectionContainer from './Features/ConnectionContainer';
-// import configProperties from '../config.properties';
 
 export interface AppConfig {
   apiKey: string;
@@ -14,6 +13,7 @@ interface AppProps {
 const App: React.FC<AppProps> = ({ config }) => {
   console.log("configv ======> ", config);
 
+  const url = new URL(window.location.href);
   // const fetchProperties = async () => {
   //   const response = await fetch(configProperties);
   //   const fileContent = await response.text();
@@ -37,6 +37,14 @@ const App: React.FC<AppProps> = ({ config }) => {
   //       console.error('Failed to fetch properties:', error);
   //     });
   // }, []);
+
+  // const componentShift = () => {
+  //   if(window.pa){
+  //     return <ConnectionContainer/>;
+  //   }else {
+  //     return <DevopsTree/>;
+  //   }
+  // }
   
   return (
     <div>

@@ -27,6 +27,7 @@ import {
   fetWorkItemsbyId,
 } from "../Api/devopsApis";
 import { convertByteArrayToJson } from "../Helper/Helper";
+import DevopsTree from "../DevopsTree/DevopsTree";
 
 declare global {
   interface Window {
@@ -165,6 +166,7 @@ export default function ConnectionContainer() {
     value: "",
   });
   const [draftData, setDraftData] = useState<any>([]);
+  const [isTreeViewVisible, setIsTreeViewVisible] = useState(false);
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
   console.log("queryParameters", queryParameters);
@@ -902,6 +904,7 @@ export default function ConnectionContainer() {
 
   return (
     <div className="devops-container">
+      {!isTreeViewVisible ? 
       <Spin spinning={isLoading}>
         <h1 className="title">DevOps Work Items</h1>
         <div className="bg-wrap">
@@ -972,7 +975,9 @@ export default function ConnectionContainer() {
                 >
                   Cancel
                 </Button>
-
+                <Button type="primary" htmlType="button" onClick={() =>setIsTreeViewVisible(true)}>
+                    Next
+                </Button>
                 {dataAfterSave?.length > 0 &&
                 checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
                 checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
@@ -1065,7 +1070,7 @@ export default function ConnectionContainer() {
             />
           )}
         </div>
-      </Spin>
+      </Spin> : <DevopsTree guid ={guId} defaultGuid={defaultGuId}/>}
     </div>
   );
 }

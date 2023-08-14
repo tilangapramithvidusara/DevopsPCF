@@ -178,8 +178,46 @@ const TableComponent: React.FC<CommonTableProps> = ({
           // If the matching item in array2 doesn't exist or devopsWorkItem is missing in array2 item, keep the item from array1
           return !matchingArray2Item;
       });
+
+      const alreadySelectedValues = isModelopen && isPicklistModel ?
+      tablePickListData?.map((item:any)=> item?.devopsOption) 
+        : tableData?.map((item:any)=>item?.gyde_name);
+      const dropDownFilter = options?.filter((item:any)=> !alreadySelectedValues?.includes(item));
+      console.log("tablePickListData",tablePickListData);
       console.log("tagNo6", isModelopen && record ,updatedDropDown,tableData);
       console.log("ag44",tableData);
+      
+      {isModelopen && record?.dropdown?.length
+        console.log("currentValuecurrentValuea",Object.keys(currentValue));
+        
+        if (isModelopen && Object.keys(currentValue).length) {
+
+          const isAutoMapped = record?.dropdown?.some(
+            (dropDownData: any) =>
+              record.sourceWorkItem === dropDownData.dropdownValue
+          )
+          console.log("isAutoMapped",isAutoMapped);
+          
+          const updatedData = tableData.map((item :any) => {
+            if (item.key === currentValue?.key) {
+              return  {
+                ...item,
+                [dataIndex]: currentValue.value,
+                ["defaultOptionList"]: [],
+                enable: true,
+                isSelected: true,
+                ["isPickListComplete"]: false,
+                fieldReferenceName: currentValue?.fieldReferenceName
+              }
+            }
+            return item;
+          });
+
+          console.log("aitoUpdated",updatedData);
+          isAutoMapped &&  setTableData(updatedData);
+          isModelopen && setFieldDataArr(updatedData);
+          // Do something with updatedData if needed
+        } }
      // {record?.dropdown.map
         //console.log("currentValuecurrentValuea",Object.keys(currentValue));
         
@@ -298,20 +336,20 @@ const TableComponent: React.FC<CommonTableProps> = ({
                 disabled={disabled}
                 // onBlur={() => handleDropdownBlur(dataIndex)}
               >
-                {options.map((option: any) => {
+                {dropDownFilter?.map((option: any) => {
                   return (
                     <Option key={option} value={option}>
                       {option}
                     </Option>
                   );
                 })}
-                {!isPicklistModel ? (
+                {/* {!isPicklistModel ? ( */}
                   <Option key={"NA"} value={"N/A"}>
                     N/A
                   </Option>
-                ) : (
+                {/* ) : (
                   ""
-                )}
+                )} */}
               </Select>
             )}
 
@@ -347,15 +385,15 @@ const TableComponent: React.FC<CommonTableProps> = ({
     const checkMappedStatus = () => {
       if (isModelopen) {
         if (record?.isPickListComplete) {
-          return "https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1";
+          return '/blue-link.png';
         } else {
-          return "https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png";
+          return '/black-link.png' ;
         }
       } else {
         if (record?.fieldMapping) {
-          return "https://partnerdesignv2dev-uk.crm11.dynamics.com/WebResources/gyde_mapping_complete.png?preview=1";
+          return '/blue-link.png';
         } else {
-          return "https://orgd6396d1b.crm11.dynamics.com//WebResources/gyde_mapping.png";
+          return '/black-link.png' ;
         }
       }
     };
