@@ -341,8 +341,9 @@ export default function ConnectionContainer() {
             (f: any) => f.name === crm.SchemaName
           );
           console.log("fieldReferenceArr**67",fieldReferenceArr,"name",referenceName);
+          const isAutoMappField =  referenceName !== undefined && typeof referenceName === 'object' && Object.keys(referenceName).length > 0 ? true: false
           
-          
+          console.log("isAutoMappField**",isAutoMappField);
           return {
             key: key,
             sourceWorkItem: crm.SchemaName,
@@ -351,7 +352,7 @@ export default function ConnectionContainer() {
             enable: isOptionList ? true : false,
             defaultOptionList: [],
             isText: false,
-            isSelected: isOptionList ? true : false,
+            isSelected: isAutoMappField ? true : isOptionList ? true : false,
             isPickListComplete: false,
             pickListArr: [],
             isSavedType: "default",
@@ -845,7 +846,7 @@ export default function ConnectionContainer() {
         console.log("tag798",item.key === itemKey?.source);
         
         if (item.key === itemKey?.source) {
-          return { ...item, ["value"]: dataSource };
+          return { ...item, key: itemKey?.source,targetTable: itemKey?.devOps,["value"]: dataSource };
         }
         return item;
       });

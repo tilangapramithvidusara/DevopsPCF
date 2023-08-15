@@ -186,69 +186,40 @@ const TableComponent: React.FC<CommonTableProps> = ({
       console.log("tablePickListData",tablePickListData);
       console.log("tagNo6", isModelopen && record ,updatedDropDown,tableData);
       console.log("ag44",tableData);
-      
-      {isModelopen && record?.dropdown?.length
-        console.log("currentValuecurrentValuea",Object.keys(currentValue));
+    //  {isModelopen && record?.dropdown?.length
+
         
-        if (isModelopen && Object.keys(currentValue).length) {
+    //     if (isModelopen &&
+    //       typeof currentValue === "object" &&
+    //       currentValue !== null && Object.keys(currentValue).length) {
+    //         console.log("currentValuecurrentValuea55",Object.keys(currentValue));
 
-          const isAutoMapped = record?.dropdown?.some(
-            (dropDownData: any) =>
-              record.sourceWorkItem === dropDownData.dropdownValue
-          )
-          console.log("isAutoMapped",isAutoMapped);
+    //       const isAutoMapped = record?.dropdown?.some(
+    //         (dropDownData: any) =>
+    //           record.sourceWorkItem === dropDownData.dropdownValue
+    //       )
+    //       console.log("isAutoMapped",isAutoMapped);
           
-          const updatedData = tableData.map((item :any) => {
-            if (item.key === currentValue?.key) {
-              return  {
-                ...item,
-                [dataIndex]: currentValue.value,
-                ["defaultOptionList"]: [],
-                enable: true,
-                isSelected: true,
-                ["isPickListComplete"]: false,
-                fieldReferenceName: currentValue?.fieldReferenceName
-              }
-            }
-            return item;
-          });
+    //       const updatedData = tableData.map((item :any) => {
+    //         if (item.key === currentValue?.key) {
+    //           return  {
+    //             ...item,
+    //             [dataIndex]: currentValue.value,
+    //             ["defaultOptionList"]: [],
+    //             enable: true,
+    //             isSelected: true,
+    //             ["isPickListComplete"]: false,
+    //             fieldReferenceName: currentValue?.fieldReferenceName
+    //           }
+    //         }
+    //         return item;
+    //       });
 
-          console.log("aitoUpdated",updatedData);
-          isAutoMapped &&  setTableData(updatedData);
-          isModelopen && setFieldDataArr(updatedData);
-          // Do something with updatedData if needed
-        } }
-     // {record?.dropdown.map
-        //console.log("currentValuecurrentValuea",Object.keys(currentValue));
-        
-        // if (isModelopen && Object.keys(currentValue).length) {
-
-        //   const isAutoMapped = record?.dropdown?.some(
-        //     (dropDownData: any) =>
-        //       record.sourceWorkItem === dropDownData.dropdownValue
-        //   )
-        //   console.log("isAutoMapped",isAutoMapped);
-          
-        //   const updatedData = tableData.map((item :any) => {
-        //     if (item.key === currentValue?.key) {
-        //       return  {
-        //         ...item,
-        //         [dataIndex]: currentValue.value,
-        //         ["defaultOptionList"]: [],
-        //         enable: true,
-        //         isSelected: true,
-        //         ["isPickListComplete"]: false,
-        //         fieldReferenceName: currentValue?.fieldReferenceName
-        //       }
-        //     }
-        //     return item;
-        //   });
-
-        //   console.log("aitoUpdated",updatedData);
-        //   isAutoMapped &&  setTableData(updatedData);
-        //   isModelopen && setFieldDataArr(updatedData);
-        //   // Do something with updatedData if needed
-        // } 
+    //       console.log("aitoUpdated",updatedData);
+    //       isAutoMapped &&  setTableData(updatedData);
+    //       isModelopen && setFieldDataArr(updatedData);
+    //       // Do something with updatedData if needed
+    //     } }
 
     return isModelopen && record?.isText ? (
       <div>
