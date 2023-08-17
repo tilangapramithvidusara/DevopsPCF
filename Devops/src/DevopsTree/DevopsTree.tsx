@@ -453,11 +453,6 @@ const DevopsTree: React.FC<TreeView> = ({guid, defaultGuid}) => {
   const [selectedNodes, setSelectedNodes] = useState<any>([]);
   const [halfSelectedNodes, setHalfSelectedNodes] = useState<any>([]);
   const [savedMappingFieldsData, setSavedMappingFieldsData] = useState<any>([]);
-  const setAllKeysChecked = (loadedKeys: any, { event, node }: any) => {
-    console.log("keys", loadedKeys);
-    console.log("event...", event, node);
-    // setCheckedKeys(keys);
-  };
 
   const fetchRequestToGenerateTree = async() => {
     fetchAllInternalIdsByBusinessSurveyId(cbsId)
@@ -504,54 +499,17 @@ const DevopsTree: React.FC<TreeView> = ({guid, defaultGuid}) => {
     fetchRequestToGenerateTree();
   }, []);
 
-  // useEffect(() => {
-  //   // to be changed........
-  //   const filteredData = workItemsBySurveyId?.filter((item: any) =>internalIds?.includes(item?.internalid));
-  //   setFilteredTreeData(filteredData);
-
-  // }, [workItemsBySurveyId,internalIds]);
-
-  // useEffect(() => {
-
-  //   console.log("filtered data....", filteredData);
-  // }, [allInternalIdsBySurveyId]);
-
   console.log("workItemsBySurveyId", workItemsBySurveyId);
   console.log("allInternalIdsBySurveyId", allInternalIdsBySurveyId);
   console.log("filteredData", filteredTreeData);
 
-  // const onSelect: TreeProps['onSelect'] = (selectedKeys, info) => {
-  //   console.log('selected', selectedKeys, info.node);
-  //   const nodesDetails = info?.node;
-  //   if(nodesDetails){
-
-  //   }
-  // };
-
   const onCheck: TreeProps["onCheck"] = (checkedKeys, info) => {
-    console.log("onCheck", checkedKeys, info?.checkedNodes, "info..", info);
-
     setSelectedNodes(info?.checkedNodes);
-    setHalfSelectedNodes(info?.halfCheckedKeys);
+    // setHalfSelectedNodes(info?.halfCheckedKeys);
   };
 
   const handleMigrateToDevops = async () => {
-    // const checkedObj = filteredTreeData?.filter((node:any)=> selectedNodes?.includes(node?.workitemid));
-    // console.log("checked objects for migration:", checkedObj);
-    // // create functionality....
-    // // To filter the parent nodes....
-    // const parentNodes = selectedNodes?.filter((item:any)=> !item?.rest?.parentworkitem);
-    // console.log("parentNodes", parentNodes);
-    // console.log("halfSelectedNodes", halfSelectedNodes);
-    // // To get the half checked nodes with parent.....
-    // // const filteredNodes = halfSelectedNodes;
-    // console.log("selectedNodes..", selectedNodes);
-    // const halfCheckedData = halfSelectedNodes?.map((item:any)=>findNodeAndRelations(treeData,item));
-    // console.log("half checked data..", halfCheckedData);
-
     console.log("XXXXX", selectedNodes);
-    // generateDevops(selectedNodes, false);
-
     const allNodes = selectedNodes.map((item: any) => {
       let fieldsWithReferncePAth = savedMappingFieldsData?.map((_fields: any) => {
         let matchFiledArr =
@@ -570,9 +528,7 @@ const DevopsTree: React.FC<TreeView> = ({guid, defaultGuid}) => {
                 return _item?.sourceWorkItem === values;
               }
             });
-
             console.log("tag11", x[0], _item?.sourceWorkItem, _fields);
-
             if (x[0] === _item?.sourceWorkItem && _item.isPickListComplete) {
               const defaultOption =
                 _item.defaultOptionList?.defaultOptionList[0];
@@ -644,7 +600,6 @@ const DevopsTree: React.FC<TreeView> = ({guid, defaultGuid}) => {
               }
             }
           });
-
         return {
           key: _fields?.key,
           targetTable: _fields?.targetTable,
@@ -657,14 +612,10 @@ const DevopsTree: React.FC<TreeView> = ({guid, defaultGuid}) => {
           ":963",
           currentWorkItem.key
         );
-
         return item?.rest?.["Work item type"] === currentWorkItem?.key;
       });
-
       //return {workItemsType:}
-
       console.log("matchedArr", fieldsWithReferncePAth);
-
       console.log("_workItems", _workItems);
       return { item, workItems: _workItems };
     });
@@ -769,13 +720,10 @@ const DevopsTree: React.FC<TreeView> = ({guid, defaultGuid}) => {
         }
       }
     }
-
     // Loop through the tree and make API calls
     for (const node of rootNode) {
       processNode(node);
     }
-
-    //generateDevops(generateRequestBody[0])
   };
 
   // Helper function to create a new node
@@ -874,8 +822,21 @@ for (const item of treeData) {
 
 // Remove items with keys that match sequanceIds
 const _filteredTreeData = treeData.filter((item:any) => !sequanceIds.has(item.key));
-
 console.log("xxxxx*",_filteredTreeData);
+
+const getAllTreeNodeKeys = (_filteredTreeData : any) => {
+  const keys: string[] = [];
+  for (const item of _filteredTreeData) {
+      keys.push(item.key);
+      if (item.children && item.children.length > 0) {
+        const childKeys = getAllTreeNodeKeys(item.children);
+        keys.push(...childKeys);
+    }
+  }
+  return keys ;
+}
+
+const keys = getAllTreeNodeKeys(_filteredTreeData);
 
   useEffect(() => {
     fetchWorkItemTypes()
@@ -887,18 +848,16 @@ console.log("xxxxx*",_filteredTreeData);
 
   return (
     <>
-      <Tree
+     {keys?.length>0 && 
+     <Tree
         checkable
-        // defaultExpandedKeys={['0-0-0', '0-0-1']}
-        // defaultSelectedKeys={['0-0-0', '0-0-1']}
-        // defaultCheckedKeys={['0-0-0', '0-0-1']}
+        defaultCheckedKeys={[...keys]}
         // onSelect={onSelect}
         checkStrictly={true}
         selectable={false}
         onCheck={onCheck}
         treeData={_filteredTreeData}
-        onLoad={setAllKeysChecked}
-      />
+      />}
       <span>
         <Button
           className="cancel-btn mr-10"
