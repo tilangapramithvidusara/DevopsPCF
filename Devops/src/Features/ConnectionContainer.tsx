@@ -976,14 +976,11 @@ export default function ConnectionContainer() {
                 >
                   Cancel
                 </Button>
-                <Button type="primary" htmlType="button" onClick={() =>setIsTreeViewVisible(true)}>
-                    Next
-                </Button>
                 {dataAfterSave?.length > 0 &&
                 checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
                 checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
                 configureSettings == "devopsGenerator" ? (
-                  <Button type="primary" htmlType="button" onClick={() => ""}>
+                  <Button type="primary" htmlType="button" onClick={() =>setIsTreeViewVisible(true)}>
                     Next
                   </Button>
                 ) : (
