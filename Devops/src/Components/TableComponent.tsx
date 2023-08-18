@@ -43,7 +43,7 @@ interface CommonTableProps extends TableProps<any> {
   setMappingType?: any;
   setWorkitemTypeData?: any;
   setPickListArr?: any;
-  isGuid?:any
+  isGuid?: any;
 }
 
 interface TableColumn {
@@ -55,19 +55,6 @@ interface TableColumn {
   buttonField?: boolean;
   accordionContent?: string;
 }
-
-// const dataSource = [
-//   { key: '1', name: 'John Doe', age: 32, country: 'USA', info: 'Additional info for John Doe' },
-//   { key: '2', name: 'Jane Smith', age: 28, country: 'Canada', info: 'Additional info for Jane Smith' },
-// ];
-
-// const columns = [
-//   { title: 'Name', dataIndex: 'name', key: 'name' },
-//   { title: 'Age', dataIndex: 'age', key: 'age', textField: true },
-//   { title: 'Country', dataIndex: 'country', key: 'country', dropdownOptions: ['USA', 'Canada', 'UK'] },
-//   { title: 'Info', dataIndex: 'info', key: 'info', accordionContent: 'Additional info' },
-// ];
-
 const TableComponent: React.FC<CommonTableProps> = ({
   dataSource,
   columns,
@@ -109,17 +96,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
     // Pass the updated tableData to the PCF framework
     // You may need to use specific PCF methods or update the control's properties/state
     console.log("dataSource ===> ", dataSource);
-    console.log("data ===> ", tableData);
-    console.log("pickListFlag", pickListFlag);
-    console.log("isPicklist", isPickListModelOpen);
-    console.log(
-      "tag81",
-      !isModelopen && !isPicklistModel,
-      ":",
-      isModelopen,
-      ":",
-      isPicklistModel
-    );
     //!isModelopen  || !isPicklistModel && setTableData(dataSource)
     !isModelopen && !isPicklistModel && setTableData(dataSource);
   }, [dataSource]);
@@ -162,65 +138,39 @@ const TableComponent: React.FC<CommonTableProps> = ({
     console.log("currentValuecurrentValue", currentValue);
     console.log("options======> ", options);
     isPicklistModel &&
-      console.log("defaultData1:", record, ":|", defaultPickListData);
+      console.log("defaultData picList ===>:",record, ":|",defaultPickListData);
     let currentRecordValue =
       isPicklistModel && defaultPickListData.length
         ? defaultPickListData
             .filter((items: any) => items.crmOption === record.souruceOption)
             .map((_data: any) => _data.devOpsOption)
         : [];
-
-        const updatedDropDown = isModelopen
-        && record?.dropdown.filter((item1:any) => {
-          // Check if there's an object in array2 with devopsWorkItem equal to item1.dropdownValue
-          const matchingArray2Item = tableData.find((item2:any) => item2.devopsWorkItem === item1.dropdownValue);
-          
-          // If the matching item in array2 doesn't exist or devopsWorkItem is missing in array2 item, keep the item from array1
-          return !matchingArray2Item;
+    const updatedDropDown =
+      isModelopen &&
+      record?.dropdown.filter((item1: any) => {
+        const matchingArray2Item = tableData.find(
+          (item2: any) => item2.devopsWorkItem === item1.dropdownValue
+        );
+        return !matchingArray2Item;
       });
-
-      const alreadySelectedValues = isModelopen && isPicklistModel ?
-      tablePickListData?.map((item:any)=> item?.devopsOption) 
-        : tableData?.map((item:any)=>item?.gyde_name);
-      const dropDownFilter = options?.filter((item:any)=> !alreadySelectedValues?.includes(item));
-      console.log("tablePickListData",tablePickListData);
-      console.log("tagNo6", isModelopen && record ,updatedDropDown,tableData);
-      console.log("ag44",tableData);
-    //  {isModelopen && record?.dropdown?.length
-
-        
-    //     if (isModelopen &&
-    //       typeof currentValue === "object" &&
-    //       currentValue !== null && Object.keys(currentValue).length) {
-    //         console.log("currentValuecurrentValuea55",Object.keys(currentValue));
-
-    //       const isAutoMapped = record?.dropdown?.some(
-    //         (dropDownData: any) =>
-    //           record.sourceWorkItem === dropDownData.dropdownValue
-    //       )
-    //       console.log("isAutoMapped",isAutoMapped);
-          
-    //       const updatedData = tableData.map((item :any) => {
-    //         if (item.key === currentValue?.key) {
-    //           return  {
-    //             ...item,
-    //             [dataIndex]: currentValue.value,
-    //             ["defaultOptionList"]: [],
-    //             enable: true,
-    //             isSelected: true,
-    //             ["isPickListComplete"]: false,
-    //             fieldReferenceName: currentValue?.fieldReferenceName
-    //           }
-    //         }
-    //         return item;
-    //       });
-
-    //       console.log("aitoUpdated",updatedData);
-    //       isAutoMapped &&  setTableData(updatedData);
-    //       isModelopen && setFieldDataArr(updatedData);
-    //       // Do something with updatedData if needed
-    //     } }
-
+    const alreadySelectedValues = tableData?.map(
+      (item: any) => item?.gyde_name
+    );
+    const dropDownFilter = options?.filter(
+      (item: any) => !alreadySelectedValues?.includes(item)
+    );
+    console.log("tablePickListData", tablePickListData);
+    const pickListDropDownArr = options.filter((option: any) => {
+      if (tablePickListData) {
+        const foundItem = tablePickListData.find(
+          (item: any) => option === item?.devopsOption
+        );
+        return !foundItem; // Exclude options that have a matching devopsOption in tablePickListData
+      } else {
+        return true; // Keep all options when tablePickListData is not available
+      }
+    });
+    console.log("pickListDropDownArr", pickListDropDownArr);
     return isModelopen && record?.isText ? (
       <div>
         <Text>{record?.devopsWorkItem}</Text>
@@ -268,20 +218,18 @@ const TableComponent: React.FC<CommonTableProps> = ({
                   onChange={(value) => {
                     handleFieldChange(record.key, dataIndex, value);
                   }}
-                  // onBlur={() => handleDropdownBlur(dataIndex)}
                 >
                   {updatedDropDown.map((_data: any, key: any) => (
-                   //record?.devopsWorkItem !== _data.dropdownValue &&
                     <Option
                       key={key}
                       value={JSON.stringify({
                         value: _data.dropdownValue,
                         isPicklist: _data.isPickList,
                         option: _data.option,
-                        fieldReferenceName  :_data?.fieldReferenceName
+                        fieldReferenceName: _data?.fieldReferenceName,
                       })}
                     >
-                       {_data.dropdownValue}
+                      {_data.dropdownValue}
                     </Option>
                   ))}
                   <Option key={"NA"} value={"N/A"}>
@@ -305,25 +253,27 @@ const TableComponent: React.FC<CommonTableProps> = ({
                   handleFieldChange(record.key, dataIndex, value);
                 }}
                 disabled={disabled}
-                // onBlur={() => handleDropdownBlur(dataIndex)}
               >
-                {dropDownFilter?.map((option: any) => {
-                  return (
-                    <Option key={option} value={option}>
-                      {option}
-                    </Option>
-                  );
-                })}
-                {/* {!isPicklistModel ? ( */}
-                  <Option key={"NA"} value={"N/A"}>
-                    N/A
-                  </Option>
-                {/* ) : (
-                  ""
-                )} */}
+                {isPicklistModel
+                  ? pickListDropDownArr.map((option: any) => {
+                      return (
+                        <Option key={option} value={option}>
+                          {option}
+                        </Option>
+                      );
+                    })
+                  : dropDownFilter?.map((option: any) => {
+                      return (
+                        <Option key={option} value={option}>
+                          {option}
+                        </Option>
+                      );
+                    })}
+                <Option key={"NA"} value={"N/A"}>
+                  N/A
+                </Option>
               </Select>
             )}
-
             {isError && <div style={{ color: "red" }}>{error}</div>}
           </>
         )}
@@ -344,7 +294,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
     );
     const notNull = Boolean(record?.country);
     console.log("recordBTN", record);
-
     let pickListCompletedFlag =
       isModelopen &&
       Object.keys(record?.defaultOptionList).length &&
@@ -352,43 +301,48 @@ const TableComponent: React.FC<CommonTableProps> = ({
         .filter((pickList: any) => pickList.devOpsOption)
         .every((f: any) => f !== undefined);
     console.log("pickListCompletedFlag", pickListCompletedFlag);
-
     const checkMappedStatus = () => {
       if (isModelopen) {
         if (record?.isPickListComplete) {
-          return '/blue-link.png';
+          return "/blue-link.png";
         } else {
-          return '/black-link.png' ;
+          return "/black-link.png";
         }
       } else {
         if (record?.fieldMapping) {
-          return '/blue-link.png';
+          return "/blue-link.png";
         } else {
-          return '/black-link.png' ;
+          return "/black-link.png";
         }
       }
     };
 
     return (
       <div>
-        {isGuid ? <>{record?.enable && (
-          <img
-            src={checkMappedStatus()}
-            alt="1"
-            style={{ marginLeft: 100 }}
-            width={20}
-            height={20}
-            onClick={() => handleButtonClick(record)}
-          />
-        )}  </> :""}
-        
+        {isGuid ? (
+          <>
+            {record?.enable && (
+              <img
+                src={checkMappedStatus()}
+                alt="1"
+                style={{ marginLeft: 100 }}
+                width={20}
+                height={20}
+                onClick={() => handleButtonClick(record)}
+              />
+            )}{" "}
+          </>
+        ) : (
+          ""
+        )}
       </div>
     );
   };
 
   const handleButtonClick = (record: any) => {
     console.log("Button clicked for record:", record);
-    record?.name && setMappingType({devOps:record?.gyde_name,source:record?.name});
+    record?.name &&
+      setMappingType({ devOps: record?.gyde_name, source: record?.name });
     if (!disabled) {
       isModelopen ? showPickListModal(record) : setDropDownValue(record);
       modelAction();
@@ -414,7 +368,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
         }
         return item;
       });
-
       console.log("updatedData PickList", updatedData);
       setTablePickData(updatedData);
       setDataArr(updatedData);
@@ -423,8 +376,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
       console.log("all params :", key, dataIndex, value);
       const changedField = tableData?.find((item: any) => item?.key == key);
       let currentValue = isModelopen && value !== "N/A" && JSON.parse(value);
-      console.log("Tag84",currentValue);
-      
+      console.log("Tag84", currentValue);
       const updatedData = tableData.map((item: any) => {
         if (item.key === key) {
           return value == "N/A"
@@ -438,7 +390,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
                   enable: true,
                   isSelected: true,
                   ["isPickListComplete"]: false,
-                  fieldReferenceName: currentValue?.fieldReferenceName
+                  fieldReferenceName: currentValue?.fieldReferenceName,
                 }
               : {
                   ...item,
@@ -447,7 +399,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
                   enable: false,
                   isSelected: true,
                   ["isPickListComplete"]: false,
-                  fieldReferenceName: currentValue?.fieldReferenceName
+                  fieldReferenceName: currentValue?.fieldReferenceName,
                 }
             : { ...item, [dataIndex]: value, enable: true, isSelected: true };
         }
@@ -455,7 +407,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
       });
       console.log("changedField  ===> ", changedField);
       console.log("updatedDataupdatedData", updatedData);
-
       setTableData(updatedData);
       isModelopen && setFieldDataArr(updatedData);
     }
@@ -491,7 +442,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
 
     let renderCell;
     console.log(
-      "xxcccc",
+      "updatedColumns ===>",
       dataIndex,
       dropdownOptions,
       textField,
@@ -511,7 +462,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
       renderCell = (text: string, record: any) =>
         renderButton(text, record, dataIndex);
     }
-
     return {
       dataIndex,
       render: renderCell,
@@ -537,7 +487,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
     console.log("picklistmodel record:", record);
     record && setCurrentRecord(record?.key);
     console.log("picklistModel current Record:", currentRecord);
-
     if (record.isText === false) {
       const _optionDataSource = record.dropdown
         .filter((option: any) => {
@@ -568,9 +517,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
           devOpsOption:
             devOpsOption[index] === undefined ? null : devOpsOption[index],
         }));
-
       console.log(result);
-
       console.log("defaultRecord", result);
       setDefaultPickListRecord(result);
       setIsPickLisModalOpen(true);
@@ -586,7 +533,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   };
 
   const savePickListData = () => {
-    console.log("tag800", isPicklistModel, currentPickListData);
+    console.log("savePickListData ==>", isPicklistModel, currentPickListData);
     if (currentPickListData.length) {
       console.log("picListDataArr", tableData, currentRecordKey);
       let devopsPickListData = currentPickListData.map(
@@ -600,7 +547,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
       );
       console.log("devopsPickListData", devopsPickListData);
       console.log("devopsPickListData", _picklistFlag);
-
       const _result = tableData
         .filter((_data) => _data.key === currentRecord)
         .map((_field) => {
@@ -617,8 +563,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
           }
         });
 
-      console.log("savePickListData RR", _result);
-
+      console.log("savePickListData _result ==>", _result);
       if (_result[0].length) {
         const updatedR = currentPickListData.map((xObj: any) => {
           const rObj = _result[0].find(
@@ -631,7 +576,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
         });
 
         console.log("updatedR", updatedR);
-
         let _matchDevopsPickListData = updatedR.map((f: any) => f.devOpsOption);
         let _updatedpicklistFlag = _matchDevopsPickListData.every(
           (f: any) => f !== undefined && f !== null
@@ -644,14 +588,12 @@ const TableComponent: React.FC<CommonTableProps> = ({
           matchCrmPickListData,
           _updatedpicklistFlag
         );
-
         let pickListItems = [
           {
             crmOption: matchCrmPickListData,
             devOpsOption: _matchDevopsPickListData,
           },
         ];
-
         let updateditems = tableData?.map((field: any) => {
           if (field.key == currentRecord) {
             const updatedPickListName = field.isPickListComplete
@@ -673,7 +615,6 @@ const TableComponent: React.FC<CommonTableProps> = ({
         setPickListFlag(_picklistFlag);
       } else {
         console.log(" default");
-
         let pickListItems = [
           {
             crmOption: crmPickListData,
@@ -694,11 +635,9 @@ const TableComponent: React.FC<CommonTableProps> = ({
             };
           }
           console.log("field", field);
-
           return field;
         });
         console.log("picklistSave", updateditems);
-
         setTableData(updateditems);
         setFieldDataArr(updateditems);
         setPickListFlag(_picklistFlag);
@@ -713,11 +652,9 @@ const TableComponent: React.FC<CommonTableProps> = ({
           };
         }
         console.log("field", field);
-
         return field;
       });
       console.log("picklistSave", updateditems);
-
       setTableData(updateditems);
       setFieldDataArr(updateditems);
     }
@@ -755,7 +692,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
                 currentPickListData={currentPickListData}
                 defaultPickListData={defaultPickListRecord}
                 saveMappingItems={() => {}}
-                isGuid ={isGuid}
+                isGuid={isGuid}
               />
 
               <div

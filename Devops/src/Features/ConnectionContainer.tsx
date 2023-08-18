@@ -5,16 +5,7 @@ import TableComponent from "../Components/TableComponent";
 import PopupComponent from "../Components/PopupComponent";
 import ConnectionComponent from "../Components/ConnectionComponent";
 import {
-  exampleCRMData,
-  exampleDevOpsData,
-  savedMappedData,
-  workItemTypes,
-} from "../Constants/Samples/sample";
-import SampleModel from "../Components/SampleMode";
-import { FetchCrmFields } from "../Api/crmApis";
-import {
   fetchDevopsFeildsData,
-  saveWorkItemTypes,
   createMappingFile,
   saveMappingData,
   saveDefaultMappingData,
@@ -22,11 +13,9 @@ import {
   fetchDevOpsMappingField,
   fetchDefaultSetting,
   createDevConfigApi,
-  fetchDevOpsConfigById,
   fetchDevopsConfig,
   fetWorkItemsbyId,
 } from "../Api/devopsApis";
-import { convertByteArrayToJson } from "../Helper/Helper";
 import DevopsTree from "../DevopsTree/DevopsTree";
 
 declare global {
@@ -151,11 +140,12 @@ export default function ConnectionContainer() {
   });
   const [title, SetTitle]: any = useState("Title");
   const [mappingType, setMappingType]: any = useState("");
-  const [mappedField, setmMppedField] = useState<any>({devOps:"",source:""});
+  const [mappedField, setmMppedField] = useState<any>({
+    devOps: "",
+    source: "",
+  });
   const [isEnablePopUp, setIsEnablePopUp] = useState<boolean>(false);
   const [configurationData, setConfigurationData] = useState<any>();
-  // const [loading, setLoading] = useState<boolean>(false);
-  // const [visibleButton, setVisibleButton] = useState<boolean>(false);
   const [defaultGuId, setDefaultGuId]: any = useState();
   const [guId, setGuId]: any = useState();
   const url = new URL(window.location.href);
@@ -170,13 +160,11 @@ export default function ConnectionContainer() {
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
   console.log("queryParameters", queryParameters);
-
   const cusId = queryParameters.get("cusid");
   const cbsId = queryParameters.get("cbsid");
   const _pId = queryParameters.get("pid");
   const _itemId = queryParameters.get("id");
   const _navigateUrl = queryParameters.get("returnto");
-
   const showModal = () => {
     const data: string | null = localStorage.getItem("items");
     const authData: any = data ? JSON.parse(data) : null;
@@ -191,7 +179,6 @@ export default function ConnectionContainer() {
     setIsModalOpen(false);
     setSelectedWorkItem({});
   };
-
   const workItemColumns = [
     {
       title: "SOURCE WORK ITEM TYPE",
@@ -210,9 +197,8 @@ export default function ConnectionContainer() {
       dataIndex: "mapping",
       key: "mapping",
       buttonField: true,
-    }, // accordionContent: 'Additional info'
+    },
   ];
-
   useEffect(() => {
     if (retrieveDevopsMapping?.length == 0) {
       const data = crmWorkItemTypes?.map((item: any, num: number) => {
@@ -232,7 +218,6 @@ export default function ConnectionContainer() {
   console.log("data not saved initial data", retrieveDevopsMapping);
 
   useEffect(() => {
-    //tempAPI();
     const data: string | null = localStorage.getItem("items");
     const authData: any = data ? JSON.parse(data) : null;
     console.log("authData... parse", authData);
@@ -249,17 +234,20 @@ export default function ConnectionContainer() {
     };
     let devopsWorkItemFieldURL = window?.parent?.devopsWorkItemFieldURL;
     let devopsWorkItemFields = window?.parent?.devopsWorkItemFields;
-    if (selectedWorkItem?.gyde_name != undefined && selectedWorkItem?.gyde_name != null) {
+    if (
+      selectedWorkItem?.gyde_name != undefined &&
+      selectedWorkItem?.gyde_name != null
+    ) {
       const devopsData = await fetchDevopsFeildsData(
         authObj,
         devopsWorkItemFieldURL
       );
-      console.log("apiDara,", devopsData, selectedWorkItem);
+      console.log("devopsData==>,", devopsData, selectedWorkItem);
       let sameDropdownFeild: any = [];
       let fieldReferenceArr: any = [];
       if (devopsData.status === "success") {
         const crmData = JSON.parse(devopsWorkItemFields);
-        console.log("CCCW", crmData);
+        console.log("crmData==>", crmData);
         let tableData = crmData?.map((crm: any, key: any) => {
           let dropdownArr: any = devopsData.data?.Value.filter(
             (devOps: any) =>
@@ -309,11 +297,11 @@ export default function ConnectionContainer() {
                   },
                 ],
               });
-
-              
-              crm.SchemaName === _data.fieldName && fieldReferenceArr.push({name:_data.fieldName ,ref :_data?.fieldReferenceName })
-              
-              
+            crm.SchemaName === _data.fieldName &&
+              fieldReferenceArr.push({
+                name: _data.fieldName,
+                ref: _data?.fieldReferenceName,
+              });
             return {
               key: key,
               dropdownValue: _data.fieldName,
@@ -330,7 +318,7 @@ export default function ConnectionContainer() {
                 _data.allowedValues?.length && crm.Options?.length
                   ? true
                   : false,
-              fieldReferenceName  :_data?.fieldReferenceName
+              fieldReferenceName: _data?.fieldReferenceName,
             };
           });
 
@@ -340,10 +328,19 @@ export default function ConnectionContainer() {
           let referenceName = fieldReferenceArr.find(
             (f: any) => f.name === crm.SchemaName
           );
-          console.log("fieldReferenceArr**67",fieldReferenceArr,"name",referenceName);
-          const isAutoMappField =  referenceName !== undefined && typeof referenceName === 'object' && Object.keys(referenceName).length > 0 ? true: false
-          
-          console.log("isAutoMappField**",isAutoMappField);
+          console.log(
+            "fieldReferenceArr**67",
+            fieldReferenceArr,
+            "name",
+            referenceName
+          );
+          const isAutoMappField =
+            referenceName !== undefined &&
+            typeof referenceName === "object" &&
+            Object.keys(referenceName).length > 0
+              ? true
+              : false;
+          console.log("isAutoMappField**", isAutoMappField);
           return {
             key: key,
             sourceWorkItem: crm.SchemaName,
@@ -356,7 +353,12 @@ export default function ConnectionContainer() {
             isPickListComplete: false,
             pickListArr: [],
             isSavedType: "default",
-            fieldReferenceName  :referenceName !== undefined && typeof referenceName &&  Object.keys(referenceName).length ? referenceName.ref  : ""
+            fieldReferenceName:
+              referenceName !== undefined &&
+              typeof referenceName &&
+              Object.keys(referenceName).length
+                ? referenceName.ref
+                : "",
           };
         });
         let currentLength = tableData.length + 1;
@@ -371,7 +373,7 @@ export default function ConnectionContainer() {
             defaultOptionList: [],
             isText: true,
             isSelected: true,
-            fieldReferenceName:"System.Title"
+            fieldReferenceName: "System.Title",
           },
           {
             key: currentLength + 2,
@@ -383,7 +385,7 @@ export default function ConnectionContainer() {
             defaultOptionList: [],
             isText: true,
             isSelected: true,
-            fieldReferenceName:"System.WorkItemType"
+            fieldReferenceName: "System.WorkItemType",
           },
           {
             key: currentLength + 3,
@@ -395,27 +397,31 @@ export default function ConnectionContainer() {
             defaultOptionList: [],
             isText: true,
             isSelected: true,
-            fieldReferenceName:""
+            fieldReferenceName: "",
           },
           ...tableData,
         ];
-
-        console.log("_TTTTT",tableData);
-        
-        let updatedSavedData: any = await fetchFieldMappingData(mappedField?.source);
-        let updatedDefaultData: any = await fetchDefaultSettingData(_pId,false);
-
-        console.log("updatedSavedData====*", updatedSavedData, updatedDefaultData,updatedDefaultData?.data?.length);
+        console.log("tableDataInitial ===>", tableData);
+        let updatedSavedData: any = await fetchFieldMappingData(
+          mappedField?.source
+        );
+        let updatedDefaultData: any = await fetchDefaultSettingData(
+          _pId,
+          false
+        );
+        console.log(
+          "updatedSavedData====*",
+          updatedSavedData,
+          updatedDefaultData,
+          updatedDefaultData?.data?.length
+        );
         if (updatedSavedData?.length) {
           setTaskDataArr(updatedSavedData[0]["value"]);
         } else if (updatedDefaultData?.data?.length) {
-          console.log("tag1232",updatedDefaultData?.data?.length);
-          
           setTaskDataArr(updatedDefaultData?.data);
         } else {
           setTaskDataArr(_tableData);
         }
-
         const columns = [
           {
             title: "SOURCE WORK ITEM FIELD",
@@ -453,13 +459,12 @@ export default function ConnectionContainer() {
 
   useEffect(() => {
     console.log("cbs******", cbsId, cusId, _pId);
-    findDevopsConfigGuId(cusId, cbsId,"",false);
+    findDevopsConfigGuId(cusId, cbsId, "", false);
     getWorkitemNames(_itemId);
   }, [devopsWorkItemTypes]);
 
   const getWorkitemNames = async (_itemId: any) => {
     console.log("_itemId", _itemId);
-
     let result: any = await fetWorkItemsbyId(_itemId);
     setConfigurationData(result?.data);
     console.log("result", result);
@@ -469,14 +474,12 @@ export default function ConnectionContainer() {
     if (guId) {
       let _result: any = await fetchFieldMapping(guId);
       if (_result.type == "success") {
-        console.log("33", _result.data);
+        console.log("fetchFieldMapping ==>", _result.data, itemKey);
         const _resultData = JSON.parse(_result.data);
-        console.log("fieldMAppQ", itemKey);
         const updatedData = _resultData.filter((item: any) => {
-          console.log("12", item.key, itemKey);
           return item.key === itemKey;
         });
-        console.log("upppp", updatedData);
+        console.log("MappingupdatedData", updatedData);
         return updatedData;
       } else if (_result.type == "error") return [];
     } else {
@@ -484,7 +487,12 @@ export default function ConnectionContainer() {
     }
   };
 
-  const findDevopsConfigGuId = async (cusId: any, bId: any,requestType: string,isCreate:boolean= false) => {
+  const findDevopsConfigGuId = async (
+    cusId: any,
+    bId: any,
+    requestType: string,
+    isCreate: boolean = false
+  ) => {
     let _result: any = await fetchDevopsConfig(cusId, bId);
     console.log("devOpsCOnfig", _result);
     if (_result.type === "updateConfig") {
@@ -507,25 +515,22 @@ export default function ConnectionContainer() {
       }
     } else if (_result.type === "createDefault") {
       setGuId("");
-      console.log("isCreate",isCreate);
-      
-     const _data = isCreate && await createDevConfig(requestType);
-     //findDevopsConfigGuId(cusId, cbsId,"",false);
+      const _data = isCreate && (await createDevConfig(requestType));
       setIsLoading(false);
-      
-      console.log("_data",_data);
-      
-      return "config"
+      console.log("_data", _data);
+      return "config";
     }
   };
-  const fetchDefaultSettingData = async (pid: any,actionType:boolean =false) => {
+  const fetchDefaultSettingData = async (
+    pid: any,
+    actionType: boolean = false
+  ) => {
     let result: any = await fetchDefaultSetting(pid);
-    console.log("fetchSEtting", result);
+    console.log("fetchDefaultSettingData#", result);
     if (result.type === "updateDefault") {
       setDefaultGuId(result.id);
       let _result: any = await fetchFieldMapping(result.id);
-      console.log("RRRDF", _result);
-
+      console.log("fetchFieldMapping#", _result);
       if (_result?.type === "success") {
         const _resultData = JSON.parse(_result.data);
         const updatedData = _resultData?.filter((item: any) => {
@@ -535,23 +540,21 @@ export default function ConnectionContainer() {
         });
         console.log("updated", updatedData.length);
         if (updatedData.length) {
-          return  {type:"updateDefault",data:updatedData[0]["value"]}
+          return { type: "updateDefault", data: updatedData[0]["value"] };
         } else {
-          return  {type:"updateDefault",data:[]}
+          return { type: "updateDefault", data: [] };
         }
       } else {
-        return  {type:"updateDefault",data:[]}
+        return { type: "updateDefault", data: [] };
       }
     } else if (result.type === "createDefault") {
-       if(actionType){
-          const resultId = await createDevConfig("default")
-          console.log("tag6780",result);
-          
-          return  {type:"createDefault",data:[], id:resultId}
-       }
-      return  {type:"createDefault",data:[]}
+      if (actionType) {
+        const resultId = await createDevConfig("default");
+        return { type: "createDefault", data: [], id: resultId };
+      }
+      return { type: "createDefault", data: [] };
     } else if (result.type === "error") {
-      return  {type:"ErrorcreateDefault",data:[]}
+      return { type: "ErrorcreateDefault", data: [] };
     }
   };
 
@@ -592,7 +595,6 @@ export default function ConnectionContainer() {
     ) {
       setConfigureSettings("devopsGenerator");
     }
-
     setDataAfterSave((prevState: any) => {
       if (prevState != dataAfterSave) {
         return dataAfterSave;
@@ -624,12 +626,9 @@ export default function ConnectionContainer() {
           notification.error({ message: "GUID Not found" });
         }
       } else if (buttonType === "Default") {
-
-        let updatedDefaultData: any = await fetchDefaultSettingData(_pId,true);
-        console.log("defaultGuIdTag1",updatedDefaultData,defaultGuId);
-        
+        let updatedDefaultData: any = await fetchDefaultSettingData(_pId, true);
+        console.log("defaultGuIdTag1", updatedDefaultData, defaultGuId);
         if (defaultGuId) {
-          
           let _result: any = await fetchFieldMapping(defaultGuId);
           let updatedData = dataFieldArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "setasDefault" };
@@ -652,9 +651,6 @@ export default function ConnectionContainer() {
               console.error("Unexpected error:", error);
             });
         } else {
-
-          console.log("initalReocrdTag782");
-          
           let _result: any = await fetchFieldMapping(updatedDefaultData?.id);
           let updatedData = dataFieldArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "setasDefault" };
@@ -676,7 +672,7 @@ export default function ConnectionContainer() {
             .catch((error: any) => {
               console.error("Unexpected error:", error);
             });
-         // notification.error({ message: "GUID Not found" });
+          // notification.error({ message: "GUID Not found" });
         }
       }
     } else if (taskDataArr.length) {
@@ -734,14 +730,14 @@ export default function ConnectionContainer() {
     if (guId) {
       let response: any = await createMappingFile(mappedWorkItems, guId);
       if (response.type === "success") {
-        findDevopsConfigGuId(cusId, cbsId,"",false);
+        findDevopsConfigGuId(cusId, cbsId, "", false);
         setIsLoading(false);
       } else if (response.type === "error") {
         setIsLoading(false);
       }
     } else {
       createDevConfig("newRecord", true);
-      findDevopsConfigGuId(cusId, cbsId,"",false);
+      findDevopsConfigGuId(cusId, cbsId, "", false);
     }
     setDraftData([]);
     console.log("defaultGuId", defaultGuId);
@@ -749,7 +745,7 @@ export default function ConnectionContainer() {
   };
 
   const createDevConfig = async (
-    recordType: any ,
+    recordType: any,
     isCreateMapping: boolean = false
   ) => {
     const currentTime = new Date();
@@ -763,30 +759,13 @@ export default function ConnectionContainer() {
     record[
       "gyde_customerbusinesssurvey@odata.bind"
     ] = `/gyde_customerbusinesssurveies(${cbsId})`; // Lookup
-
-    record.gyde_defaultsetting = false
-    //add  name default true;
-    console.log("record1", record,recordType);
+    record.gyde_defaultsetting = false;
+    console.log("record1", record, recordType);
     setIsLoading(true);
     let newId = await createDevConfigApi(record);
     if (newId) {
-
       recordType === "default" && setDefaultGuId(newId),
-        // saveDefaultMappingData(newId)
-        //   .then((response: any) => {
-        //     if (response.type === "success") {
-        //       console.log("defaultsuccess");
-        //       setIsLoading(false);
-        //     } else if (response.type === "error") {
-        //       console.error("defaultError:", response.error.message);
-        //       setIsLoading(false);
-        //     }
-        //   })
-        //   .catch((error: any) => {
-        //     console.error("defaultUnexpected error:", error);
-        //     setIsLoading(false);
-        //   });
-      recordType === "newRecord" && setGuId(newId);
+        recordType === "newRecord" && setGuId(newId);
       if (isCreateMapping) {
         let response: any = await createMappingFile(mappedWorkItems, newId);
 
@@ -810,22 +789,23 @@ export default function ConnectionContainer() {
     dataSource: any,
     _defaultDataSource: any = []
   ) => {
-    console.log("result101", guId, ":", _result, ":", itemKey, dataSource);
     console.log(
-      "tag33:",
-      _defaultDataSource,
-      _defaultDataSource.every((field: any) => {
-        console.log("A12", field.isSelected);
-        return field.isSelected === true;
-      })
+      "commonFieldMappingSave",
+      guId,
+      ":",
+      _result,
+      ":",
+      itemKey,
+      dataSource
     );
+    console.log("_defaultDataSource$%:", _defaultDataSource);
     let _isSelectedField = _defaultDataSource.every(
       (field: any) => field.isSelected
     );
     const filteredObjects = _defaultDataSource.filter(
       (item: any) => item.pickListArr?.length > 0 || item.enable === true
     );
-    console.log("filterOv", filteredObjects);
+    console.log("filteredObjects", filteredObjects);
 
     let _isCompletePickList = filteredObjects.every(
       (field: any) => field.isPickListComplete
@@ -843,25 +823,36 @@ export default function ConnectionContainer() {
     if (_result.type === "success") {
       const _resultData = JSON.parse(_result.data);
       const updatedData = _resultData.map((item: any) => {
-        console.log("tag798",item.key === itemKey?.source);
-        
         if (item.key === itemKey?.source) {
-          return { ...item, key: itemKey?.source,targetTable: itemKey?.devOps,["value"]: dataSource };
+          return {
+            ...item,
+            key: itemKey?.source,
+            targetTable: itemKey?.devOps,
+            ["value"]: dataSource,
+          };
         }
         return item;
       });
       if (!updatedData.some((item: any) => item.key === itemKey?.source)) {
-        updatedData.push({ key: itemKey?.source,targetTable: itemKey?.devOps, value: dataSource });
+        updatedData.push({
+          key: itemKey?.source,
+          targetTable: itemKey?.devOps,
+          value: dataSource,
+        });
       }
       console.log("updated103", updatedData);
       saveFieldmappingData(updatedData, guId, mappingStatus);
     } else if (_result.type === "error") {
-      console.log("ABCCALLERR");
-      let _structureData = [{ key: itemKey?.source,targetTable: itemKey?.devOps, value: dataSource }];
+      let _structureData = [
+        {
+          key: itemKey?.source,
+          targetTable: itemKey?.devOps,
+          value: dataSource,
+        },
+      ];
       saveFieldmappingData(_structureData, guId, mappingStatus);
     }
   };
-  // condition to Enable Final devops button to connect..
   const checkFinalMappingStatus = (array: [], column: string) => {
     console.log(
       "inside condition: ",
@@ -870,19 +861,11 @@ export default function ConnectionContainer() {
     return array.every((element) => element[column] === true);
   };
 
-  useEffect(() => {
-    console.log("tag700", retrieveDevopsMapping, draftData);
-  }, [retrieveDevopsMapping, draftData]);
-  useEffect(() => {
-    console.log("tg71", devopsResult, dataAfterSave);
-  }, [devopsResult, dataAfterSave]);
   console.log(
     "final condition ::",
     checkFinalMappingStatus(retrieveDevopsMapping, "fieldMapping"),
     checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
   );
-  console.log("caal Iit", devopsResult, dataAfterSave);
-
   const saveFieldmappingData = (data: any, guId: any, mappingStatus: any) => {
     saveMappingData(data, guId)
       .then((result: any) => {
@@ -905,170 +888,193 @@ export default function ConnectionContainer() {
 
   return (
     <div className="devops-container">
-      {!isTreeViewVisible ? 
-      <Spin spinning={isLoading}>
-        <h1 className="title">DevOps Work Items</h1>
-        <div className="bg-wrap">
-          <h3 className="sub-title">
-            <span>Connection Details</span>
-            <span>
-              {" "}
-              <h5 className="sub-title2">{configurationData?.gyde_name} </h5>
-            </span>
-          </h3>
-          <ConnectionComponent
-            setWorkItemData={(res: any) => {
-              setDevopsWorkItemTypes(res?.data?.Value),
-                setDevopsResult(res?.data?.Value ? true : false);
-            }}
-            connectionFetch={(res: any) => setDevopsResult(res)}
-          />
-          <div className="text-left mb-20"></div>
-          {devopsResult && (
-            <>
-              {dataAfterSave?.length > 0 &&
-                checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
-                checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") && (
-                  <Radio.Group
-                    options={[
-                      { label: "DevOps Generator", value: "devopsGenerator" },
-                      { label: "Configure Mapping", value: "configureMapping" },
-                    ]}
-                    onChange={handleConfigure}
-                    value={configureSettings}
-                    optionType="button"
-                    buttonStyle="solid"
-                  />
-                )}
-
-              <h3 className="sub-title">Mapping - Work Item Types</h3>
-              <TableComponent
-                dataSource={...retrieveDevopsMapping}
-                columns={workItemColumns}
-                onMapping={() => {}}
-                size="small"
-                scroll={{ y: 300 }}
-                isModelopen={false}
-                modelAction={showModal}
-                className={
-                  checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
-                  configureSettings == "devopsGenerator"
-                    ? "disable-table"
-                    : ""
-                }
-                setDropDownValue={(data: any) => setSelectedWorkItem(data)}
-                // disabled={configureSettings == "devopsGenerator" ? true : false}
-                saveMappingItems={(data: any) => setMappedWorkItems(data)}
-                setMappingType={setmMppedField}
-                isPicklistModel={false}
-                setWorkitemTypeData={setWorkitemTypeData}
-                isGuid = {guId ? true :false}
-              />
-
-              <div className="flex-end-wrap">
-                <Button
-                  className="cancel-btn mr-10"
-                  type="primary"
-                  htmlType="button"
-                  onClick={() => {
-                    window.location.href = `/${_navigateUrl}`;
-                  }}
-                >
-                  Cancel
-                </Button>
+      {!isTreeViewVisible ? (
+        <Spin spinning={isLoading}>
+          <h1 className="title">DevOps Work Items</h1>
+          <div className="bg-wrap">
+            <h3 className="sub-title">
+              <span>Connection Details</span>
+              <span>
+                {" "}
+                <h5 className="sub-title2">{configurationData?.gyde_name} </h5>
+              </span>
+            </h3>
+            <ConnectionComponent
+              setWorkItemData={(res: any) => {
+                setDevopsWorkItemTypes(res?.data?.Value),
+                  setDevopsResult(res?.data?.Value ? true : false);
+              }}
+              connectionFetch={(res: any) => setDevopsResult(res)}
+            />
+            <div className="text-left mb-20"></div>
+            {devopsResult && (
+              <>
                 {dataAfterSave?.length > 0 &&
-                checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
-                checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
-                configureSettings == "devopsGenerator" ? (
-                  <Button type="primary" htmlType="button" onClick={() =>setIsTreeViewVisible(true)}>
-                    Next
-                  </Button>
-                ) : (
+                  checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
+                  checkFinalMappingStatus(
+                    dataAfterSave,
+                    "isCorrectlyMapped"
+                  ) && (
+                    <Radio.Group
+                      options={[
+                        { label: "DevOps Generator", value: "devopsGenerator" },
+                        {
+                          label: "Configure Mapping",
+                          value: "configureMapping",
+                        },
+                      ]}
+                      onChange={handleConfigure}
+                      value={configureSettings}
+                      optionType="button"
+                      buttonStyle="solid"
+                    />
+                  )}
+
+                <h3 className="sub-title">Mapping - Work Item Types</h3>
+                <TableComponent
+                  dataSource={...retrieveDevopsMapping}
+                  columns={workItemColumns}
+                  onMapping={() => {}}
+                  size="small"
+                  scroll={{ y: 300 }}
+                  isModelopen={false}
+                  modelAction={showModal}
+                  className={
+                    checkFinalMappingStatus(
+                      dataAfterSave,
+                      "isCorrectlyMapped"
+                    ) && configureSettings == "devopsGenerator"
+                      ? "disable-table"
+                      : ""
+                  }
+                  setDropDownValue={(data: any) => setSelectedWorkItem(data)}
+                  // disabled={configureSettings == "devopsGenerator" ? true : false}
+                  saveMappingItems={(data: any) => setMappedWorkItems(data)}
+                  setMappingType={setmMppedField}
+                  isPicklistModel={false}
+                  setWorkitemTypeData={setWorkitemTypeData}
+                  isGuid={guId ? true : false}
+                />
+
+                <div className="flex-end-wrap">
                   <Button
+                    className="cancel-btn mr-10"
                     type="primary"
                     htmlType="button"
-                    onClick={handleMappingItemSave}
-                    disabled={!checkFinalMappingStatus(mappedWorkItems, "isCorrectlyMapped")}
+                    onClick={() => {
+                      window.location.href = `/${_navigateUrl}`;
+                    }}
                   >
-                    Save
+                    Cancel
                   </Button>
-                )}
-              </div>
-            </>
-          )}
-          {isModalOpen && (
-            <PopupComponent
-              visible={isModalOpen}
-              onOk={handleOk}
-              onClose={handleCancel}
-              buttons={[
-                { title: "Cancel", onClickHandler: "" },
-                { title: "Set as Default", onClickHandler: savePopupModelData },
-                { title: "Save", onClickHandler: savePopupModelData },
-              ]}
-              Content={
-                <div>
-                  <Spin spinning={isLoading}>
-                    <TableComponent
-                      dataSource={taskDataArr}
-                      columns={tableColumn}
-                      onMapping={() => {}}
-                      size="small"
-                      scroll={{ y: 300 }}
-                      modelAction={showModal}
-                      isModelopen={isModalOpen}
-                      setDataArr={setDataArr}
-                      setFieldDataArr={setFieldDataArr}
-                      isPicklistModel={false}
-                      currentPickListData={dataArr}
-                      setMappingType={setmMppedField}
-                      isGuid = {guId ? true :false}
-                    />
-
-                    <div
-                      style={{
-                        display: "flex",
-                        justifyContent: "flex-end",
-                        marginTop: "20px",
-                      }}
+                  {dataAfterSave?.length > 0 &&
+                  checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
+                  checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
+                  configureSettings == "devopsGenerator" ? (
+                    <Button
+                      type="primary"
+                      htmlType="button"
+                      onClick={() => setIsTreeViewVisible(true)}
                     >
-                      <Button
-                        className="ant-btn-default cancel-btn"
-                        onClick={(e) => {
-                          /* Handle button click */
-                          handleCancel();
-                        }}
-                        style={{ marginLeft: "5px" }}
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        className="ant-btn-primary"
-                        onClick={(e) => {
-                          savePopupModelData("Default");
-                          /* Handle button click */
-                        }}
-                        style={{ marginLeft: "5px" }}
-                      >
-                        Set as Default
-                      </Button>
-                      <Button
-                        className="ant-btn-primary"
-                        onClick={() => {
-                          savePopupModelData("Save");
-                        }}
-                        style={{ marginLeft: "5px" }}
-                      >
-                        Save
-                      </Button>
-                    </div>
-                  </Spin>
+                      Next
+                    </Button>
+                  ) : (
+                    <Button
+                      type="primary"
+                      htmlType="button"
+                      onClick={handleMappingItemSave}
+                      disabled={
+                        !checkFinalMappingStatus(
+                          mappedWorkItems,
+                          "isCorrectlyMapped"
+                        )
+                      }
+                    >
+                      Save
+                    </Button>
+                  )}
                 </div>
-              }
-            />
-          )}
-        </div>
-      </Spin> : <DevopsTree guid ={guId} defaultGuid={defaultGuId}/>}
+              </>
+            )}
+            {isModalOpen && (
+              <PopupComponent
+                visible={isModalOpen}
+                onOk={handleOk}
+                onClose={handleCancel}
+                buttons={[
+                  { title: "Cancel", onClickHandler: "" },
+                  {
+                    title: "Set as Default",
+                    onClickHandler: savePopupModelData,
+                  },
+                  { title: "Save", onClickHandler: savePopupModelData },
+                ]}
+                Content={
+                  <div>
+                    <Spin spinning={isLoading}>
+                      <TableComponent
+                        dataSource={taskDataArr}
+                        columns={tableColumn}
+                        onMapping={() => {}}
+                        size="small"
+                        scroll={{ y: 300 }}
+                        modelAction={showModal}
+                        isModelopen={isModalOpen}
+                        setDataArr={setDataArr}
+                        setFieldDataArr={setFieldDataArr}
+                        isPicklistModel={false}
+                        currentPickListData={dataArr}
+                        setMappingType={setmMppedField}
+                        isGuid={guId ? true : false}
+                      />
+
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          marginTop: "20px",
+                        }}
+                      >
+                        <Button
+                          className="ant-btn-default cancel-btn"
+                          onClick={(e) => {
+                            /* Handle button click */
+                            handleCancel();
+                          }}
+                          style={{ marginLeft: "5px" }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          className="ant-btn-primary"
+                          onClick={(e) => {
+                            savePopupModelData("Default");
+                            /* Handle button click */
+                          }}
+                          style={{ marginLeft: "5px" }}
+                        >
+                          Set as Default
+                        </Button>
+                        <Button
+                          className="ant-btn-primary"
+                          onClick={() => {
+                            savePopupModelData("Save");
+                          }}
+                          style={{ marginLeft: "5px" }}
+                        >
+                          Save
+                        </Button>
+                      </div>
+                    </Spin>
+                  </div>
+                }
+              />
+            )}
+          </div>
+        </Spin>
+      ) : (
+        <DevopsTree guid={guId} defaultGuid={defaultGuId} />
+      )}
     </div>
   );
 }
