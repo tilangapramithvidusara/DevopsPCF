@@ -20,7 +20,7 @@ console.log("AZU",url);
 }
   const onFinish = (values: any) => {
     connectionFetch(false);
-    console.log("onFinish", values); // You can handle the form submission here
+    console.log("onFinish", values,url); // You can handle the form submission here
    fetchWorkItemTypesFromDevops(url,values).then((res:any)=>{
     if(res?.status=="success"){
        notification.success({
@@ -31,7 +31,7 @@ console.log("AZU",url);
       console.log("res........!!!", res);
       setWorkItemData(res);
     }else{
-      if(res?.data?.StatusCode==500){
+      if(res?.data?.status==500){
         notification.success({
           message:"Error",
           description:"Connection Failed. Try again.."
@@ -39,7 +39,7 @@ console.log("AZU",url);
       }else{
        notification.error({
         message:"Error",
-        description:res?.data?.Value
+        description:res?.data
       }) 
       } 
     }

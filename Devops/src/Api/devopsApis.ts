@@ -230,16 +230,16 @@ export const fetchDevopsFeildsData = async (auth: any, url: string) => {
 export const fetchWorkItemTypesFromDevops = async (url:any,value: any) => {
   try {
     //azureWorkItemTypeURL
-    const result = await axios.post(`${url}`, value);
+    const result:any = await axios.post(`${url}`, value);
     console.log("GetWorkItemTypes =========> ", result);
     if (result?.status === 200) {
       if (result?.data?.length) {
         return { status: "success", data: result?.data };
       }
-    }else if (result?.status === 401) {
-      return { status: "error", data: result?.data };
+    }else if (result?.response?.status === 401) {
+      return { status: "error", data: result?.response };
     } else {
-      return { status: "error", data: result?.data };
+      return { status: "error", data: result?.response };
     } 
   } catch (error) {
     console.log("GetWorkItemTypes ===========", error);

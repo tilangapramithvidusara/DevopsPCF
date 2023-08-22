@@ -919,8 +919,8 @@ export default function ConnectionContainer() {
             </h3>
             <ConnectionComponent
               setWorkItemData={(res: any) => {
-                setDevopsWorkItemTypes(res?.data?.Value),
-                  setDevopsResult(res?.data?.Value ? true : false);
+                setDevopsWorkItemTypes(res?.data),
+                  setDevopsResult(res?.data?.length ? true : false);
               }}
               connectionFetch={(res: any) => setDevopsResult(res)}
               url= {window?.parent?.azureWorkItemTypeURL}
