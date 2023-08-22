@@ -5,11 +5,13 @@ import { fetchWorkItemTypesFromDevops } from '../Api/devopsApis';
 interface ConnectionProps {
   setWorkItemData:any,
   connectionFetch:any,
+  url:any
 }
 
- const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData, connectionFetch})=> {
+ const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData, connectionFetch,url})=> {
   const [form] = Form.useForm();
   const [error, setError] = useState<boolean>(false);
+console.log("AZU",url);
 
   const obj = {
     "organizationUri": "https://dev.azure.com/SEERTEST2",
@@ -19,7 +21,7 @@ interface ConnectionProps {
   const onFinish = (values: any) => {
     connectionFetch(false);
     console.log("onFinish", values); // You can handle the form submission here
-   fetchWorkItemTypesFromDevops(values).then((res:any)=>{
+   fetchWorkItemTypesFromDevops(url,values).then((res:any)=>{
     if(res?.status=="success"){
        notification.success({
         message:"Success",

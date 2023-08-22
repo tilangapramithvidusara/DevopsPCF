@@ -13,6 +13,7 @@ import { fetchFieldMapping } from "../Api/devopsApis";
 declare global {
   interface Window {
     webapi: any;
+    createDevopsWorkItemURL:any
   }
 }
 const internalIds: any = [
@@ -52,7 +53,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
   const url = new URL(window.location.href);
   const queryParameters = url.searchParams;
   const _navigateUrl = queryParameters.get("returnto");
-  const cbsId = queryParameters.get("cbsid");
+  const cbsId = queryParameters.get("id");
   const [filteredTreeData, setFilteredTreeData] = useState([]);
   const [workItemsBySurveyId, setWorkItemsBySurveyId] = useState<any>();
   const [allInternalIdsBySurveyId, setAllInternalIdsBySurveyId] =
@@ -68,6 +69,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
         const data: any = await res?.map((item: any) => JSON.parse(item?.data));
         setAllInternalIdsBySurveyId(data?.flatMap((obj: any) => obj.results));
         const ids = data?.flatMap((obj: any) => obj.results);
+        console.log("cbsId#",cbsId);
+        
         fetchWorkItemsByBusinessSurveyId(cbsId)
           .then(async (val: any) => {
             const workItems = await val?.data;
@@ -100,6 +103,9 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
 
   useEffect(() => {
     fetchRequestToGenerateTree();
+
+    console.log("createDevopsWorkItemURLTest",window?.parent?.createDevopsWorkItemURL);
+    
   }, []);
 
   console.log("filteredData", filteredTreeData);
@@ -276,7 +282,7 @@ console.log("flattenedData",nodesToMap);
       isChid: boolean = false
     ) {
       async function migarateApi() {
-        const response: any = await generateDevops(node.workItemBody[0]);
+        const response: any = await generateDevops(window?.parent?.createDevopsWorkItemURL,node.workItemBody[0]);
         console.log("saving", node.workItemBody[0]);
         console.log("responseresponse", response);
         console.log("response", response?.data?.Value.Url);
@@ -399,6 +405,7 @@ console.log("flattenedData",nodesToMap);
   return (
     <>
       {treeData?.length && selectedKeys?.length > 0 ? (
+       <>
         <Tree
           checkable
           defaultCheckedKeys={[...selectedKeys]}
@@ -408,14 +415,12 @@ console.log("flattenedData",nodesToMap);
           onCheck={onCheck}
           treeData={treeData}
         />
-      ) : (
-        <Spin size="large"/>
-      )}
-      <span>
+        <span>
         <Button
           className="cancel-btn mr-10"
           type="primary"
           htmlType="button"
+          style={{marginTop:10}}
           onClick={() => {
             window.location.href = `/${_navigateUrl}`;
           }}
@@ -427,10 +432,16 @@ console.log("flattenedData",nodesToMap);
           type="primary"
           htmlType="button"
           onClick={handleMigrateToDevops}
+          style={{marginTop:10}}
         >
           Migrate to DevOps
         </Button>
       </span>
+       </>
+      ) : (
+        <Spin/>
+      )}
+     
     </>
   );
 };

@@ -1,3 +1,6 @@
+.custom-content-wrap {
+  margin-top: 30px;
+}
 
 .control-container {
   border: none;
@@ -75,7 +78,6 @@
 
 .devops-container .title {
   text-align: left;
-  margin-top: 0;
 }
 
 /* Table component styles */
@@ -173,11 +175,11 @@
   font-size: 13px;
 }
 
-/* .devops-container .custom-form-wrap.mt-20{
+.devops-container .mt-20{
   margin-top: 20px;
 }
 
-.devops-container .custom-form-wrap .ant-row {
+/* .devops-container .custom-form-wrap .ant-row {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
@@ -201,7 +203,7 @@
 }
 
 .devops-container .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-  color: #00AEA7;
+  color: #ffffff;
   border-color:#00AEA7 !important;
   background-color: #00AEA7 !important;
 }
@@ -228,7 +230,6 @@
 .devops-container .title {
   font-size: 25px;
   color: #292D32;
-  margin-bottom: 30px;
 }
 
 .devops-container .sub-title {

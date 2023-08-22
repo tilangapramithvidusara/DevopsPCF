@@ -17,6 +17,7 @@ import {
   fetWorkItemsbyId,
 } from "../Api/devopsApis";
 import DevopsTree from "../DevopsTree/DevopsTree";
+import axios from "axios";
 
 declare global {
   interface Window {
@@ -25,6 +26,7 @@ declare global {
     azureWorkItemTypeURL: any;
     devopsWorkItemFields: any;
     devopsWorkItemFieldURL: any;
+    DevopsCreateWorkItem :any
   }
 }
 
@@ -245,11 +247,11 @@ export default function ConnectionContainer() {
       console.log("devopsData==>,", devopsData, selectedWorkItem);
       let sameDropdownFeild: any = [];
       let fieldReferenceArr: any = [];
-      if (devopsData.status === "success") {
+      if (devopsData?.status === "success") {
         const crmData = JSON.parse(devopsWorkItemFields);
         console.log("crmData==>", crmData);
         let tableData = crmData?.map((crm: any, key: any) => {
-          let dropdownArr: any = devopsData.data?.Value.filter(
+          let dropdownArr: any = devopsData?.data?.Value.filter(
             (devOps: any) =>
               devOps.fieldName !== "Work Item Type" &&
               devOps.fieldName !== "Title" &&
@@ -444,7 +446,7 @@ export default function ConnectionContainer() {
         setColumns(columns);
         setIsModalOpen(true);
         setIsLoading(false);
-      } else if (devopsData.status === "error") {
+      } else if (devopsData?.status === "error") {
         setIsLoading(false);
         setIsModalOpen(false);
       }
@@ -567,9 +569,25 @@ export default function ConnectionContainer() {
     console.log("azureWorkItemTypeURL*", azureWorkItemTypeURL);
     console.log("devopsWorkItemFields*", devopsWorkItemFields);
     console.log("devopsWorkItemFieldURL*", devopsWorkItemFieldURL);
+
+    let _migrate = window?.parent?.DevopsCreateWorkItem
+
+    console.log("_migrate",_migrate);
+    
     devopsWorkItemTypes && setCrmWorkItemTypes(JSON.parse(devopsWorkItemTypes));
   }, []);
 
+
+  useEffect(()=> {
+    axios.get("https://designv2partner-fapp-uk-dv.azurewebsites.net/api/GetWorkItemTypeFields?code=wOSuVFLCEQ1_GFrvVAuk-GUg5fXs82zdZPsqhN1fSUiNAzFuBnCDRA==").then((res)=> {
+
+    console.log("ress11111",res);
+    
+    }).catch((e)=> {
+ console.log("errorr1",e);
+ 
+    })
+  },[])
   useEffect(() => {
     const newData = retrieveDevopsMapping?.map((item: any) => {
       if (item?.name == isSavedCompleteFlag?.key) {
@@ -890,7 +908,7 @@ export default function ConnectionContainer() {
     <div className="devops-container">
       {!isTreeViewVisible ? (
         <Spin spinning={isLoading}>
-          <h1 className="title">DevOps Work Items</h1>
+          <h1 className="title">DevOps Work Items h!</h1>
           <div className="bg-wrap">
             <h3 className="sub-title">
               <span>Connection Details</span>
@@ -905,6 +923,7 @@ export default function ConnectionContainer() {
                   setDevopsResult(res?.data?.Value ? true : false);
               }}
               connectionFetch={(res: any) => setDevopsResult(res)}
+              url= {window?.parent?.azureWorkItemTypeURL}
             />
             <div className="text-left mb-20"></div>
             {devopsResult && (
@@ -930,7 +949,7 @@ export default function ConnectionContainer() {
                     />
                   )}
 
-                <h3 className="sub-title">Mapping - Work Item Types</h3>
+                <h3 className="sub-title mt-20">Mapping - Work Item Types</h3>
                 <TableComponent
                   dataSource={...retrieveDevopsMapping}
                   columns={workItemColumns}
@@ -971,13 +990,9 @@ export default function ConnectionContainer() {
                   checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
                   checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
                   configureSettings == "devopsGenerator" ? (
-                    <Button
-                      type="primary"
-                      htmlType="button"
-                      onClick={() => setIsTreeViewVisible(true)}
-                    >
-                      Next
-                    </Button>
+                    <Button type="primary"  htmlType="button" onClick={() =>setIsTreeViewVisible(true)}>
+                    Next
+                </Button>
                   ) : (
                     <Button
                       type="primary"
@@ -1011,13 +1026,13 @@ export default function ConnectionContainer() {
                 ]}
                 Content={
                   <div>
-                    <Spin spinning={isLoading}>
+                    <Spin spinning={isLoading} style={{marginLeft:'35rem'}}>
                       <TableComponent
                         dataSource={taskDataArr}
                         columns={tableColumn}
                         onMapping={() => {}}
                         size="small"
-                        scroll={{ y: 300 }}
+                        scroll={{ y: 'max-content' }}
                         modelAction={showModal}
                         isModelopen={isModalOpen}
                         setDataArr={setDataArr}

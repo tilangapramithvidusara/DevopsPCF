@@ -204,43 +204,43 @@ export const fetchDevOpsMappingField = (guid: any) => {
 };
 export const fetchDevopsFeildsData = async (auth: any, url: string) => {
   try {
-    const result = await axios.post(`${url}`, auth);
+    const result :any= await axios.post(`${url}`, auth);
     console.log("post req =========> ", result);
     if (result?.status === 200) {
-      if (result?.data?.StatusCode === 200) {
+      if (result?.data.length) {
         return { status: "success", data: result?.data };
-      } else if (result?.data?.StatusCode === 401) {
-        return { status: "error", data: result?.data?.Value };
-      } else {
-        return { status: "error", data: "" };
+
       }
-    } else {
-      return { status: "error", data: "" };
+      // } else if (result?.response?.StatusCode === 401) {
+      //   return { status: "error", data: result?.data?.Value };
+      // } else {
+      //   return { status: "error", data: "" };
+      // }
+    } else if(result?.status === 401) {
+      return { status: "error", data: result?.response?.data };
+    }
+    else {
+      return { status: "error", data: result?.message };
     }
   } catch (error: any) {
     return { status: "Error", data: error?.message };
   }
 };
 
-export const fetchWorkItemTypesFromDevops = async (value: any) => {
+export const fetchWorkItemTypesFromDevops = async (url:any,value: any) => {
   try {
     //azureWorkItemTypeURL
-    const result = await axios.post(
-      "https://seerv2sample2.azurewebsites.net/api/GetWorkItemTypes?code=eZ8HwfEwRhr3EMahUUgKUz44rtzwwtaHss-lHwReYpS2AzFuDdbXow==",
-      value
-    );
+    const result = await axios.post(`${url}`, value);
     console.log("GetWorkItemTypes =========> ", result);
     if (result?.status === 200) {
-      if (result?.data?.StatusCode === 200) {
+      if (result?.data?.length) {
         return { status: "success", data: result?.data };
-      } else if (result?.data?.StatusCode === 401) {
-        return { status: "error", data: result?.data };
-      } else {
-        return { status: "error", data: result?.data };
       }
+    }else if (result?.status === 401) {
+      return { status: "error", data: result?.data };
     } else {
-      return { status: "error", data: "Something Went Wrong..!" };
-    }
+      return { status: "error", data: result?.data };
+    } 
   } catch (error) {
     console.log("GetWorkItemTypes ===========", error);
     return { status: "error", data: error };

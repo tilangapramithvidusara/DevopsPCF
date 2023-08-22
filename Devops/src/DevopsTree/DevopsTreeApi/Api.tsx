@@ -1,7 +1,10 @@
 import axios from "axios";
-export const generateDevops = async (_data?: any, isChild?:boolean) => {
+export const generateDevops = async (url:any,_data?: any) => {
     try{
-        const response = await axios.post('https://seerv2sample2.azurewebsites.net/api/CreateWorkItem?code=0SSvW5ffaDcPDrMKRZIWAQLgsRkYtZM0exwE8i1Cg2UWAzFuG76JIw==',_data);
+
+      console.log("createDevopsWorkItemURL",url);
+      
+        const response = await axios.post(`${url}`,_data);
         console.log('Parent node saved:', response);
         return response;
     }catch(error:any){
@@ -29,7 +32,9 @@ export const fetchWorkItemTypes = ()=> {
 }
 
 export const fetchWorkItemsByBusinessSurveyId = async( id:any)=> {
-    id = '73e7d54d-7c03-ee11-8f6e-6045bd0fcbc6';
+  console.log("#buisID",id);
+  
+   // id = '73e7d54d-7c03-ee11-8f6e-6045bd0fcbc6';
   return await new Promise((resolve,reject)=>{
      window.parent.webapi.safeAjax({
     type: "GET",
@@ -47,7 +52,8 @@ export const fetchWorkItemsByBusinessSurveyId = async( id:any)=> {
 }
 
 export const fetchAllInternalIdsByBusinessSurveyId = async(id:any) => {
-    id = '73e7d54d-7c03-ee11-8f6e-6045bd0fcbc6';
+  console.log("#fetchAllInternalIdsByBusinessSurveyId",id);
+   // id = '73e7d54d-7c03-ee11-8f6e-6045bd0fcbc6';
   const apiCalls = [
     `/getsurveyworkItems/?type=chapters&id=${id}`,
     `/getsurveyworkItems/?type=sections&id=${id}`,
