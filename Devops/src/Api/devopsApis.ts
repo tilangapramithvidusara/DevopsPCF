@@ -234,7 +234,7 @@ export const fetchWorkItemTypesFromDevops = async (url:any,value: any) => {
     console.log("GetWorkItemTypes =========> ", result);
    if (result?.data?.StatusCode === 200) {
       if (result?.data.Value?.length) {
-        return { status: "success", data: result?.data.Value };
+        return { status: "success", data: result?.data?.Value };
       } else if (result?.data?.StatusCode === 401) {
         return { status: "error", data: result?.data };
       } else {
