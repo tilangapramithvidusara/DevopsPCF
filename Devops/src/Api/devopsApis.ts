@@ -232,9 +232,9 @@ export const fetchWorkItemTypesFromDevops = async (url:any,value: any) => {
     //azureWorkItemTypeURL
     const result:any = await axios.post(`${url}`, value);
     console.log("GetWorkItemTypes =========> ", result);
-   if (result?.StatusCode === 200) {
-      if (result?.Value?.length) {
-        return { status: "success", data: result?.Value };
+   if (result?.data?.StatusCode === 200) {
+      if (result?.data.Value?.length) {
+        return { status: "success", data: result?.data.Value };
       } else if (result?.data?.StatusCode === 401) {
         return { status: "error", data: result?.data };
       } else {
