@@ -31,7 +31,7 @@ console.log("AZU",url);
       console.log("res........!!!", res);
       setWorkItemData(res);
     }else{
-      if(res?.data?.status==500){
+      if(res?.data?.StatusCode==500){
         notification.success({
           message:"Error",
           description:"Connection Failed. Try again.."
@@ -39,7 +39,7 @@ console.log("AZU",url);
       }else{
        notification.error({
         message:"Error",
-        description:res?.data
+        description:res?.data?.Value
       }) 
       } 
     }
