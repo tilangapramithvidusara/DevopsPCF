@@ -507,6 +507,12 @@ export default function ConnectionContainer() {
           "load when saved data retrieving.....",
           JsonMappedData
         );
+        // const validateData = await JsonMappedData?.map((item:any)=>{
+        //   return {
+        //     ...item,
+        //     gyde_name: devopsWorkItemTypes?.find((res: any) => res == item?.gyde_name)
+        //   }
+        // })
         setRetrieveDevopsMapping(JsonMappedData);
         setDataAfterSave(JsonMappedData);
         console.log("JsonMappedData", JsonMappedData);
@@ -597,7 +603,7 @@ export default function ConnectionContainer() {
       }
       return {
         ...item,
-        fieldMapping: item?.fieldMapping ? item?.fieldMapping : false,
+        fieldMapping: (item?.gyde_name == "N/A") ? true : (item?.fieldMapping) ? item?.fieldMapping : false,
       };
     });
     setRetrieveDevopsMapping(newData);
