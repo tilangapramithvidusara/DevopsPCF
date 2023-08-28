@@ -226,6 +226,7 @@ export default function ConnectionContainer() {
     apiRequest(authData);
   }, [selectedWorkItem]);
 
+  
   const apiRequest = async (authData: any) => {
     setIsLoading(true);
     const authObj = {
@@ -251,7 +252,7 @@ export default function ConnectionContainer() {
         const crmData = JSON.parse(devopsWorkItemFields);
         console.log("crmData==>", crmData);
         let tableData = crmData?.map((crm: any, key: any) => {
-          let dropdownArr: any = devopsData?.data?.Value.filter(
+          let dropdownArr: any = devopsData?.data.filter(
             (devOps: any) =>
               devOps.fieldName !== "Work Item Type" &&
               devOps.fieldName !== "Title" &&
@@ -418,9 +419,50 @@ export default function ConnectionContainer() {
           updatedDefaultData?.data?.length
         );
         if (updatedSavedData?.length) {
-          setTaskDataArr(updatedSavedData[0]["value"]);
+            const newupdatedArr = updatedSavedData[0]["value"].map((item:any) => {
+                const _latestItem = _tableData.find((table :any) => {
+                    return item.sourceWorkItem === table.sourceWorkItem;
+                });
+                console.log("_latestItem",_latestItem,":",item?.sourceWorkItem,"item.devopsWorkItem,",item?.devopsWorkItem);
+                if (_latestItem) {
+
+                    const foundInDropdown = _latestItem.dropdown?.some(
+                        (option:any) => option?.dropdownValue ===item?.devopsWorkItem
+                    );
+
+                    console.log("foundInDropdown*1",foundInDropdown);
+                    
+                    if (foundInDropdown) {
+                        return { ...item, dropdown: _latestItem.dropdown };
+                    } else {
+                        return { ...item, defaultOptionList: [],dropdown: _latestItem.dropdown };
+                    }
+                } else {
+                    return item;
+                }
+            });
+            console.log("newupdatedArr",newupdatedArr);
+          setTaskDataArr(newupdatedArr);
         } else if (updatedDefaultData?.data?.length) {
-          setTaskDataArr(updatedDefaultData?.data);
+            const newupdatedArr = updatedDefaultData?.data.map((item:any) => {
+                const _latestItem = _tableData.find((table :any) => {
+                    return item.sourceWorkItem === table.sourceWorkItem;
+                });
+            console.log("_latestItem",_latestItem,":",item.sourceWorkItem);
+            
+                if (_latestItem) {
+                    if (_latestItem.dropdown[0]?.dropdownValue === item.devopsWorkItem) {
+                        return { ...item, dropdown: _latestItem.dropdown };
+                    } else {
+                        return { ...item, defaultOptionList: [],dropdown: _latestItem.dropdown };
+                    }
+                } else {
+                    return item;
+                }
+            });
+            console.log("newupdatedArr",newupdatedArr);
+            
+          setTaskDataArr(newupdatedArr);
         } else {
           setTaskDataArr(_tableData);
         }
@@ -507,12 +549,12 @@ export default function ConnectionContainer() {
           "load when saved data retrieving.....",
           JsonMappedData
         );
-        // const validateData = await JsonMappedData?.map((item:any)=>{
-        //   return {
-        //     ...item,
-        //     gyde_name: devopsWorkItemTypes?.find((res: any) => res == item?.gyde_name)
-        //   }
-        // })
+        const validateData = await JsonMappedData?.map((item:any)=>{
+          return {
+            ...item,
+            gyde_name: devopsWorkItemTypes?.find((res: any) => res == item?.gyde_name)
+          }
+        })
         setRetrieveDevopsMapping(JsonMappedData);
         setDataAfterSave(JsonMappedData);
         console.log("JsonMappedData", JsonMappedData);
@@ -631,12 +673,16 @@ export default function ConnectionContainer() {
   const savePopupModelData = async (buttonType: any) => {
     console.log("buttonType", buttonType, defaultGuId);
     console.log("SavedMainData", dataFieldArr, taskDataArr);
+
+    const _dataFieldArr = dataFieldArr.map((obj:any) => ({ ...obj, dropdown: [] }));
+    const _taskDataArr = taskDataArr.map((obj:any) => ({ ...obj, dropdown: [] }));
+
     setIsLoading(true);
     if (dataFieldArr.length) {
       if (buttonType === "Save") {
         if (guId) {
           let _result: any = await fetchFieldMapping(guId);
-          let updatedData = dataFieldArr.map((item: any) => {
+          let updatedData = _dataFieldArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "saved" };
           });
           commonFieldMappingSave(
@@ -644,7 +690,7 @@ export default function ConnectionContainer() {
             _result,
             mappedField,
             updatedData,
-            dataFieldArr
+            _dataFieldArr
           );
         } else {
           notification.error({ message: "GUID Not found" });
@@ -654,7 +700,7 @@ export default function ConnectionContainer() {
         console.log("defaultGuIdTag1", updatedDefaultData, defaultGuId);
         if (defaultGuId) {
           let _result: any = await fetchFieldMapping(defaultGuId);
-          let updatedData = dataFieldArr.map((item: any) => {
+          let updatedData = _dataFieldArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "setasDefault" };
           });
           saveDefaultMappingData(defaultGuId)
@@ -665,7 +711,7 @@ export default function ConnectionContainer() {
                   _result,
                   mappedField,
                   updatedData,
-                  dataFieldArr
+                  _dataFieldArr
                 );
               } else if (response.type === "error") {
                 console.error("Error:", response.error.message);
@@ -676,7 +722,7 @@ export default function ConnectionContainer() {
             });
         } else {
           let _result: any = await fetchFieldMapping(updatedDefaultData?.id);
-          let updatedData = dataFieldArr.map((item: any) => {
+          let updatedData = _dataFieldArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "setasDefault" };
           });
           saveDefaultMappingData(updatedDefaultData?.id)
@@ -687,7 +733,7 @@ export default function ConnectionContainer() {
                   _result,
                   mappedField,
                   updatedData,
-                  dataFieldArr
+                  _dataFieldArr
                 );
               } else if (response.type === "error") {
                 console.error("Error:", response.error.message);
@@ -703,7 +749,7 @@ export default function ConnectionContainer() {
       if (buttonType === "Save") {
         if (guId) {
           let _result = await fetchFieldMapping(guId);
-          let updatedData = taskDataArr.map((item: any) => {
+          let updatedData = _taskDataArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "saved" };
           });
           commonFieldMappingSave(
@@ -711,7 +757,7 @@ export default function ConnectionContainer() {
             _result,
             mappedField,
             updatedData,
-            taskDataArr
+            _taskDataArr
           );
         } else {
           notification.error({ message: "GUID Not found" });
@@ -719,7 +765,7 @@ export default function ConnectionContainer() {
       } else if (buttonType === "Default") {
         if (defaultGuId) {
           let _result = await fetchFieldMapping(defaultGuId);
-          let updatedData = taskDataArr.map((item: any) => {
+          let updatedData = _taskDataArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "setasDefault" };
           });
           saveDefaultMappingData(defaultGuId)
@@ -730,7 +776,7 @@ export default function ConnectionContainer() {
                   _result,
                   mappedField,
                   updatedData,
-                  taskDataArr
+                  _taskDataArr
                 );
               } else if (response.type === "error") {
                 console.error("Error:", response.error.message);
@@ -914,7 +960,7 @@ export default function ConnectionContainer() {
     <div className="devops-container">
       {!isTreeViewVisible ? (
         <Spin spinning={isLoading}>
-          <h1 className="title">DevOps Work Items h!</h1>
+          <h1 className="title">DevOps Work Items</h1>
           <div className="bg-wrap">
             <h3 className="sub-title">
               <span>Connection Details</span>
@@ -1010,6 +1056,10 @@ export default function ConnectionContainer() {
                           "isCorrectlyMapped"
                         )
                       }
+                      className= {!checkFinalMappingStatus(
+                        mappedWorkItems,
+                        "isCorrectlyMapped"
+                      )? "isable-save-btn":""}
                     >
                       Save
                     </Button>

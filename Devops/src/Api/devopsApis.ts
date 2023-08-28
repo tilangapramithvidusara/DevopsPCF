@@ -207,8 +207,8 @@ export const fetchDevopsFeildsData = async (auth: any, url: string) => {
     const result :any= await axios.post(`${url}`, auth);
     console.log("post req =========> ", result);
     if (result?.status === 200) {
-      if (result?.data.length) {
-        return { status: "success", data: result?.data };
+      if (result?.data.Value?.length) {
+        return { status: "success", data: result?.data?.Value };
 
       }
       // } else if (result?.response?.StatusCode === 401) {
