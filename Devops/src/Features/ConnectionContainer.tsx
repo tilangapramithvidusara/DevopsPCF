@@ -637,6 +637,8 @@ export default function ConnectionContainer() {
     })
   },[])
   useEffect(() => {
+    console.log("isSavedCompleteFlag***",isSavedCompleteFlag,retrieveDevopsMapping);
+    
     const newData = retrieveDevopsMapping?.map((item: any) => {
       if (item?.name == isSavedCompleteFlag?.key) {
         const fieldMappingValue =
@@ -648,10 +650,27 @@ export default function ConnectionContainer() {
         fieldMapping: (item?.gyde_name == "N/A") ? true : (item?.fieldMapping) ? item?.fieldMapping : false,
       };
     });
-    setRetrieveDevopsMapping(newData);
-    setMappedWorkItems(newData);
-    setDraftData(newData);
+
+   
+
+    const validateData =  newData?.map((item:any)=>{
+      return {
+        ...item,
+        gyde_name: item?.gyde_name  ==="N/A" ? "N/A" : devopsWorkItemTypes?.find((res: any) => res == item?.gyde_name)
+      }
+    })
+    
+
+    console.log("newData768*",newData);
+    
+    
+    setRetrieveDevopsMapping(validateData);
+    setMappedWorkItems(validateData);
+    setDraftData(validateData);
   }, [isSavedCompleteFlag]);
+
+console.log('retrieveDevopsMapping741',retrieveDevopsMapping);
+
 
   useEffect(() => {
     if (
@@ -947,7 +966,6 @@ export default function ConnectionContainer() {
           setIsSavedCompleteFlag(mappingStatus);
           setIsLoading(false);
           setIsModalOpen(false);
-        //  findDevopsConfigGuId(cusId, cbsId, "", false);
         } else {
           console.error("Save failed with status:", result.status);
           setIsLoading(false);
