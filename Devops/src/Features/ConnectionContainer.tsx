@@ -552,12 +552,12 @@ export default function ConnectionContainer() {
         const validateData = await JsonMappedData?.map((item:any)=>{
           return {
             ...item,
-            gyde_name: devopsWorkItemTypes?.find((res: any) => res == item?.gyde_name)
+            gyde_name: item?.gyde_name  ==="N/A" ? "N/A" : devopsWorkItemTypes?.find((res: any) => res == item?.gyde_name)
           }
         })
-        setRetrieveDevopsMapping(JsonMappedData);
-        setDataAfterSave(JsonMappedData);
-        console.log("JsonMappedData", JsonMappedData);
+        setRetrieveDevopsMapping(validateData);
+        setDataAfterSave(validateData);
+        console.log("JsonMappedData", validateData);
         setIsLoading(false);
         console.log("savedFilteredData...!@#", savedFilteredData);
       } else if (result.type === "error") {
@@ -802,12 +802,16 @@ export default function ConnectionContainer() {
       if (response.type === "success") {
         findDevopsConfigGuId(cusId, cbsId, "", false);
         setIsLoading(false);
+        notification.success({message:"Work item types mapping succesfully "})
       } else if (response.type === "error") {
         setIsLoading(false);
+        notification.error({message:"Work item types mapping unsuccesfully "})
       }
     } else {
       createDevConfig("newRecord", true);
       findDevopsConfigGuId(cusId, cbsId, "", false);
+      notification.success({message:"Work item types mapping succesfully "})
+      
     }
     setDraftData([]);
     console.log("defaultGuId", defaultGuId);
@@ -943,6 +947,7 @@ export default function ConnectionContainer() {
           setIsSavedCompleteFlag(mappingStatus);
           setIsLoading(false);
           setIsModalOpen(false);
+        //  findDevopsConfigGuId(cusId, cbsId, "", false);
         } else {
           console.error("Save failed with status:", result.status);
           setIsLoading(false);
@@ -1059,7 +1064,7 @@ export default function ConnectionContainer() {
                       className= {!checkFinalMappingStatus(
                         mappedWorkItems,
                         "isCorrectlyMapped"
-                      )? "isable-save-btn":""}
+                      )? "disable-save-btn":""}
                     >
                       Save
                     </Button>
