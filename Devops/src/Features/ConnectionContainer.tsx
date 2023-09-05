@@ -1134,7 +1134,7 @@ export default function ConnectionContainer() {
               setLoader={setIsLoading}
               saveConnectingDetails={saveConnectingDetails}
             />
-            <div className="text-left mb-20"></div>
+          
             {devopsResult && (
               <>
                 {dataAfterSave?.length > 0 &&

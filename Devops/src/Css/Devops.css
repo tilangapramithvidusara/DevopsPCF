@@ -252,7 +252,8 @@
 
 .devops-container .bg-wrap {
   background: white;
-    padding: 20px;
+  padding: 30px;
+  padding-bottom: 10px;
 }
 
 .devops-container .flex-end-wrap {

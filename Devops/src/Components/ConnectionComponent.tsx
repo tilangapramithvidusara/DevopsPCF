@@ -81,7 +81,7 @@ console.log("AZU",url);
         </Col>
         <Col span={12}>
         <span className='label'>Authorization Token</span>
-          <Form.Item className="custom-form-wrap mt-20" name="personalAccessToken" rules={[{ required: true, message: 'Please enter Authorization Token' }]}>
+          <Form.Item className="custom-form-wrap" name="personalAccessToken" rules={[{ required: true, message: 'Please enter Authorization Token' }]}>
             <Input />
           </Form.Item>
         </Col>
