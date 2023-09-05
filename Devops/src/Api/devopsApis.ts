@@ -76,6 +76,24 @@ export const saveDefaultMappingData = (_guid: any) => {
   });
 };
 
+export const saveConnectionDetail = (record: any) => {
+  return new Promise((resolve: any, reject: any) => {
+    window.parent.webapi.safeAjax({
+      type: "POST",
+      contentType: "application/json",
+      url: "/_api/gyde_devopsconfigurations",
+      data: JSON.stringify(record),
+      success: function (data: any, textStatus: any, xhr: any) {
+        var newId = xhr.getResponseHeader("entityid");
+        resolve(newId);
+      },
+      error: function (xhr: any, textStatus: any, errorThrown: any) {
+        reject("Errror");
+        console.log("hr", xhr);
+      },
+    });
+  });
+};
 export const createDevConfigApi = (record: any) => {
   return new Promise((resolve: any, reject: any) => {
     window.parent.webapi.safeAjax({
@@ -152,7 +170,7 @@ export const fetchDevopsConfig = (id: any, bId: any) => {
   return new Promise((resolve: any, rejects: any) => {
     window.parent.webapi.safeAjax({
       type: "GET",
-      url: `/_api/gyde_devopsconfigurations?$select=gyde_devopsconfigurationid,_gyde_customerbusinesssurvey_value,_gyde_customerorpartner_value,gyde_defaultsetting,gyde_devopsfieldmappings,gyde_devopsfieldmappings_name,gyde_devopsmappingcomplete,gyde_devopsmappings,gyde_devopsmappings_name,gyde_name,statecode,versionnumber&$filter=(_gyde_customerorpartner_value eq ${id} and _gyde_customerbusinesssurvey_value eq ${bId} )`,
+      url: `/_api/gyde_devopsconfigurations?$select=gyde_devopsconfigurationid,_gyde_customerbusinesssurvey_value,_gyde_customerorpartner_value,gyde_defaultsetting,gyde_devopsfieldmappings,gyde_devopsfieldmappings_name,gyde_devopsmappingcomplete,gyde_devopsmappings,gyde_devopsmappings_name,gyde_name,gyde_devopsorganizationurl,gyde_devopsprojectname,statecode,versionnumber&$filter=(_gyde_customerorpartner_value eq ${id} and _gyde_customerbusinesssurvey_value eq ${bId} )`,
       contentType: "application/json",
       headers: {
         Prefer: "odata.include-annotations=*",

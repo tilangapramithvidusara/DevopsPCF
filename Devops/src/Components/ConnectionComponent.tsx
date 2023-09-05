@@ -6,9 +6,11 @@ interface ConnectionProps {
   setWorkItemData:any,
   connectionFetch:any,
   url:any
+  setLoader:any
+  saveConnectingDetails:any,
 }
 
- const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData, connectionFetch,url})=> {
+ const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData, connectionFetch,url,setLoader,saveConnectingDetails})=> {
   const [form] = Form.useForm();
   const [error, setError] = useState<boolean>(false);
 console.log("AZU",url);
@@ -19,6 +21,7 @@ console.log("AZU",url);
     "projectName": "SEETTEST1"
 }
   const onFinish = (values: any) => {
+    setLoader(true)
     connectionFetch(false);
     console.log("onFinish", values,url); // You can handle the form submission here
    fetchWorkItemTypesFromDevops(url,values).then((res:any)=>{
@@ -29,18 +32,22 @@ console.log("AZU",url);
       }); 
       localStorage.setItem('items',JSON.stringify(values));
       console.log("res........!!!", res);
+      saveConnectingDetails(values);
       setWorkItemData(res);
+      setLoader(false)
     }else{
       if(res?.data?.StatusCode==500){
         notification.success({
           message:"Error",
           description:"Connection Failed. Try again.."
         });
+        setLoader(false)
       }else{
        notification.error({
         message:"Error",
         description:res?.data?.Value
       }) 
+      setLoader(false)
       } 
     }
    })

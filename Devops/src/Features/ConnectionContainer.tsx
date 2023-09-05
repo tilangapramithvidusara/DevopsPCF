@@ -15,6 +15,7 @@ import {
   createDevConfigApi,
   fetchDevopsConfig,
   fetWorkItemsbyId,
+  saveConnectionDetail,
 } from "../Api/devopsApis";
 import DevopsTree from "../DevopsTree/DevopsTree";
 import axios from "axios";
@@ -26,7 +27,7 @@ declare global {
     azureWorkItemTypeURL: any;
     devopsWorkItemFields: any;
     devopsWorkItemFieldURL: any;
-    DevopsCreateWorkItem :any
+    DevopsCreateWorkItem: any;
   }
 }
 
@@ -159,6 +160,7 @@ export default function ConnectionContainer() {
   });
   const [draftData, setDraftData] = useState<any>([]);
   const [isTreeViewVisible, setIsTreeViewVisible] = useState(false);
+  const [connectionSaveData, setConnectionSaveData] = useState<any>([]);
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
   console.log("queryParameters", queryParameters);
@@ -226,7 +228,6 @@ export default function ConnectionContainer() {
     apiRequest(authData);
   }, [selectedWorkItem]);
 
-  
   const apiRequest = async (authData: any) => {
     setIsLoading(true);
     const authObj = {
@@ -252,78 +253,80 @@ export default function ConnectionContainer() {
         const crmData = JSON.parse(devopsWorkItemFields);
         console.log("crmData==>", crmData);
         let tableData = crmData?.map((crm: any, key: any) => {
-          let dropdownArr: any = devopsData?.data.filter(
-            (devOps: any) =>
-              devOps.fieldName !== "Work Item Type" &&
-              devOps.fieldName !== "Title" &&
-              (((crm.AttributeType === "Memo" ||
-                crm.AttributeType === "String" ||
-                crm.AttributeType === "Lookup") &&
-                (devOps.attributeType === "String" ||
-                  devOps.attributeType === "PlainText" ||
-                  devOps.attributeType === "TreePath" ||
-                  devOps.attributeType === "StringTreePath" ||
-                  devOps.attributeType === "Identity")) ||
-                (crm.AttributeType === "Memo" &&
-                  (devOps.attributeType === "Html" ||
-                    devOps.attributeType === "History" ||
-                    devOps.attributeType === "HistoryHtml")) ||
-                (crm.AttributeType === "String" &&
-                  devOps.attributeType === "DateTime") ||
-                (crm.AttributeType === "Decimal" &&
-                  (devOps.attributeType === "Integer" ||
-                    devOps.attributeType === "Double")) ||
-                (crm.AttributeType === "Picklist" &&
-                  (devOps.attributeType === "PicklistInteger" ||
-                    devOps.attributeType === "PicklistString" ||
-                    devOps.attributeType === "DoublePicklist")) ||
-                ((crm.AttributeType === "String" ||
+          let dropdownArr: any = devopsData?.data
+            .filter(
+              (devOps: any) =>
+                devOps.fieldName !== "Work Item Type" &&
+                devOps.fieldName !== "Title" &&
+                (((crm.AttributeType === "Memo" ||
+                  crm.AttributeType === "String" ||
                   crm.AttributeType === "Lookup") &&
-                  devOps.attributeType === "defaultGuId") ||
-                (crm.AttributeType === "Boolean" &&
-                  devOps.attributeType === "Boolean") ||
-                (crm?.Options != undefined &&
-                  crm?.Options?.length &&
-                  devOps?.hasPicklist === true))
-          ).map((_data: any, key: any) => {
-            if (
-              crm.SchemaName === _data.fieldName &&
-              _data.allowedValues?.length &&
-              crm.Options?.length
+                  (devOps.attributeType === "String" ||
+                    devOps.attributeType === "PlainText" ||
+                    devOps.attributeType === "TreePath" ||
+                    devOps.attributeType === "StringTreePath" ||
+                    devOps.attributeType === "Identity")) ||
+                  (crm.AttributeType === "Memo" &&
+                    (devOps.attributeType === "Html" ||
+                      devOps.attributeType === "History" ||
+                      devOps.attributeType === "HistoryHtml")) ||
+                  (crm.AttributeType === "String" &&
+                    devOps.attributeType === "DateTime") ||
+                  (crm.AttributeType === "Decimal" &&
+                    (devOps.attributeType === "Integer" ||
+                      devOps.attributeType === "Double")) ||
+                  (crm.AttributeType === "Picklist" &&
+                    (devOps.attributeType === "PicklistInteger" ||
+                      devOps.attributeType === "PicklistString" ||
+                      devOps.attributeType === "DoublePicklist")) ||
+                  ((crm.AttributeType === "String" ||
+                    crm.AttributeType === "Lookup") &&
+                    devOps.attributeType === "defaultGuId") ||
+                  (crm.AttributeType === "Boolean" &&
+                    devOps.attributeType === "Boolean") ||
+                  (crm?.Options != undefined &&
+                    crm?.Options?.length &&
+                    devOps?.hasPicklist === true))
             )
-              sameDropdownFeild.push({
-                mappingName: _data.fieldName,
-                defaultOptionList: [
-                  {
-                    crmOption: crm.Options,
-                    devOpsOption: _data.allowedValues,
-                  },
-                ],
-              });
-            crm.SchemaName === _data.fieldName &&
-              fieldReferenceArr.push({
-                name: _data.fieldName,
-                ref: _data?.fieldReferenceName,
-              });
-            return {
-              key: key,
-              dropdownValue: _data.fieldName,
-              option:
-                _data.allowedValues?.length && crm.Options?.length
-                  ? [
-                      {
-                        crmOption: crm.Options,
-                        devOpsOption: _data.allowedValues,
-                      },
-                    ]
-                  : [],
-              isPickList:
-                _data.allowedValues?.length && crm.Options?.length
-                  ? true
-                  : false,
-              fieldReferenceName: _data?.fieldReferenceName,
-            };
-          });
+            .map((_data: any, key: any) => {
+              if (
+                crm.SchemaName === _data.fieldName &&
+                _data.allowedValues?.length &&
+                crm.Options?.length
+              )
+                sameDropdownFeild.push({
+                  mappingName: _data.fieldName,
+                  defaultOptionList: [
+                    {
+                      crmOption: crm.Options,
+                      devOpsOption: _data.allowedValues,
+                    },
+                  ],
+                });
+              crm.SchemaName === _data.fieldName &&
+                fieldReferenceArr.push({
+                  name: _data.fieldName,
+                  ref: _data?.fieldReferenceName,
+                });
+              return {
+                key: key,
+                dropdownValue: _data.fieldName,
+                option:
+                  _data.allowedValues?.length && crm.Options?.length
+                    ? [
+                        {
+                          crmOption: crm.Options,
+                          devOpsOption: _data.allowedValues,
+                        },
+                      ]
+                    : [],
+                isPickList:
+                  _data.allowedValues?.length && crm.Options?.length
+                    ? true
+                    : false,
+                fieldReferenceName: _data?.fieldReferenceName,
+              };
+            });
 
           let isOptionList = sameDropdownFeild.some(
             (f: any) => f.mappingName === crm.SchemaName
@@ -347,6 +350,7 @@ export default function ConnectionContainer() {
           return {
             key: key,
             sourceWorkItem: crm.SchemaName,
+            devopsWorkItem: isAutoMappField ? referenceName?.name : "",
             dropdown: [...dropdownArr],
             mapping: "",
             enable: isOptionList ? true : false,
@@ -419,49 +423,68 @@ export default function ConnectionContainer() {
           updatedDefaultData?.data?.length
         );
         if (updatedSavedData?.length) {
-            const newupdatedArr = updatedSavedData[0]["value"].map((item:any) => {
-                const _latestItem = _tableData.find((table :any) => {
-                    return item.sourceWorkItem === table.sourceWorkItem;
-                });
-                console.log("_latestItem",_latestItem,":",item?.sourceWorkItem,"item.devopsWorkItem,",item?.devopsWorkItem);
-                if (_latestItem) {
+          const newupdatedArr = updatedSavedData[0]["value"].map(
+            (item: any) => {
+              const _latestItem = _tableData.find((table: any) => {
+                return item.sourceWorkItem === table.sourceWorkItem;
+              });
+              console.log(
+                "_latestItem",
+                _latestItem,
+                ":",
+                item?.sourceWorkItem,
+                "item.devopsWorkItem,",
+                item?.devopsWorkItem
+              );
+              if (_latestItem) {
+                const foundInDropdown = _latestItem.dropdown?.some(
+                  (option: any) =>
+                    option?.dropdownValue === item?.devopsWorkItem
+                );
 
-                    const foundInDropdown = _latestItem.dropdown?.some(
-                        (option:any) => option?.dropdownValue ===item?.devopsWorkItem
-                    );
+                console.log("foundInDropdown*1", foundInDropdown);
 
-                    console.log("foundInDropdown*1",foundInDropdown);
-                    
-                    if (foundInDropdown) {
-                        return { ...item, dropdown: _latestItem.dropdown };
-                    } else {
-                        return { ...item, defaultOptionList: [],dropdown: _latestItem.dropdown };
-                    }
+                if (foundInDropdown) {
+                  return { ...item, dropdown: _latestItem.dropdown };
                 } else {
-                    return item;
+                  return {
+                    ...item,
+                    defaultOptionList: [],
+                    dropdown: _latestItem.dropdown,
+                  };
                 }
-            });
-            console.log("newupdatedArr",newupdatedArr);
+              } else {
+                return item;
+              }
+            }
+          );
+          console.log("newupdatedArr", newupdatedArr);
           setTaskDataArr(newupdatedArr);
         } else if (updatedDefaultData?.data?.length) {
-            const newupdatedArr = updatedDefaultData?.data.map((item:any) => {
-                const _latestItem = _tableData.find((table :any) => {
-                    return item.sourceWorkItem === table.sourceWorkItem;
-                });
-            console.log("_latestItem",_latestItem,":",item.sourceWorkItem);
-            
-                if (_latestItem) {
-                    if (_latestItem.dropdown[0]?.dropdownValue === item.devopsWorkItem) {
-                        return { ...item, dropdown: _latestItem.dropdown };
-                    } else {
-                        return { ...item, defaultOptionList: [],dropdown: _latestItem.dropdown };
-                    }
-                } else {
-                    return item;
-                }
+          const newupdatedArr = updatedDefaultData?.data.map((item: any) => {
+            const _latestItem = _tableData.find((table: any) => {
+              return item.sourceWorkItem === table.sourceWorkItem;
             });
-            console.log("newupdatedArr",newupdatedArr);
-            
+            console.log("_latestItem", _latestItem, ":", item.sourceWorkItem);
+
+            if (_latestItem) {
+              if (
+                _latestItem.dropdown[0]?.dropdownValue === item.devopsWorkItem
+              ) {
+                return { ...item, dropdown: _latestItem.dropdown };
+              } else {
+                return {
+                  ...item,
+                  defaultOptionList: [],
+                  dropdown: _latestItem.dropdown,
+                };
+              }
+            } else {
+              return item;
+            }
+          });
+          console.log("newupdatedArr", newupdatedArr);
+
           setTaskDataArr(newupdatedArr);
         } else {
           setTaskDataArr(_tableData);
@@ -549,12 +572,17 @@ export default function ConnectionContainer() {
           "load when saved data retrieving.....",
           JsonMappedData
         );
-        const validateData = await JsonMappedData?.map((item:any)=>{
+        const validateData = await JsonMappedData?.map((item: any) => {
           return {
             ...item,
-            gyde_name: item?.gyde_name  ==="N/A" ? "N/A" : devopsWorkItemTypes?.find((res: any) => res == item?.gyde_name)
-          }
-        })
+            gyde_name:
+              item?.gyde_name === "N/A"
+                ? "N/A"
+                : devopsWorkItemTypes?.find(
+                    (res: any) => res == item?.gyde_name
+                  ),
+          };
+        });
         setRetrieveDevopsMapping(validateData);
         setDataAfterSave(validateData);
         console.log("JsonMappedData", validateData);
@@ -618,59 +646,129 @@ export default function ConnectionContainer() {
     console.log("devopsWorkItemFields*", devopsWorkItemFields);
     console.log("devopsWorkItemFieldURL*", devopsWorkItemFieldURL);
 
-    let _migrate = window?.parent?.DevopsCreateWorkItem
+    let _migrate = window?.parent?.DevopsCreateWorkItem;
 
-    console.log("_migrate",_migrate);
-    
+    console.log("_migrate", _migrate);
+
     devopsWorkItemTypes && setCrmWorkItemTypes(JSON.parse(devopsWorkItemTypes));
+    getConnectionDetails();
+    
   }, []);
 
+  const   getConnectionDetails =async ()=> {
+    let _result: any = await fetchDevopsConfig(cusId, cbsId);
 
-  useEffect(()=> {
-    axios.get("https://designv2partner-fapp-uk-dv.azurewebsites.net/api/GetWorkItemTypeFields?code=wOSuVFLCEQ1_GFrvVAuk-GUg5fXs82zdZPsqhN1fSUiNAzFuBnCDRA==").then((res)=> {
+     console.log("_resultASYNC",_result);
+     setConnectionSaveData(_result)
+     
+  }
 
-    console.log("ress11111",res);
-    
-    }).catch((e)=> {
- console.log("errorr1",e);
- 
-    })
-  },[])
   useEffect(() => {
-    console.log("isSavedCompleteFlag***",isSavedCompleteFlag,retrieveDevopsMapping);
-    
-    const newData = retrieveDevopsMapping?.map((item: any) => {
-      if (item?.name == isSavedCompleteFlag?.key) {
-        const fieldMappingValue =
-          isSavedCompleteFlag?.value === 1 ? true : false;
-        return { ...item, fieldMapping: fieldMappingValue };
-      }
-      return {
-        ...item,
-        fieldMapping: (item?.gyde_name == "N/A") ? true : (item?.fieldMapping) ? item?.fieldMapping : false,
-      };
-    });
+    axios
+      .get(
+        "https://designv2partner-fapp-uk-dv.azurewebsites.net/api/GetWorkItemTypeFields?code=wOSuVFLCEQ1_GFrvVAuk-GUg5fXs82zdZPsqhN1fSUiNAzFuBnCDRA=="
+      )
+      .then((res) => {
+        console.log("ress11111", res);
+      })
+      .catch((e) => {
+        console.log("errorr1", e);
+      });
+  }, []);
+  useEffect(() => {
+    handleWorkItemAfterSaveMappng();
+    // findDevopsConfigGuId(cusId, cbsId, "", false);
+    // console.log("isSavedCompleteFlag***",isSavedCompleteFlag,retrieveDevopsMapping);
 
-   
+    // const newData = retrieveDevopsMapping?.map((item: any) => {
+    //   if (item?.name == isSavedCompleteFlag?.key) {
+    //     const fieldMappingValue =
+    //       isSavedCompleteFlag?.value === 1 ? true : false;
+    //     return { ...item, fieldMapping: fieldMappingValue };
+    //   }
+    //   return {
+    //     ...item,
+    //     fieldMapping: (item?.gyde_name == "N/A") ? true : (item?.fieldMapping) ? item?.fieldMapping : false,
+    //   };
+    // });
 
-    const validateData =  newData?.map((item:any)=>{
-      return {
-        ...item,
-        gyde_name: item?.gyde_name  ==="N/A" ? "N/A" : devopsWorkItemTypes?.find((res: any) => res == item?.gyde_name)
-      }
-    })
-    
+    // const validateData =  newData?.map((item:any)=>{
+    //   return {
+    //     ...item,
+    //     gyde_name: item?.gyde_name  ==="N/A" ? "N/A" : devopsWorkItemTypes?.find((res: any) => res == item?.gyde_name)
+    //   }
+    // })
 
-    console.log("newData768*",newData);
-    
-    
-    setRetrieveDevopsMapping(validateData);
-    setMappedWorkItems(validateData);
-    setDraftData(validateData);
+    // console.log("newData768*",newData);
+    // console.log("validateData***",validateData);
+
+    // setRetrieveDevopsMapping(validateData);
+    // setMappedWorkItems(validateData);
+    // setDraftData(validateData);
   }, [isSavedCompleteFlag]);
 
-console.log('retrieveDevopsMapping741',retrieveDevopsMapping);
+  console.log("retrieveDevopsMapping7415", retrieveDevopsMapping);
+  const handleWorkItemAfterSaveMappng = async () => {
+    findDevopsConfigGuId(cusId, cbsId, "", false);
+    console.log("zero!", isSavedCompleteFlag);
 
+    if (guId) {
+      console.log(
+        "isSavedCompleteFlag***",
+        isSavedCompleteFlag,
+        retrieveDevopsMapping
+      );
+      const newData = retrieveDevopsMapping?.map((item: any) => {
+        if (item?.name == isSavedCompleteFlag?.key) {
+          const fieldMappingValue =
+            isSavedCompleteFlag?.value === 1 ? true : false;
+          return { ...item, fieldMapping: fieldMappingValue };
+        }
+        return {
+          ...item,
+          fieldMapping:
+            item?.gyde_name == "N/A"
+              ? true
+              : item?.fieldMapping
+              ? item?.fieldMapping
+              : false,
+        };
+      });
+
+      const validateData = newData?.map((item: any) => {
+        return {
+          ...item,
+          gyde_name:
+            item?.gyde_name === "N/A"
+              ? "N/A"
+              : devopsWorkItemTypes?.find((res: any) => res == item?.gyde_name),
+        };
+      });
+
+      console.log("newData768*", newData);
+      console.log("validateData***", validateData);
+      let response: any = await createMappingFile(validateData, guId);
+      if (response.type === "success") {
+        findDevopsConfigGuId(cusId, cbsId, "", false);
+        setIsLoading(false);
+        notification.success({
+          message: "Work Item Types successfully mapped ",
+        });
+      } else if (response.type === "error") {
+        setIsLoading(false);
+        notification.error({
+          message: "Work item types mapping unsuccesfully ",
+        });
+      }
+    }
+
+    // console.log("newData768*",newData);
+    // console.log("validateData***",validateData);
+
+    // setRetrieveDevopsMapping(validateData);
+    // setMappedWorkItems(validateData);
+    // setDraftData(validateData);
+  };
 
   useEffect(() => {
     if (
@@ -693,8 +791,14 @@ console.log('retrieveDevopsMapping741',retrieveDevopsMapping);
     console.log("buttonType", buttonType, defaultGuId);
     console.log("SavedMainData", dataFieldArr, taskDataArr);
 
-    const _dataFieldArr = dataFieldArr.map((obj:any) => ({ ...obj, dropdown: [] }));
-    const _taskDataArr = taskDataArr.map((obj:any) => ({ ...obj, dropdown: [] }));
+    const _dataFieldArr = dataFieldArr.map((obj: any) => ({
+      ...obj,
+      dropdown: [],
+    }));
+    const _taskDataArr = taskDataArr.map((obj: any) => ({
+      ...obj,
+      dropdown: [],
+    }));
 
     setIsLoading(true);
     if (dataFieldArr.length) {
@@ -821,16 +925,19 @@ console.log('retrieveDevopsMapping741',retrieveDevopsMapping);
       if (response.type === "success") {
         findDevopsConfigGuId(cusId, cbsId, "", false);
         setIsLoading(false);
-        notification.success({message:"Work item types mapping succesfully "})
+        notification.success({
+          message: "Work Item Types successfully mapped ",
+        });
       } else if (response.type === "error") {
         setIsLoading(false);
-        notification.error({message:"Work item types mapping unsuccesfully "})
+        notification.error({
+          message: "Work item types mapping unsuccesfully ",
+        });
       }
     } else {
       createDevConfig("newRecord", true);
       findDevopsConfigGuId(cusId, cbsId, "", false);
-      notification.success({message:"Work item types mapping succesfully "})
-      
+      notification.success({ message: "Work item types mapping succesfully " });
     }
     setDraftData([]);
     console.log("defaultGuId", defaultGuId);
@@ -864,6 +971,7 @@ console.log('retrieveDevopsMapping741',retrieveDevopsMapping);
 
         if (response.type === "success") {
           setIsMappedSaved(true);
+          findDevopsConfigGuId(cusId, cbsId, "", false);
           setIsLoading(false);
         } else if (response.type === "error") {
           setIsMappedSaved(false);
@@ -963,13 +1071,24 @@ console.log('retrieveDevopsMapping741',retrieveDevopsMapping);
     saveMappingData(data, guId)
       .then((result: any) => {
         if (result.type === "success") {
+          console.log("mappingStatus*7", mappingStatus);
+
           setIsSavedCompleteFlag(mappingStatus);
+          setTaskDataArr([]);
+          setFieldDataArr([]);
+          // setRetrieveDevopsMapping([]);
           setIsLoading(false);
           setIsModalOpen(false);
+          notification.success({
+            message: "Work Item fields successfully mapped' ",
+          });
         } else {
           console.error("Save failed with status:", result.status);
           setIsLoading(false);
           setIsModalOpen(false);
+          notification.error({
+            message: "Work Item fields unsuccessfully mapped' ",
+          });
         }
       })
       .catch((error) => {
@@ -977,6 +1096,19 @@ console.log('retrieveDevopsMapping741',retrieveDevopsMapping);
         setIsLoading(false);
         setIsModalOpen(false);
       });
+  };
+  const saveConnectingDetails = (data:any) => {
+
+    console.log("saveConnectingDetails",data);
+    
+    var record: any = {};
+    record["gyde_customerorpartner@odata.bind"] = `/accounts(${cusId})`; // Lookup
+    record[
+      "gyde_customerbusinesssurvey@odata.bind"
+    ] = `/gyde_customerbusinesssurveies(${cbsId})`; // Lookup
+    record.gyde_devopsprojectname = data?.organizationUri;
+    record.gyde_devopsorganizationurl =data?.projectName;
+    saveConnectionDetail(record);
   };
 
   return (
@@ -998,7 +1130,9 @@ console.log('retrieveDevopsMapping741',retrieveDevopsMapping);
                   setDevopsResult(res?.data?.length ? true : false);
               }}
               connectionFetch={(res: any) => setDevopsResult(res)}
-              url= {window?.parent?.azureWorkItemTypeURL}
+              url={window?.parent?.azureWorkItemTypeURL}
+              setLoader={setIsLoading}
+              saveConnectingDetails={saveConnectingDetails}
             />
             <div className="text-left mb-20"></div>
             {devopsResult && (
@@ -1065,9 +1199,13 @@ console.log('retrieveDevopsMapping741',retrieveDevopsMapping);
                   checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
                   checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
                   configureSettings == "devopsGenerator" ? (
-                    <Button type="primary"  htmlType="button" onClick={() =>setIsTreeViewVisible(true)}>
-                    Next
-                </Button>
+                    <Button
+                      type="primary"
+                      htmlType="button"
+                      onClick={() => setIsTreeViewVisible(true)}
+                    >
+                      Next
+                    </Button>
                   ) : (
                     <Button
                       type="primary"
@@ -1079,10 +1217,14 @@ console.log('retrieveDevopsMapping741',retrieveDevopsMapping);
                           "isCorrectlyMapped"
                         )
                       }
-                      className= {!checkFinalMappingStatus(
-                        mappedWorkItems,
-                        "isCorrectlyMapped"
-                      )? "disable-save-btn":""}
+                      className={
+                        !checkFinalMappingStatus(
+                          mappedWorkItems,
+                          "isCorrectlyMapped"
+                        )
+                          ? "disable-save-btn"
+                          : ""
+                      }
                     >
                       Save
                     </Button>
@@ -1105,13 +1247,13 @@ console.log('retrieveDevopsMapping741',retrieveDevopsMapping);
                 ]}
                 Content={
                   <div>
-                    <Spin spinning={isLoading} style={{marginLeft:'35rem'}}>
+                    <Spin spinning={isLoading}>
                       <TableComponent
                         dataSource={taskDataArr}
                         columns={tableColumn}
                         onMapping={() => {}}
                         size="small"
-                        scroll={{ y: 'max-content' }}
+                        scroll={{ y: "max-content" }}
                         modelAction={showModal}
                         isModelopen={isModalOpen}
                         setDataArr={setDataArr}
