@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Row, Col, notification, } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Row, Col, notification, Modal} from 'antd';
 import { fetchWorkItemTypesFromDevops } from '../Api/devopsApis';
+import { ExclamationCircleOutlined } from '@ant-design/icons';
 
 interface ConnectionProps {
   setWorkItemData:any,
@@ -8,23 +9,26 @@ interface ConnectionProps {
   url:any
   setLoader:any
   saveConnectingDetails:any,
+  connectionSaveData:any
 }
 
- const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData, connectionFetch,url,setLoader,saveConnectingDetails})=> {
+ const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData, connectionFetch,url,setLoader,saveConnectingDetails,connectionSaveData})=> {
   const [form] = Form.useForm();
   const [error, setError] = useState<boolean>(false);
+  const [modal, contextHolder] = Modal.useModal()
 console.log("AZU",url);
 
+console.log("connectionSaveData",connectionSaveData);
+
+
   const obj = {
-    "organizationUri": "https://dev.azure.com/SEERTEST2",
-    "personalAccessToken": "ix4lb6vbaj4ydxcmb5bezbcctm6upqmccbq7b7bnr7thqaemzprq",
-    "projectName": "SEETTEST1"
+    "organizationUri": connectionSaveData?.connectionDetails?.gyde_devopsorganizationurl,
+    "projectName": connectionSaveData?.connectionDetails?.gyde_devopsprojectname,
 }
-  const onFinish = (values: any) => {
-    setLoader(true)
-    connectionFetch(false);
-    console.log("onFinish", values,url); // You can handle the form submission here
-   fetchWorkItemTypesFromDevops(url,values).then((res:any)=>{
+
+const handleConnection = (values:any,url:any) => {
+
+  fetchWorkItemTypesFromDevops(url,values).then((res:any)=>{
     if(res?.status=="success"){
        notification.success({
         message:"Success",
@@ -51,6 +55,41 @@ console.log("AZU",url);
       } 
     }
    })
+}
+
+const confirm = (values:any,url:any) => {
+  modal.confirm({
+    title: 'Confirm',
+    icon: <ExclamationCircleOutlined/>,
+    content: 'Connection details are being changed compared to the current connection details. This will reset all the current mappings you have done. Do you wish to proceed?',
+    okText: 'Yes',
+    onOk: () => { // Wrap in an arrow function to access values and url
+      console.log("values", values);
+      handleConnection(values, url);
+    },
+    onCancel() {
+      console.log('User clicked No');
+    },
+    cancelText: 'No',
+  });
+};
+  const onFinish = (values: any) => {
+    setLoader(true)
+    connectionFetch(false);
+    console.log("onFinish", values,url); // You can handle the form submission here
+
+    if(obj?.organizationUri !== undefined && obj?.projectName !== undefined){
+ console.log("*88888*",obj?.projectName , values?.projectName ,"7", obj?.organizationUri , values?.organizationUri);
+ 
+
+      obj?.projectName !== values?.projectName || obj?.organizationUri !== values?.organizationUri ?  confirm(values,url): handleConnection(values,url)
+
+     
+    }else {
+      handleConnection(values,url)
+    }
+
+  
   };
 
   const handleFormSubmit = () => {
@@ -63,9 +102,12 @@ console.log("AZU",url);
         // message.error('Please fill in all fields.');
       });
   };
+  console.log("objectASYNX",obj);
+  
 
   return (
-    <Form form={form}  className='connection-form'>
+    <>
+    <Form form={form} initialValues={obj} className='connection-form'>
       <Row gutter={20}>
         <Col span={12}>
           <span className='label'>Organization URL</span>
@@ -94,6 +136,8 @@ console.log("AZU",url);
           </Form.Item>
         </div>
     </Form>
+    {contextHolder}
+    </>
   );
 }
 

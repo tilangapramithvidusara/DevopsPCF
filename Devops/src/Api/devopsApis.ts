@@ -76,16 +76,18 @@ export const saveDefaultMappingData = (_guid: any) => {
   });
 };
 
-export const saveConnectionDetail = (record: any) => {
+export const saveConnectiondata = (record: any,guid:any) => {
   return new Promise((resolve: any, reject: any) => {
     window.parent.webapi.safeAjax({
-      type: "POST",
+      type: "PATCH",
       contentType: "application/json",
-      url: "/_api/gyde_devopsconfigurations",
+      url: `/_api/gyde_devopsconfigurations(${guid})`,
       data: JSON.stringify(record),
       success: function (data: any, textStatus: any, xhr: any) {
-        var newId = xhr.getResponseHeader("entityid");
-        resolve(newId);
+        
+        console.log("connectionDetailsSaved",xhr);
+        
+        resolve("updated");
       },
       error: function (xhr: any, textStatus: any, errorThrown: any) {
         reject("Errror");
@@ -192,6 +194,40 @@ export const fetchDevopsConfig = (id: any, bId: any) => {
         console.log("fetchDevopsConfig Error");
         console.log(xhr);
         resolve({ type: "error", id: null });
+      },
+    });
+  });
+};
+
+export const fetchDevopsConnectionDetails = (id: any, bId: any) => {
+  return new Promise((resolve: any, rejects: any) => {
+    window.parent.webapi.safeAjax({
+      type: "GET",
+      url: `/_api/gyde_devopsconfigurations?$select=gyde_devopsconfigurationid,_gyde_customerbusinesssurvey_value,_gyde_customerorpartner_value,gyde_defaultsetting,gyde_devopsfieldmappings,gyde_devopsfieldmappings_name,gyde_devopsmappingcomplete,gyde_devopsmappings,gyde_devopsmappings_name,gyde_name,gyde_devopsorganizationurl,gyde_devopsprojectname,statecode,versionnumber&$filter=(_gyde_customerorpartner_value eq ${id} and _gyde_customerbusinesssurvey_value eq ${bId} )`,
+      contentType: "application/json",
+      headers: {
+        Prefer: "odata.include-annotations=*",
+      },
+      success: function (data: any, textStatus: any, xhr: any) {
+        var results = data;
+        console.log("FETCH fetchDevopsConnectionDetails:==========>", results);
+        if (results?.value.length) {
+
+          let _fetchData :any = {}
+          _fetchData.gyde_devopsprojectname = results.value[0]["gyde_devopsprojectname"]; // Guid
+          _fetchData.gyde_devopsorganizationurl = results.value[0]["gyde_devopsorganizationurl"]; // Guid
+          console.log("fetchDevopsConfig");
+
+          resolve({ type: "success", connectionDetails: _fetchData });
+          console.log("callLength");
+        } else {
+          resolve({ type: "success", connectionDetails: [] });
+        }
+      },
+      error: function (xhr: any, textStatus: any, errorThrown: any) {
+        console.log("fetchDevopsConfig Error");
+        console.log(xhr);
+        resolve({ type: "error", connectionDetails: null });
       },
     });
   });

@@ -15,7 +15,8 @@ import {
   createDevConfigApi,
   fetchDevopsConfig,
   fetWorkItemsbyId,
-  saveConnectionDetail,
+  saveConnectiondata,
+  fetchDevopsConnectionDetails,
 } from "../Api/devopsApis";
 import DevopsTree from "../DevopsTree/DevopsTree";
 import axios from "axios";
@@ -160,7 +161,8 @@ export default function ConnectionContainer() {
   });
   const [draftData, setDraftData] = useState<any>([]);
   const [isTreeViewVisible, setIsTreeViewVisible] = useState(false);
-  const [connectionSaveData, setConnectionSaveData] = useState<any>([]);
+  const [connectionSaveData, setConnectionSaveData] = useState<any>();
+  const [saveConnectionDetail, setSaveConnectionDetail] = useState<any>();
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
   console.log("queryParameters", queryParameters);
@@ -500,6 +502,7 @@ export default function ConnectionContainer() {
             dataIndex: "devopsWorkItem",
             key: "devopsWorkItem",
             dropdownOptions: options,
+            width: '40%',
           },
           {
             title: "FIELD MAPPINGS",
@@ -656,7 +659,7 @@ export default function ConnectionContainer() {
   }, []);
 
   const   getConnectionDetails =async ()=> {
-    let _result: any = await fetchDevopsConfig(cusId, cbsId);
+    let _result: any = await fetchDevopsConnectionDetails(cusId, cbsId);
 
      console.log("_resultASYNC",_result);
      setConnectionSaveData(_result)
@@ -924,6 +927,9 @@ export default function ConnectionContainer() {
       let response: any = await createMappingFile(mappedWorkItems, guId);
       if (response.type === "success") {
         findDevopsConfigGuId(cusId, cbsId, "", false);
+        console.log("connectionSaveData7*",saveConnectionDetail);
+          
+        saveConnectiondata(saveConnectionDetail,guId);
         setIsLoading(false);
         notification.success({
           message: "Work Item Types successfully mapped ",
@@ -972,6 +978,9 @@ export default function ConnectionContainer() {
         if (response.type === "success") {
           setIsMappedSaved(true);
           findDevopsConfigGuId(cusId, cbsId, "", false);
+          console.log("connectionSaveData*",saveConnectionDetail);
+          
+          saveConnectiondata(saveConnectionDetail,newId);
           setIsLoading(false);
         } else if (response.type === "error") {
           setIsMappedSaved(false);
@@ -1099,21 +1108,22 @@ export default function ConnectionContainer() {
   };
   const saveConnectingDetails = (data:any) => {
 
-    console.log("saveConnectingDetails",data);
+     console.log("saveConnectingDetails",data);
     
     var record: any = {};
-    record["gyde_customerorpartner@odata.bind"] = `/accounts(${cusId})`; // Lookup
-    record[
-      "gyde_customerbusinesssurvey@odata.bind"
-    ] = `/gyde_customerbusinesssurveies(${cbsId})`; // Lookup
-    record.gyde_devopsprojectname = data?.organizationUri;
-    record.gyde_devopsorganizationurl =data?.projectName;
-    saveConnectionDetail(record);
+
+    record.gyde_devopsorganizationurl = data?.organizationUri;
+    record.gyde_devopsprojectname =data?.projectName;
+    console.log("record",record);
+    
+    setSaveConnectionDetail(record)
+    //saveConnectionDetail(record);
   };
+console.log("reRenderC*",connectionSaveData,saveConnectionDetail);
 
   return (
     <div className="devops-container">
-      {!isTreeViewVisible ? (
+      {!isTreeViewVisible  && connectionSaveData?.type === "success"  ? (
         <Spin spinning={isLoading}>
           <h1 className="title">DevOps Work Items</h1>
           <div className="bg-wrap">
@@ -1124,7 +1134,8 @@ export default function ConnectionContainer() {
                 <h5 className="sub-title2">{configurationData?.gyde_name} </h5>
               </span>
             </h3>
-            <ConnectionComponent
+
+         <ConnectionComponent
               setWorkItemData={(res: any) => {
                 setDevopsWorkItemTypes(res?.data),
                   setDevopsResult(res?.data?.length ? true : false);
@@ -1133,6 +1144,7 @@ export default function ConnectionContainer() {
               url={window?.parent?.azureWorkItemTypeURL}
               setLoader={setIsLoading}
               saveConnectingDetails={saveConnectingDetails}
+              connectionSaveData={connectionSaveData}
             />
           
             {devopsResult && (
