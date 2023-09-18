@@ -32,27 +32,19 @@ const handleConnection = (values:any,url:any) => {
     if(res?.status=="success"){
        notification.success({
         message:"Success",
-        description:"Successfully connected..!"
+        description:"You have successfully connected to DevOps project!"
       }); 
       localStorage.setItem('items',JSON.stringify(values));
       console.log("res........!!!", res);
       saveConnectingDetails(values);
       setWorkItemData(res);
       setLoader(false)
-    }else{
-      if(res?.data?.StatusCode==500){
-        notification.success({
+    }else if(res?.status =="error"){
+        notification.error({
           message:"Error",
-          description:"Connection Failed. Try again.."
+          description:`${res?.data}`
         });
         setLoader(false)
-      }else{
-       notification.error({
-        message:"Error",
-        description:res?.data?.Value
-      }) 
-      setLoader(false)
-      } 
     }
    })
 }
@@ -61,7 +53,7 @@ const confirm = (values:any,url:any) => {
   modal.confirm({
     title: 'Confirm',
     icon: <ExclamationCircleOutlined/>,
-    content: 'Connection details are being changed compared to the current connection details. This will reset all the current mappings you have done. Do you wish to proceed?',
+    content: 'Connection details are being changed compared to the current connection details. Do you wish to proceed?',
     okText: 'Yes',
     onOk: () => { // Wrap in an arrow function to access values and url
       console.log("values", values);
@@ -69,6 +61,7 @@ const confirm = (values:any,url:any) => {
     },
     onCancel() {
       console.log('User clicked No');
+      setLoader(false)
     },
     cancelText: 'No',
   });

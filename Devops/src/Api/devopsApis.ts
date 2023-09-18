@@ -87,10 +87,10 @@ export const saveConnectiondata = (record: any,guid:any) => {
         
         console.log("connectionDetailsSaved",xhr);
         
-        resolve("updated");
+        resolve({type:"success" ,message:"updated"});
       },
       error: function (xhr: any, textStatus: any, errorThrown: any) {
-        reject("Errror");
+        resolve({type:"error" ,message:"Common DataS service Error"});
         console.log("hr", xhr);
       },
     });
@@ -227,7 +227,7 @@ export const fetchDevopsConnectionDetails = (id: any, bId: any) => {
       error: function (xhr: any, textStatus: any, errorThrown: any) {
         console.log("fetchDevopsConfig Error");
         console.log(xhr);
-        resolve({ type: "error", connectionDetails: null });
+        resolve({ type: "success", connectionDetails: [] });
       },
     });
   });
@@ -289,17 +289,18 @@ export const fetchWorkItemTypesFromDevops = async (url:any,value: any) => {
    if (result?.data?.StatusCode === 200) {
       if (result?.data.Value?.length) {
         return { status: "success", data: result?.data?.Value };
-      } else if (result?.data?.StatusCode === 401) {
-        return { status: "error", data: result?.data };
       } else {
         return { status: "error", data: result?.data };
       }
-    } else {
-      return { status: "error", data: "Something Went Wrong..!" };
+    }if (result?.data?.StatusCode === 401) {
+      return { status: "error", data: "Connection failed. Please try again!" };
+    }  
+    else {
+      return { status: "error", data: "Connection failed. Please try again!" };
     }
   } catch (error) {
     console.log("GetWorkItemTypes ===========", error);
-    return { status: "error", data: error };
+    return { status: "error", data: "Connection failed. Please try again!" };
   }
 };
 

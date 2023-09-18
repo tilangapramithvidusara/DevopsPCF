@@ -575,44 +575,60 @@ const TableComponent: React.FC<CommonTableProps> = ({
           return rObj;
         });
 
-        console.log("updatedR", updatedR);
-        let _matchDevopsPickListData = updatedR.map((f: any) => f.devOpsOption);
-        let _updatedpicklistFlag = _matchDevopsPickListData.every(
-          (f: any) => f !== undefined && f !== null
-        );
-        let matchCrmPickListData = updatedR.map((f: any) => f.crmOption);
+        console.log("updatedR", updatedR,updatedR?.length );
 
-        console.log(
-          "tg4",
-          _matchDevopsPickListData,
-          matchCrmPickListData,
-          _updatedpicklistFlag
-        );
-        let pickListItems = [
-          {
-            crmOption: matchCrmPickListData,
-            devOpsOption: _matchDevopsPickListData,
-          },
-        ];
-        let updateditems = tableData?.map((field: any) => {
-          if (field.key == currentRecord) {
-            const updatedPickListName = field.isPickListComplete
-              ? [...field.isPickListComplete, currentRecord]
-              : [currentRecord];
-            return {
-              ...field,
-              ["defaultOptionList"]: { defaultOptionList: pickListItems },
-              ["isPickListComplete"]: _updatedpicklistFlag,
-              ["pickListArr"]: updatedPickListName,
-            };
-          }
-          console.log("field", field);
-          return field;
-        });
-        console.log("picklistSave", updateditems);
-        setTableData(updateditems);
-        setFieldDataArr(updateditems);
-        setPickListFlag(_picklistFlag);
+      const _isemptyPickList =   updatedR.every((item:any)=> item === undefined)
+
+      if(_isemptyPickList) {
+        console.log("#5558");
+          
+        setIsPickLisModalOpen(false);
+      }
+      else if(updatedR?.length > 0){
+          let _matchDevopsPickListData = updatedR.map((f: any) => f.devOpsOption);
+          let _updatedpicklistFlag = _matchDevopsPickListData.every(
+            (f: any) => f !== undefined && f !== null
+          );
+          let matchCrmPickListData = updatedR.map((f: any) => f.crmOption);
+  
+          console.log(
+            "tg4",
+            _matchDevopsPickListData,
+            matchCrmPickListData,
+            _updatedpicklistFlag
+          );
+          let pickListItems = [
+            {
+              crmOption: matchCrmPickListData,
+              devOpsOption: _matchDevopsPickListData,
+            },
+          ];
+          let updateditems = tableData?.map((field: any) => {
+            if (field.key == currentRecord) {
+              const updatedPickListName = field.isPickListComplete
+                ? [...field.isPickListComplete, currentRecord]
+                : [currentRecord];
+              return {
+                ...field,
+                ["defaultOptionList"]: { defaultOptionList: pickListItems },
+                ["isPickListComplete"]: _updatedpicklistFlag,
+                ["pickListArr"]: updatedPickListName,
+              };
+            }
+            console.log("field", field);
+            return field;
+          });
+          console.log("picklistSave", updateditems);
+          setTableData(updateditems);
+          setFieldDataArr(updateditems);
+          setPickListFlag(_picklistFlag);
+        }else {
+          console.log("#555");
+          
+          setIsPickLisModalOpen(false);
+        
+        }
+       
       } else {
         console.log(" default");
         let pickListItems = [
@@ -659,7 +675,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
       setFieldDataArr(updateditems);
     }
     setIsPickLisModalOpen(false);
-    setIsPickLisModalOpen(false);
+
   };
 
   return (

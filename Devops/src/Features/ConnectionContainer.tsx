@@ -231,6 +231,8 @@ export default function ConnectionContainer() {
   }, [selectedWorkItem]);
 
   const apiRequest = async (authData: any) => {
+    setTaskDataArr([]);
+    setFieldDataArr([]);
     setIsLoading(true);
     const authObj = {
       organizationUri: authData?.organizationUri,
@@ -729,10 +731,7 @@ export default function ConnectionContainer() {
         }
         return {
           ...item,
-          fieldMapping:
-            item?.gyde_name == "N/A"
-              ? true
-              : item?.fieldMapping
+          fieldMapping:item?.fieldMapping
               ? item?.fieldMapping
               : false,
         };
@@ -754,6 +753,7 @@ export default function ConnectionContainer() {
       if (response.type === "success") {
         findDevopsConfigGuId(cusId, cbsId, "", false);
         setIsLoading(false);
+        setDataAfterSave(validateData);
         notification.success({
           message: "Work Item Types successfully mapped ",
         });
@@ -819,7 +819,7 @@ export default function ConnectionContainer() {
             _dataFieldArr
           );
         } else {
-          notification.error({ message: "GUID Not found" });
+          notification.error({ message: "GUID Not Found" });
         }
       } else if (buttonType === "Default") {
         let updatedDefaultData: any = await fetchDefaultSettingData(_pId, true);
@@ -889,6 +889,8 @@ export default function ConnectionContainer() {
           notification.error({ message: "GUID Not found" });
         }
       } else if (buttonType === "Default") {
+        let updatedDefaultData: any = await fetchDefaultSettingData(_pId, true);
+        console.log("defaultGuIdTag1", updatedDefaultData, defaultGuId);
         if (defaultGuId) {
           let _result = await fetchFieldMapping(defaultGuId);
           let updatedData = _taskDataArr.map((item: any) => {
@@ -912,7 +914,27 @@ export default function ConnectionContainer() {
               console.error("Unexpected error:", error);
             });
         } else {
-          notification.error({ message: "GUID Not found" });
+          let _result: any = await fetchFieldMapping(updatedDefaultData?.id);
+          let updatedData = _dataFieldArr.map((item: any) => {
+            return { ...item, ["isSavedType"]: "setasDefault" };
+          });
+          saveDefaultMappingData(updatedDefaultData?.id)
+            .then((response: any) => {
+              if (response.type === "success") {
+                commonFieldMappingSave(
+                  updatedDefaultData?.id,
+                  _result,
+                  mappedField,
+                  updatedData,
+                  _taskDataArr
+                );
+              } else if (response.type === "error") {
+                console.error("Error:", response.error.message);
+              }
+            })
+            .catch((error: any) => {
+              console.error("Unexpected error:", error);
+            });
         }
       }
     }
@@ -928,22 +950,29 @@ export default function ConnectionContainer() {
       if (response.type === "success") {
         findDevopsConfigGuId(cusId, cbsId, "", false);
         console.log("connectionSaveData7*",saveConnectionDetail);
-          
-        saveConnectiondata(saveConnectionDetail,guId);
+       const saveConnectionResponse:any =  saveConnectiondata(saveConnectionDetail,guId);
+       if(saveConnectionResponse?.type === "success"){
         setIsLoading(false);
         notification.success({
-          message: "Work Item Types successfully mapped ",
+          message: "Work Item Types mapped succesfully!",
         });
+       }if(saveConnectionResponse?.type === "error"){
+        setIsLoading(false);
+        notification.success({
+          message: "Work Item Types mapping failed!",
+        });
+       }
+       
       } else if (response.type === "error") {
         setIsLoading(false);
         notification.error({
-          message: "Work item types mapping unsuccesfully ",
+          message: "Work Item Types mapping failed!",
         });
       }
     } else {
       createDevConfig("newRecord", true);
       findDevopsConfigGuId(cusId, cbsId, "", false);
-      notification.success({ message: "Work item types mapping succesfully " });
+      notification.success({ message: "Work Item Types mapped succesfully!" });
     }
     setDraftData([]);
     console.log("defaultGuId", defaultGuId);
@@ -980,8 +1009,20 @@ export default function ConnectionContainer() {
           findDevopsConfigGuId(cusId, cbsId, "", false);
           console.log("connectionSaveData*",saveConnectionDetail);
           
-          saveConnectiondata(saveConnectionDetail,newId);
-          setIsLoading(false);
+          const saveConnectionResponse:any = saveConnectiondata(saveConnectionDetail,newId);
+
+          if(saveConnectionResponse?.type === "success"){
+            setIsLoading(false);
+            notification.success({
+              message: "Work Item Types mapped succesfully!",
+            });
+           }if(saveConnectionResponse?.type === "error"){
+            setIsLoading(false);
+            notification.success({
+              message: "Work Item Types mapping failed!",
+            });
+           }
+          
         } else if (response.type === "error") {
           setIsMappedSaved(false);
           setIsLoading(false);
@@ -1064,15 +1105,21 @@ export default function ConnectionContainer() {
     }
   };
   const checkFinalMappingStatus = (array: [], column: string) => {
+   const itemQ =  array.filter((item:any)=> item?.gyde_name !== "N/A");
+    console.log("array89",itemQ
+    );
+   
+    
     console.log(
       "inside condition: ",
-      array.every((element) => element[column])
+      array.filter((item:any)=> item?.gyde_name !== "N/A").every((element) => element[column])
     );
-    return array.every((element) => element[column] === true);
+    return array.filter((item:any)=> item?.gyde_name !== "N/A").every((element) => element[column] === true);
   };
 
   console.log(
     "final condition ::",
+    retrieveDevopsMapping,
     checkFinalMappingStatus(retrieveDevopsMapping, "fieldMapping"),
     checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
   );
@@ -1089,14 +1136,14 @@ export default function ConnectionContainer() {
           setIsLoading(false);
           setIsModalOpen(false);
           notification.success({
-            message: "Work Item fields successfully mapped' ",
+            message: "Work Item Fields mapped successfully!",
           });
         } else {
           console.error("Save failed with status:", result.status);
           setIsLoading(false);
           setIsModalOpen(false);
           notification.error({
-            message: "Work Item fields unsuccessfully mapped' ",
+            message: "Work Item Fields mapping failed!",
           });
         }
       })
