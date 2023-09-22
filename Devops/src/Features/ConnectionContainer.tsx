@@ -163,6 +163,7 @@ export default function ConnectionContainer() {
   const [isTreeViewVisible, setIsTreeViewVisible] = useState(false);
   const [connectionSaveData, setConnectionSaveData] = useState<any>();
   const [saveConnectionDetail, setSaveConnectionDetail] = useState<any>();
+  const [currentFeildData, setCurrentFeildData] = useState<any>([]);
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
   console.log("queryParameters", queryParameters);
@@ -183,6 +184,8 @@ export default function ConnectionContainer() {
 
   const handleCancel = () => {
     setIsModalOpen(false);
+    setIsLoading(false)
+    console.log("cancelModel",isModalOpen,isLoading);
     setSelectedWorkItem({});
   };
   const workItemColumns = [
@@ -231,9 +234,10 @@ export default function ConnectionContainer() {
   }, [selectedWorkItem]);
 
   const apiRequest = async (authData: any) => {
+    setIsLoading(true);
     setTaskDataArr([]);
     setFieldDataArr([]);
-    setIsLoading(true);
+   
     const authObj = {
       organizationUri: authData?.organizationUri,
       personalAccessToken: authData?.personalAccessToken,
@@ -514,8 +518,9 @@ export default function ConnectionContainer() {
           },
         ];
         setColumns(columns);
-        setIsModalOpen(true);
         setIsLoading(false);
+        setIsModalOpen(true);
+       
       } else if (devopsData?.status === "error") {
         setIsLoading(false);
         setIsModalOpen(false);
@@ -524,10 +529,11 @@ export default function ConnectionContainer() {
   };
 
   useEffect(() => {
-    isModalOpen && taskDataArr.length
-      ? setIsLoading(true)
-      : setIsLoading(false);
-  }, [isModalOpen, taskDataArr]);
+     if(isLoading === false) {
+      console.log("setIsLoading(false)",isLoading);
+      setIsLoading(false) 
+     }
+  }, [isModalOpen,isLoading]);
 
   useEffect(() => {
     console.log("cbs******", cbsId, cusId, _pId);
@@ -680,7 +686,15 @@ export default function ConnectionContainer() {
         console.log("errorr1", e);
       });
   }, []);
+
+  useEffect(()=> {
+
+console.log("isLoading885",isLoading);
+
+  },[isLoading])
   useEffect(() => {
+    console.log("currentFeildData",currentFeildData);
+    
     handleWorkItemAfterSaveMappng();
     // findDevopsConfigGuId(cusId, cbsId, "", false);
     // console.log("isSavedCompleteFlag***",isSavedCompleteFlag,retrieveDevopsMapping);
@@ -719,11 +733,11 @@ export default function ConnectionContainer() {
 
     if (guId) {
       console.log(
-        "isSavedCompleteFlag***",
+        "isSavedCompleteFlag***",currentFeildData,
         isSavedCompleteFlag,
         retrieveDevopsMapping
       );
-      const newData = retrieveDevopsMapping?.map((item: any) => {
+      const newData = currentFeildData?.map((item: any) => {
         if (item?.name == isSavedCompleteFlag?.key) {
           const fieldMappingValue =
             isSavedCompleteFlag?.value === 1 ? true : false;
@@ -755,12 +769,12 @@ export default function ConnectionContainer() {
         setIsLoading(false);
         setDataAfterSave(validateData);
         notification.success({
-          message: "Work Item Types successfully mapped ",
+          message: "Work Item Types mapped succesfully!",
         });
       } else if (response.type === "error") {
         setIsLoading(false);
         notification.error({
-          message: "Work item types mapping unsuccesfully ",
+          message: "Work Item Types mapping failed!",
         });
       }
     }
@@ -775,9 +789,9 @@ export default function ConnectionContainer() {
 
   useEffect(() => {
     if (
-      dataAfterSave?.length > 0 &&
+      currentFeildData?.length > 0 &&
       checkFinalMappingStatus(retrieveDevopsMapping, "fieldMapping") &&
-      checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
+      checkFinalMappingStatus(currentFeildData, "isCorrectlyMapped")
     ) {
       setConfigureSettings("devopsGenerator");
     }
@@ -1114,6 +1128,7 @@ export default function ConnectionContainer() {
       "inside condition: ",
       array.filter((item:any)=> item?.gyde_name !== "N/A").every((element) => element[column])
     );
+    console.log("checktag99",array,column,":",array.filter((item:any)=> item?.gyde_name !== "N/A").every((element) => element[column] === true));
     return array.filter((item:any)=> item?.gyde_name !== "N/A").every((element) => element[column] === true);
   };
 
@@ -1227,10 +1242,8 @@ console.log("reRenderC*",connectionSaveData,saveConnectionDetail);
                   isModelopen={false}
                   modelAction={showModal}
                   className={
-                    checkFinalMappingStatus(
-                      dataAfterSave,
-                      "isCorrectlyMapped"
-                    ) && configureSettings == "devopsGenerator"
+                    checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
+                    checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") && configureSettings == "devopsGenerator"
                       ? "disable-table"
                       : ""
                   }
@@ -1240,6 +1253,7 @@ console.log("reRenderC*",connectionSaveData,saveConnectionDetail);
                   setMappingType={setmMppedField}
                   isPicklistModel={false}
                   setWorkitemTypeData={setWorkitemTypeData}
+                  setCurrentFeildData = {setCurrentFeildData}
                   isGuid={guId ? true : false}
                 />
 
@@ -1297,7 +1311,7 @@ console.log("reRenderC*",connectionSaveData,saveConnectionDetail);
                 onOk={handleOk}
                 onClose={handleCancel}
                 buttons={[
-                  { title: "Cancel", onClickHandler: "" },
+                  { title: "Cancel", onClickHandler: handleCancel },
                   {
                     title: "Set as Default",
                     onClickHandler: savePopupModelData,

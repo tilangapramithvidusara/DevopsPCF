@@ -8,6 +8,7 @@ import {
   Form,
   Typography,
   Result,
+  notification,
 } from "antd";
 import { TableProps } from "antd/lib/table";
 import LinkOutLined from "@ant-design/icons";
@@ -44,6 +45,7 @@ interface CommonTableProps extends TableProps<any> {
   setWorkitemTypeData?: any;
   setPickListArr?: any;
   isGuid?: any;
+  setCurrentFeildData?:any
 }
 
 interface TableColumn {
@@ -75,6 +77,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   saveMappingItems,
   setPickListArr,
   setWorkitemTypeData,
+  setCurrentFeildData,
   isGuid,
   ...rest
 }) => {
@@ -102,6 +105,8 @@ const TableComponent: React.FC<CommonTableProps> = ({
 
   useEffect(() => {
     console.log("dataChanged ===> ", tableData);
+
+    if(!isModelopen) setCurrentFeildData(tableData)
   }, [tableData]);
 
   useEffect(() => {
@@ -325,10 +330,11 @@ const TableComponent: React.FC<CommonTableProps> = ({
               <img
                 src={checkMappedStatus()}
                 alt="1"
-                style={{ marginLeft: 100 }}
+                style={{ marginLeft: 100, cursor:"pointer" }}
                 width={20}
                 height={20}
                 onClick={() => handleButtonClick(record)}
+                
               />
             )}{" "}
           </>
@@ -585,46 +591,61 @@ const TableComponent: React.FC<CommonTableProps> = ({
         setIsPickLisModalOpen(false);
       }
       else if(updatedR?.length > 0){
-          let _matchDevopsPickListData = updatedR.map((f: any) => f.devOpsOption);
-          let _updatedpicklistFlag = _matchDevopsPickListData.every(
-            (f: any) => f !== undefined && f !== null
-          );
-          let matchCrmPickListData = updatedR.map((f: any) => f.crmOption);
-  
-          console.log(
-            "tg4",
-            _matchDevopsPickListData,
-            matchCrmPickListData,
-            _updatedpicklistFlag
-          );
-          let pickListItems = [
-            {
-              crmOption: matchCrmPickListData,
-              devOpsOption: _matchDevopsPickListData,
-            },
-          ];
-          let updateditems = tableData?.map((field: any) => {
-            if (field.key == currentRecord) {
-              const updatedPickListName = field.isPickListComplete
-                ? [...field.isPickListComplete, currentRecord]
-                : [currentRecord];
-              return {
-                ...field,
-                ["defaultOptionList"]: { defaultOptionList: pickListItems },
-                ["isPickListComplete"]: _updatedpicklistFlag,
-                ["pickListArr"]: updatedPickListName,
-              };
-            }
-            console.log("field", field);
-            return field;
-          });
-          console.log("picklistSave", updateditems);
-          setTableData(updateditems);
-          setFieldDataArr(updateditems);
-          setPickListFlag(_picklistFlag);
+        const  hasDuplicateDevOpsOptions=(arr:any) =>{
+          const devOpsOptions = new Set();
+          for (const item of arr) {
+              if (item?.devOpsOption !== "N/A" && devOpsOptions.has(item.devOpsOption)) {
+                  return true; // Found a duplicate devOpsOption
+              }
+              devOpsOptions.add(item.devOpsOption);
+          }
+          return false; // No duplicates found
+      }
+      const hasDuplicates = hasDuplicateDevOpsOptions(updatedR);
+      console.log("hasDuplicates",hasDuplicates,updatedR);
+      if (hasDuplicates) {
+        return notification.error({message:"Unable to save duplicate values for picklist options!"})
+      } else {
+        let _matchDevopsPickListData = updatedR.map((f: any) => f.devOpsOption);
+        let _updatedpicklistFlag = _matchDevopsPickListData.every(
+          (f: any) => f !== undefined && f !== null
+        );
+        let matchCrmPickListData = updatedR.map((f: any) => f.crmOption);
+
+        console.log(
+          "tg4",
+          _matchDevopsPickListData,
+          matchCrmPickListData,
+          _updatedpicklistFlag
+        );
+        let pickListItems = [
+          {
+            crmOption: matchCrmPickListData,
+            devOpsOption: _matchDevopsPickListData,
+          },
+        ];
+        let updateditems = tableData?.map((field: any) => {
+          if (field.key == currentRecord) {
+            const updatedPickListName = field.isPickListComplete
+              ? [...field.isPickListComplete, currentRecord]
+              : [currentRecord];
+            return {
+              ...field,
+              ["defaultOptionList"]: { defaultOptionList: pickListItems },
+              ["isPickListComplete"]: _updatedpicklistFlag,
+              ["pickListArr"]: updatedPickListName,
+            };
+          }
+          console.log("field", field);
+          return field;
+        });
+        console.log("picklistSave", updateditems);
+        setTableData(updateditems);
+        setFieldDataArr(updateditems);
+        setPickListFlag(_picklistFlag);
+      }
         }else {
-          console.log("#555");
-          
+          console.log("#555"); 
           setIsPickLisModalOpen(false);
         
         }

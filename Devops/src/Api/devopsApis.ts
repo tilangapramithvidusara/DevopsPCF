@@ -417,9 +417,12 @@ export const createMappingFile = async (_data: any, guid: any) => {
           processData: false,
           data: buffer,
           success: function (data: any, textStatus: any, xhr: any) {
+            console.log(" status: request.status", data);
             resolve({ type: "success", data });
           },
           error: function (request: any, status: any, thrown: any) {
+            console.log(" status: request.status", status, request);
+            
             reject({ type: "error", status: request.status });
           },
         });
