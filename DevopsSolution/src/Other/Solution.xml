@@ -8,8 +8,8 @@
       <LocalizedName description="DevopsSolution" languagecode="1033" />
     </LocalizedNames>
     <Descriptions />
-    <Version>1.23.205.5564</Version>
-    <!-- Solution Package Type: Unmanaged(0)/Managed(1)/Both(2)-->
+    <Version>1.23.205.5609</Version>
+    <!-- Solution Package ype: Unmanaged(0)/Managed(1)/Both(2)-->
     <Managed>0</Managed>
     <Publisher>
       <!-- Unique Publisher Name of Cds Solution -->

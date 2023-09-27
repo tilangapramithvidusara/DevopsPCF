@@ -1,4 +1,4 @@
-import { Button, Input, Spin, Tree } from "antd";
+import { Button, Checkbox, Input, Spin, Tree } from "antd";
 import type { DataNode, TreeProps } from "antd/es/tree";
 import React, { useEffect, useState } from "react";
 import {
@@ -335,13 +335,13 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
     if (guid) {
       let _result: any = await fetchFieldMapping(guid);
       if (_result.type == "success") {
-        const _resultData = await JSON.parse(_result.data);
+        const _resultData = _result?.data;
         setSavedMappingFieldsData(_resultData);
       } else if (_result.type == "error") return [];
     } else if (defaultGuid) {
       let _result: any = await fetchFieldMapping(defaultGuid);
       if (_result.type == "success") {
-        const _resultData = await JSON.parse(_result.data);
+        const _resultData = _result.data
         setSavedMappingFieldsData(_resultData);
       }
     } else {
@@ -625,14 +625,17 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
               Apply
             </Button>
           </div>
-
+          <div>
           <Button onClick={()=> {
             handleExpandTree(false)
-          }}>  <img src='/collapse.png' alt="icon" className="icon" style={{marginLeft:'5px'}}/>  Collapse All</Button>
+          }}  className="collapse-btn" color="#00AEA7">  <img src='/collapse.png' alt="icon" className="icon" style={{marginLeft:'5px'}}/>  Collapse All</Button>
           <Button onClick={()=> {
             
             handleExpandTree(true)
-          }}> <img src='/expand.png' alt="icon" className="icon" style={{marginLeft:'5px'}}/>  Expand All</Button>
+          }}  className="collapse-btn" color="#00AEA7"> <img src='/expand.png' alt="icon" className="icon" style={{marginLeft:'5px'}}/>  Expand All</Button>
+
+     <Checkbox className="workitem-checkbox">Show new work items</Checkbox>
+          </div>
           <Tree
             checkable
             onExpand={onExpand}

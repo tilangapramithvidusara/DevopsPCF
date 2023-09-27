@@ -33,14 +33,17 @@ export const saveMappingData = async (_data: any, guid: any) => {
           processData: false,
           data: buffer,
           success: function (data: any, textStatus: any, xhr: any) {
+            console.log("sucessSaved",data,textStatus)
             resolve({ type: "success", data });
           },
           error: function (request: any, status: any, thrown: any) {
+            console.log("errorSaved",request,status)
             reject({ type: "error", status: request.status });
           },
         });
       };
-      let _tableDataStringify = JSON.stringify(_data);
+      let _formatdataobject = {data:_data}
+      let _tableDataStringify = JSON.stringify(_formatdataobject);
       const blob = new Blob([_tableDataStringify], { type: "application/json" });
       const file = new File([blob], "foo.txt", { type: "text/plain" });
       reader.readAsArrayBuffer(file);
@@ -129,7 +132,12 @@ export const fetchFieldMapping = (guid: any) => {
           "xhr",
           xhr
         );
-        resolve({ type: "success", data: data });
+
+       let result =   JSON.parse(data)
+
+       console.log("result88874564",result);
+       
+        resolve({ type: "success", data: result });
       },
       error: function (error: any, status: any, xhr: any) {
         console.log("error", error, status);
@@ -402,7 +410,7 @@ export const saveWorkItemTypes = async (mappingData: any) => {
 };
 
 export const createMappingFile = async (_data: any, guid: any) => {
-
+    
   try {
     const reader = new FileReader();
     const savePromise = new Promise((resolve, reject) => {
@@ -410,6 +418,8 @@ export const createMappingFile = async (_data: any, guid: any) => {
         console.log("Saving", e);
         const bodyContents: any = e?.target?.result;
         const buffer = new Uint8Array(bodyContents);
+      
+        console.log("buffer",buffer);
         window.parent.webapi.safeAjax({
           type: "PUT",
           url: `/_api/gyde_devopsconfigurations(${guid})/gyde_devopsmappings`,
@@ -417,17 +427,24 @@ export const createMappingFile = async (_data: any, guid: any) => {
           processData: false,
           data: buffer,
           success: function (data: any, textStatus: any, xhr: any) {
-            console.log(" status: request.status", data);
+            console.log("Success1112", data);
+            console.log(" status: request.status sucesss", data);
             resolve({ type: "success", data });
           },
           error: function (request: any, status: any, thrown: any) {
-            console.log(" status: request.status", status, request);
+            console.log("error1112", data);
+            console.log(" status: request.status errr", status, request);
             
             reject({ type: "error", status: request.status });
           },
         });
       };
-      let _tableDataStringify = JSON.stringify(_data);
+
+      let _formatdataobject = {data:_data}
+      console.log("_formatdataobject7");
+      console.log("_formatdataobject789",_formatdataobject);
+      
+      let _tableDataStringify = JSON.stringify(_formatdataobject);
       const blob = new Blob([_tableDataStringify], { type: "application/json" });
       const file = new File([blob], "foo.txt", { type: "text/plain" });
       reader.readAsArrayBuffer(file);

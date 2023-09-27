@@ -94,6 +94,12 @@ const TableComponent: React.FC<CommonTableProps> = ({
   const [currentRecord, setCurrentRecord] = useState<any>([]);
   const [defaultPickListRecord, setDefaultPickListRecord] = useState<any>([]);
 
+  useEffect(()=> {
+ console.log("currentRecordTag889",isPicklistModel,isPicklistModel &&tablePickListData,defaultPickListData);
+ console.log("tableData889C",isPicklistModel,isPicklistModel&& tableData,);
+ 
+
+  },[])
   useEffect(() => {
     // Update the PCF control's context or notify changes here
     // Pass the updated tableData to the PCF framework
@@ -110,6 +116,8 @@ const TableComponent: React.FC<CommonTableProps> = ({
   }, [tableData]);
 
   useEffect(() => {
+    console.log("tableData && !isModelopen",tableData , isModelopen);
+    
     if (tableData && !isModelopen) {
       const mappingFlag = tableData?.map((data: any) => {
         return {
@@ -144,9 +152,11 @@ const TableComponent: React.FC<CommonTableProps> = ({
     console.log("options======> ", options);
     isPicklistModel &&
       console.log("defaultData picList ===>:",record, ":|",defaultPickListData);
+    console.log('checkPickList',isPicklistModel && defaultPickListData?.length);
+      
     let currentRecordValue =
-      isPicklistModel && defaultPickListData.length
-        ? defaultPickListData
+      isPicklistModel && defaultPickListData?.length
+        ?  defaultPickListData
             .filter((items: any) => items.crmOption === record.souruceOption)
             .map((_data: any) => _data.devOpsOption)
         : [];
@@ -165,9 +175,9 @@ const TableComponent: React.FC<CommonTableProps> = ({
       (item: any) => !alreadySelectedValues?.includes(item)
     );
     console.log("tablePickListData", tablePickListData);
-    const pickListDropDownArr = options.filter((option: any) => {
+    const pickListDropDownArr = options?.filter((option: any) => {
       if (tablePickListData) {
-        const foundItem = tablePickListData.find(
+        const foundItem = tablePickListData?.find(
           (item: any) => option === item?.devopsOption
         );
         return !foundItem; // Exclude options that have a matching devopsOption in tablePickListData
@@ -346,7 +356,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   };
 
   const handleButtonClick = (record: any) => {
-    console.log("Button clicked for record:", record);
+    console.log("Button clicked for record:", record ,isModelopen);
     record?.name &&
       setMappingType({ devOps: record?.gyde_name, source: record?.name });
     if (!disabled) {
@@ -491,30 +501,71 @@ const TableComponent: React.FC<CommonTableProps> = ({
   ];
   const showPickListModal = (record: any) => {
     console.log("picklistmodel record:", record);
-    record && setCurrentRecord(record?.key);
+
+    let iSobject =  Object.keys(record).length 
+    console.log("iSobject:", iSobject);
+
+    if(iSobject){
+
+      record && setCurrentRecord(record?.key);
     console.log("picklistModel current Record:", currentRecord);
     if (record.isText === false) {
+      console.log("recordTag444", record?.dropdown);
       const _optionDataSource = record.dropdown
         .filter((option: any) => {
-          if (record.devopsWorkItem)
+          if (record?.devopsWorkItem)
             return option.dropdownValue === record?.devopsWorkItem;
           else return option.dropdownValue === record?.sourceWorkItem;
         })
         .map((item: any, key: any) => {
-          let crm = item.option[0].crmOption.map((crmoption: any, key: any) => {
+          let crm = item?.option[0].crmOption.map((crmoption: any, key: any) => {
             return { key: key, souruceOption: crmoption };
           });
-          let devops = item.option[0].devOpsOption.map((devOpsoption: any) => {
+          let devops = item?.option[0]?.devOpsOption.map((devOpsoption: any) => {
             return devOpsoption;
           });
           return { tableDataSource: crm, optionList: devops };
         });
+      
+    //   const   _optionDataSource =[
+    //     {
+    //         "tableDataSource": [
+    //             {
+    //                 "key": 0,
+    //                 "souruceOption": "1 - Very Low"
+    //             },
+    //             {
+    //                 "key": 1,
+    //                 "souruceOption": "2 - Low"
+    //             },
+    //             {
+    //                 "key": 2,
+    //                 "souruceOption": "3 - Medium"
+    //             },
+    //             {
+    //                 "key": 3,
+    //                 "souruceOption": "4 - High"
+    //             },
+    //             {
+    //                 "key": 4,
+    //                 "souruceOption": "5 - Very High"
+    //             }
+    //         ],
+    //         "optionList": [
+    //             "1",
+    //             "2",
+    //             "3",
+    //             "4"
+    //         ]
+    //     }
+    // ]
       console.log("_optionataSource", _optionDataSource);
-      setPickListData(_optionDataSource[0].tableDataSource);
-      setPickListColoumn(_optionDataSource[0].optionList);
-
+      setPickListData(_optionDataSource[0]?.tableDataSource);
+      setPickListColoumn(_optionDataSource[0]?.optionList);
+ console.log( "checKeys",Object.keys(record?.defaultOptionList).length );
+ 
       const { crmOption = [], devOpsOption = [] } =
-        Object.keys(record.defaultOptionList).length &&
+        Object.keys(record?.defaultOptionList).length &&
         record.defaultOptionList.defaultOptionList[0];
       const result =
         crmOption.length &&
@@ -527,7 +578,16 @@ const TableComponent: React.FC<CommonTableProps> = ({
       console.log("defaultRecord", result);
       setDefaultPickListRecord(result);
       setIsPickLisModalOpen(true);
+    }else{
+      console.log("tag667");
+      
     }
+    }else {
+
+      console.log("recordNotObj",record);
+      
+    }
+    
   };
 
   const handleOk = () => {
