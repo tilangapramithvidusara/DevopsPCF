@@ -15,6 +15,7 @@ interface PopupProps {
 const PopupComponent: React.FC<PopupProps> = ({ visible, onClose, buttons, Content,onOk,Ispicklist }) => {
 
   useEffect(()=>{
+console.log("pickList",Content);
 
     console.log("onOk",onOk);
 

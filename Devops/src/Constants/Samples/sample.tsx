@@ -1240,3 +1240,111 @@ export const savedMappedData = [
   }
 ]
 
+export const TreeViewData =[
+  {
+      "title": "C02 - Chapter 02 WI #01",
+      "key": "db0f248a-d150-4906-a0fd-171721723ee8",
+      "rest": {
+          "Title": "C02 - Chapter 02 WI #01",
+          "workitemid": "9d1e6537-3340-ee11-bdf3-002248079177",
+          "sequance": "2",
+          "sequanceid": "db0f248a-d150-4906-a0fd-171721723ee8",
+          "Parent Work Item": "",
+          "Description": "",
+          "Priority": "",
+          "Resource": "",
+          "Design Classification": "",
+          "Module": "",
+          "GapFit": "",
+          "ISV": "",
+          "Complexity": "",
+          "Build estimate (pts)": "",
+          "Build estimate (hrs)": "",
+          "Work item type": "Epic",
+          "workitemtypeid": "157c2482-c4dc-ed11-a7c6-6045bdd0ef22",
+          "Acceptance Criteria": "",
+          "internalid": "1185"
+      },
+      "children": [
+          {
+              "title": "C02S01 - Section 01 WI #01",
+              "key": "7b30c361-3340-ee11-bdf3-002248079177",
+              "rest": {
+                  "Title": "C02S01 - Section 01 WI #01",
+                  "workitemid": "7b30c361-3340-ee11-bdf3-002248079177",
+                  "sequance": "1",
+                  "sequanceid": "f5315ef0-5b52-4c24-bcba-e2d7c5dbd389",
+                  "Parent Work Item": "db0f248a-d150-4906-a0fd-171721723ee8",
+                  "Description": "",
+                  "Priority": "",
+                  "Resource": "",
+                  "Design Classification": "",
+                  "Module": "",
+                  "GapFit": "",
+                  "ISV": "",
+                  "Complexity": "",
+                  "Build estimate (pts)": "",
+                  "Build estimate (hrs)": "",
+                  "Work item type": "Feature",
+                  "workitemtypeid": "7a625f6e-9252-4e65-93cc-01947c3851db",
+                  "Acceptance Criteria": "",
+                  "internalid": "1185_1196"
+              },
+              "children": []
+          }
+      ]
+  },
+  {
+      "title": "C01 - Chapter 01 WI #01",
+      "key": "735a89bf-13d4-44e7-8c1f-7bf8d36f4b3b",
+      "rest": {
+          "Title": "C01 - Chapter 01 WI #01",
+          "workitemid": "14696ef4-0040-ee11-bdf3-002248079177",
+          "sequance": "1",
+          "sequanceid": "735a89bf-13d4-44e7-8c1f-7bf8d36f4b3b",
+          "Parent Work Item": "",
+          "Description": "",
+          "Priority": "",
+          "Resource": "",
+          "Design Classification": "",
+          "Module": "",
+          "GapFit": "",
+          "ISV": "",
+          "Complexity": "",
+          "Build estimate (pts)": "",
+          "Build estimate (hrs)": "",
+          "Work item type": "Epic",
+          "workitemtypeid": "157c2482-c4dc-ed11-a7c6-6045bdd0ef22",
+          "Acceptance Criteria": "",
+          "internalid": "1184"
+      },
+      "children": [
+          {
+              "title": "C01S01 - Section 01 WI #01",
+              "key": "f98ca83c-0140-ee11-bdf3-002248079177",
+              "rest": {
+                  "Title": "C01S01 - Section 01 WI #01",
+                  "workitemid": "f98ca83c-0140-ee11-bdf3-002248079177",
+                  "sequance": "2",
+                  "sequanceid": "4ac82985-10f6-46da-ba1f-41dfda01efd4",
+                  "Parent Work Item": "735a89bf-13d4-44e7-8c1f-7bf8d36f4b3b",
+                  "Description": "",
+                  "Priority": "",
+                  "Resource": "",
+                  "Design Classification": "",
+                  "Module": "",
+                  "GapFit": "",
+                  "ISV": "",
+                  "Complexity": "",
+                  "Build estimate (pts)": "",
+                  "Build estimate (hrs)": "",
+                  "Work item type": "Feature",
+                  "workitemtypeid": "7a625f6e-9252-4e65-93cc-01947c3851db",
+                  "Acceptance Criteria": "",
+                  "internalid": "1184_1186"
+              },
+              "children": []
+          }
+      ]
+  }
+]

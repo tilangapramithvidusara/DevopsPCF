@@ -281,3 +281,10 @@
   gap: 10px;
   
 }
+
+.workitem-checkbox {
+  margin-left: 14rem;
+}
+.collapse-btn {
+  margin: 8px;
+}

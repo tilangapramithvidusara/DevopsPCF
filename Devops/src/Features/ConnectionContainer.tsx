@@ -184,8 +184,8 @@ export default function ConnectionContainer() {
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    setIsLoading(false)
-    console.log("cancelModel",isModalOpen,isLoading);
+    setIsLoading(false);
+    console.log("cancelModel", isModalOpen, isLoading);
     setSelectedWorkItem({});
   };
   const workItemColumns = [
@@ -237,7 +237,7 @@ export default function ConnectionContainer() {
     setIsLoading(true);
     setTaskDataArr([]);
     setFieldDataArr([]);
-   
+
     const authObj = {
       organizationUri: authData?.organizationUri,
       personalAccessToken: authData?.personalAccessToken,
@@ -425,7 +425,7 @@ export default function ConnectionContainer() {
           false
         );
         console.log(
-          "updatedSavedData====*",
+          "updatedSavedData123====*",
           updatedSavedData,
           updatedDefaultData,
           updatedDefaultData?.data?.length
@@ -508,7 +508,7 @@ export default function ConnectionContainer() {
             dataIndex: "devopsWorkItem",
             key: "devopsWorkItem",
             dropdownOptions: options,
-            width: '40%',
+            width: "40%",
           },
           {
             title: "FIELD MAPPINGS",
@@ -518,22 +518,25 @@ export default function ConnectionContainer() {
           },
         ];
         setColumns(columns);
-        setIsLoading(false);
+       // setIsLoading(false);
         setIsModalOpen(true);
-       
       } else if (devopsData?.status === "error") {
-        setIsLoading(false);
+       // setIsLoading(false);
         setIsModalOpen(false);
+      }else{
+        console.log("trigger Action");
+        
       }
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-     if(isLoading === false) {
-      console.log("setIsLoading(false)",isLoading);
-      setIsLoading(false) 
-     }
-  }, [isModalOpen,isLoading]);
+    if (isLoading === false) {
+      console.log("setIsLoading(false)", isLoading);
+      setIsLoading(false);
+    }
+  }, [isModalOpen, isLoading]);
 
   useEffect(() => {
     console.log("cbs******", cbsId, cusId, _pId);
@@ -552,8 +555,8 @@ export default function ConnectionContainer() {
     if (guId) {
       let _result: any = await fetchFieldMapping(guId);
       if (_result.type == "success") {
-        console.log("fetchFieldMapping ==>", _result.data, itemKey);
-        const _resultData = JSON.parse(_result.data);
+        console.log("fetchFieldMapping ==>", _result?.data.data, itemKey);
+        const _resultData = _result?.data?.data;
         const updatedData = _resultData.filter((item: any) => {
           return item.key === itemKey;
         });
@@ -583,7 +586,7 @@ export default function ConnectionContainer() {
           "load when saved data retrieving.....",
           JsonMappedData
         );
-        const validateData = await JsonMappedData?.map((item: any) => {
+        const validateData = await JsonMappedData?.data?.map((item: any) => {
           return {
             ...item,
             gyde_name:
@@ -619,9 +622,14 @@ export default function ConnectionContainer() {
     if (result.type === "updateDefault") {
       setDefaultGuId(result.id);
       let _result: any = await fetchFieldMapping(result.id);
+      console.log("heyyy",);
       console.log("fetchFieldMapping#", _result);
       if (_result?.type === "success") {
-        const _resultData = JSON.parse(_result.data);
+        console.log("AXFIC", result);
+        
+        const _resultData = _result?.data?.data;
+        console.log("_resultDataDefaultt,",_resultData);
+        
         const updatedData = _resultData?.filter((item: any) => {
           if (item.key === mappedField?.source) {
             return item;
@@ -663,16 +671,14 @@ export default function ConnectionContainer() {
 
     devopsWorkItemTypes && setCrmWorkItemTypes(JSON.parse(devopsWorkItemTypes));
     getConnectionDetails();
-    
   }, []);
 
-  const   getConnectionDetails =async ()=> {
+  const getConnectionDetails = async () => {
     let _result: any = await fetchDevopsConnectionDetails(cusId, cbsId);
 
-     console.log("_resultASYNC",_result);
-     setConnectionSaveData(_result)
-     
-  }
+    console.log("_resultASYNC", _result);
+    setConnectionSaveData(_result);
+  };
 
   useEffect(() => {
     axios
@@ -687,14 +693,12 @@ export default function ConnectionContainer() {
       });
   }, []);
 
-  useEffect(()=> {
-
-console.log("isLoading885",isLoading);
-
-  },[isLoading])
   useEffect(() => {
-    console.log("currentFeildData",currentFeildData);
-    
+    console.log("isLoading885", isLoading);
+  }, [isLoading]);
+  useEffect(() => {
+    console.log("currentFeildData", currentFeildData);
+
     handleWorkItemAfterSaveMappng();
     // findDevopsConfigGuId(cusId, cbsId, "", false);
     // console.log("isSavedCompleteFlag***",isSavedCompleteFlag,retrieveDevopsMapping);
@@ -733,7 +737,8 @@ console.log("isLoading885",isLoading);
 
     if (guId) {
       console.log(
-        "isSavedCompleteFlag***",currentFeildData,
+        "isSavedCompleteFlag***",
+        currentFeildData,
         isSavedCompleteFlag,
         retrieveDevopsMapping
       );
@@ -745,9 +750,7 @@ console.log("isLoading885",isLoading);
         }
         return {
           ...item,
-          fieldMapping:item?.fieldMapping
-              ? item?.fieldMapping
-              : false,
+          fieldMapping: item?.fieldMapping ? item?.fieldMapping : false,
         };
       });
 
@@ -888,7 +891,7 @@ console.log("isLoading885",isLoading);
     } else if (taskDataArr.length) {
       if (buttonType === "Save") {
         if (guId) {
-          let _result = await fetchFieldMapping(guId);
+          let _result :any = await fetchFieldMapping(guId);
           let updatedData = _taskDataArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "saved" };
           });
@@ -906,7 +909,7 @@ console.log("isLoading885",isLoading);
         let updatedDefaultData: any = await fetchDefaultSettingData(_pId, true);
         console.log("defaultGuIdTag1", updatedDefaultData, defaultGuId);
         if (defaultGuId) {
-          let _result = await fetchFieldMapping(defaultGuId);
+          let _result:any = await fetchFieldMapping(defaultGuId);
           let updatedData = _taskDataArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "setasDefault" };
           });
@@ -960,23 +963,30 @@ console.log("isLoading885",isLoading);
   const handleMappingItemSave = async () => {
     setIsLoading(true);
     if (guId) {
+      console.log("formMapp", guId);
+
       let response: any = await createMappingFile(mappedWorkItems, guId);
+      console.log("mappinh handle");
+      console.log("formMappresponse", response);
       if (response.type === "success") {
         findDevopsConfigGuId(cusId, cbsId, "", false);
-        console.log("connectionSaveData7*",saveConnectionDetail);
-       const saveConnectionResponse:any =  saveConnectiondata(saveConnectionDetail,guId);
-       if(saveConnectionResponse?.type === "success"){
-        setIsLoading(false);
-        notification.success({
-          message: "Work Item Types mapped succesfully!",
-        });
-       }if(saveConnectionResponse?.type === "error"){
-        setIsLoading(false);
-        notification.success({
-          message: "Work Item Types mapping failed!",
-        });
-       }
-       
+        console.log("connectionSaveData7*", saveConnectionDetail);
+        const saveConnectionResponse: any = saveConnectiondata(
+          saveConnectionDetail,
+          guId
+        );
+        if (saveConnectionResponse?.type === "success") {
+          setIsLoading(false);
+          notification.success({
+            message: "Work Item Types mapped succesfully!",
+          });
+        }
+        if (saveConnectionResponse?.type === "error") {
+          setIsLoading(false);
+          notification.error({
+            message: "Work Item Types mapping failed!",
+          });
+        }
       } else if (response.type === "error") {
         setIsLoading(false);
         notification.error({
@@ -984,6 +994,8 @@ console.log("isLoading885",isLoading);
         });
       }
     } else {
+      console.log("newRecordcan");
+
       createDevConfig("newRecord", true);
       findDevopsConfigGuId(cusId, cbsId, "", false);
       notification.success({ message: "Work Item Types mapped succesfully!" });
@@ -1017,26 +1029,31 @@ console.log("isLoading885",isLoading);
         recordType === "newRecord" && setGuId(newId);
       if (isCreateMapping) {
         let response: any = await createMappingFile(mappedWorkItems, newId);
+        console.log("mappinh new workitem");
+        console.log("responseCrerate", response);
 
         if (response.type === "success") {
           setIsMappedSaved(true);
           findDevopsConfigGuId(cusId, cbsId, "", false);
-          console.log("connectionSaveData*",saveConnectionDetail);
-          
-          const saveConnectionResponse:any = saveConnectiondata(saveConnectionDetail,newId);
+          console.log("connectionSaveData*", saveConnectionDetail);
 
-          if(saveConnectionResponse?.type === "success"){
+          const saveConnectionResponse: any = saveConnectiondata(
+            saveConnectionDetail,
+            newId
+          );
+
+          if (saveConnectionResponse?.type === "success") {
             setIsLoading(false);
             notification.success({
               message: "Work Item Types mapped succesfully!",
             });
-           }if(saveConnectionResponse?.type === "error"){
+          }
+          if (saveConnectionResponse?.type === "error") {
             setIsLoading(false);
-            notification.success({
+            notification.error({
               message: "Work Item Types mapping failed!",
             });
-           }
-          
+          }
         } else if (response.type === "error") {
           setIsMappedSaved(false);
           setIsLoading(false);
@@ -1086,8 +1103,11 @@ console.log("isLoading885",isLoading);
       _isSelectedField & _isCompletePickList
     );
     if (_result.type === "success") {
-      const _resultData = JSON.parse(_result.data);
-      const updatedData = _resultData.map((item: any) => {
+      const _resultData = _result?.data.data;
+
+      console.log("_resultDataTag",_resultData,_result?.data.data);
+      
+      const updatedData = _resultData?.map((item: any) => {
         if (item.key === itemKey?.source) {
           return {
             ...item,
@@ -1119,17 +1139,27 @@ console.log("isLoading885",isLoading);
     }
   };
   const checkFinalMappingStatus = (array: [], column: string) => {
-   const itemQ =  array.filter((item:any)=> item?.gyde_name !== "N/A");
-    console.log("array89",itemQ
-    );
-   
-    
+    const itemQ = array.filter((item: any) => item?.gyde_name !== "N/A");
+    console.log("array89", itemQ);
+
     console.log(
       "inside condition: ",
-      array.filter((item:any)=> item?.gyde_name !== "N/A").every((element) => element[column])
+      array
+        .filter((item: any) => item?.gyde_name !== "N/A")
+        .every((element) => element[column])
     );
-    console.log("checktag99",array,column,":",array.filter((item:any)=> item?.gyde_name !== "N/A").every((element) => element[column] === true));
-    return array.filter((item:any)=> item?.gyde_name !== "N/A").every((element) => element[column] === true);
+    console.log(
+      "checktag99",
+      array,
+      column,
+      ":",
+      array
+        .filter((item: any) => item?.gyde_name !== "N/A")
+        .every((element) => element[column] === true)
+    );
+    return array
+      .filter((item: any) => item?.gyde_name !== "N/A")
+      .every((element) => element[column] === true);
   };
 
   console.log(
@@ -1139,8 +1169,14 @@ console.log("isLoading885",isLoading);
     checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
   );
   const saveFieldmappingData = (data: any, guId: any, mappingStatus: any) => {
+
+    console.log("saveFieldmappingData",data);
+    
     saveMappingData(data, guId)
       .then((result: any) => {
+
+        console.log("saveMappingData",result);
+        
         if (result.type === "success") {
           console.log("mappingStatus*7", mappingStatus);
 
@@ -1168,24 +1204,23 @@ console.log("isLoading885",isLoading);
         setIsModalOpen(false);
       });
   };
-  const saveConnectingDetails = (data:any) => {
+  const saveConnectingDetails = (data: any) => {
+    console.log("saveConnectingDetails", data);
 
-     console.log("saveConnectingDetails",data);
-    
     var record: any = {};
 
     record.gyde_devopsorganizationurl = data?.organizationUri;
-    record.gyde_devopsprojectname =data?.projectName;
-    console.log("record",record);
-    
-    setSaveConnectionDetail(record)
+    record.gyde_devopsprojectname = data?.projectName;
+    console.log("record", record);
+
+    setSaveConnectionDetail(record);
     //saveConnectionDetail(record);
   };
-console.log("reRenderC*",connectionSaveData,saveConnectionDetail);
+  console.log("reRenderC*", connectionSaveData, saveConnectionDetail);
 
   return (
     <div className="devops-container">
-      {!isTreeViewVisible  && connectionSaveData?.type === "success"  ? (
+      {!isTreeViewVisible && connectionSaveData?.type === "success" ? (
         <Spin spinning={isLoading}>
           <h1 className="title">DevOps Work Items</h1>
           <div className="bg-wrap">
@@ -1197,7 +1232,7 @@ console.log("reRenderC*",connectionSaveData,saveConnectionDetail);
               </span>
             </h3>
 
-         <ConnectionComponent
+            <ConnectionComponent
               setWorkItemData={(res: any) => {
                 setDevopsWorkItemTypes(res?.data),
                   setDevopsResult(res?.data?.length ? true : false);
@@ -1208,7 +1243,7 @@ console.log("reRenderC*",connectionSaveData,saveConnectionDetail);
               saveConnectingDetails={saveConnectingDetails}
               connectionSaveData={connectionSaveData}
             />
-          
+
             {devopsResult && (
               <>
                 {dataAfterSave?.length > 0 &&
@@ -1243,17 +1278,24 @@ console.log("reRenderC*",connectionSaveData,saveConnectionDetail);
                   modelAction={showModal}
                   className={
                     checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
-                    checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") && configureSettings == "devopsGenerator"
+                    checkFinalMappingStatus(
+                      dataAfterSave,
+                      "isCorrectlyMapped"
+                    ) &&
+                    configureSettings == "devopsGenerator"
                       ? "disable-table"
                       : ""
                   }
-                  setDropDownValue={(data: any) => setSelectedWorkItem(data)}
+                  setDropDownValue={(data: any) => {
+                    console.log("callSetDrop");
+                   return  setSelectedWorkItem(data)
+                  }}
                   // disabled={configureSettings == "devopsGenerator" ? true : false}
                   saveMappingItems={(data: any) => setMappedWorkItems(data)}
                   setMappingType={setmMppedField}
                   isPicklistModel={false}
                   setWorkitemTypeData={setWorkitemTypeData}
-                  setCurrentFeildData = {setCurrentFeildData}
+                  setCurrentFeildData={setCurrentFeildData}
                   isGuid={guId ? true : false}
                 />
 
