@@ -473,23 +473,29 @@ export default function ConnectionContainer() {
             const _latestItem = _tableData.find((table: any) => {
               return item.sourceWorkItem === table.sourceWorkItem;
             });
-            console.log("_latestItem", _latestItem, ":", item.sourceWorkItem);
+            console.log("_latestItemD", _latestItem, ":", item.sourceWorkItem);
+
+            
 
             if (_latestItem) {
-              if (
-                _latestItem.dropdown[0]?.dropdownValue === item.devopsWorkItem
-              ) {
+              const foundInDropdown = _latestItem.dropdown?.some(
+                (option: any) =>
+                  option?.dropdownValue === item?.devopsWorkItem
+              );
+              if (foundInDropdown) {
                 return { ...item, dropdown: _latestItem.dropdown };
-              } else {
+              } 
+              else {
                 return {
                   ...item,
                   defaultOptionList: [],
                   dropdown: _latestItem.dropdown,
                 };
               }
-            } else {
+            } else{
               return item;
             }
+            
           });
           console.log("newupdatedArr", newupdatedArr);
 

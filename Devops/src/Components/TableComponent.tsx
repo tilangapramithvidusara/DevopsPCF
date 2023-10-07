@@ -197,7 +197,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
         return true; // Keep all options when tablePickListData is not available
       }
     });
-    console.log("pickListDropDownArr", pickListDropDownArr);
+    console.log("pickListDropDownArr now", pickListDropDownArr);
     return isModelopen && record?.isText ? (
       <div>
         <Text>{record?.devopsWorkItem}</Text>
@@ -282,14 +282,14 @@ const TableComponent: React.FC<CommonTableProps> = ({
                 disabled={disabled}
               >
                 {isPicklistModel
-                  ? pickListDropDownArr.map((option: any) => {
+                  ? options.map((option: any) => {
                       return (
                         <Option key={option} value={option}>
                           {option}
                         </Option>
                       );
                     })
-                  : dropDownFilter?.map((option: any) => {
+                  : options?.map((option: any) => {
                       return (
                         <Option key={option} value={option}>
                           {option}
@@ -637,21 +637,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
         setIsPickLisModalOpen(false);
       }
       else if(updatedR?.length > 0){
-        const  hasDuplicateDevOpsOptions=(arr:any) =>{
-          const devOpsOptions = new Set();
-          for (const item of arr) {
-              if (item?.devOpsOption !== "N/A" && devOpsOptions.has(item.devOpsOption)) {
-                  return true; // Found a duplicate devOpsOption
-              }
-              devOpsOptions.add(item.devOpsOption);
-          }
-          return false; // No duplicates found
-      }
-      const hasDuplicates = hasDuplicateDevOpsOptions(updatedR);
-      console.log("hasDuplicates",hasDuplicates,updatedR);
-      if (hasDuplicates) {
-        return notification.error({message:"Unable to save duplicate values for picklist options!"})
-      } else {
+      console.log("hasDuplicates",updatedR);
         let _matchDevopsPickListData = updatedR.map((f: any) => f.devOpsOption);
         let _updatedpicklistFlag = _matchDevopsPickListData.every(
           (f: any) => f !== undefined && f !== null
@@ -689,7 +675,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
         setTableData(updateditems);
         setFieldDataArr(updateditems);
         setPickListFlag(_picklistFlag);
-      }
+      
         }else {
           console.log("#555"); 
           setIsPickLisModalOpen(false);
