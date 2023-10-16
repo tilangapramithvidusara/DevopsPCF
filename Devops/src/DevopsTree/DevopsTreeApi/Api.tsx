@@ -42,7 +42,11 @@ export const fetchWorkItemsByBusinessSurveyId = async( id:any)=> {
     contentType: "application/json",
     success: function (data: any, textStatus: any, xhr: any) {
       console.log("GetWorkItemTypes",data);
-      resolve({ type: "success", data });
+      console.log("type of",typeof data);
+      let _data = JSON.parse(data)
+      console.log("jsonParseData", _data);
+      
+      resolve({ type: "success", data : _data});
     },
     error: function (request: any, status: any, thrown: any) {
       reject({ type: "error", status: request.status });

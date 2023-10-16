@@ -1332,20 +1332,20 @@ export default function ConnectionContainer() {
                       type="primary"
                       htmlType="button"
                       onClick={handleMappingItemSave}
-                      disabled={
-                        !checkFinalMappingStatus(
-                          mappedWorkItems,
-                          "isCorrectlyMapped"
-                        )
-                      }
-                      className={
-                        !checkFinalMappingStatus(
-                          mappedWorkItems,
-                          "isCorrectlyMapped"
-                        )
-                          ? "disable-save-btn"
-                          : ""
-                      }
+                      // disabled={
+                      //   !checkFinalMappingStatus(
+                      //     mappedWorkItems,
+                      //     "isCorrectlyMapped"
+                      //   )
+                      // }
+                      // className={
+                      //   !checkFinalMappingStatus(
+                      //     mappedWorkItems,
+                      //     "isCorrectlyMapped"
+                      //   )
+                      //     ? "disable-save-btn"
+                      //     : ""
+                      // }
                     >
                       Save
                     </Button>

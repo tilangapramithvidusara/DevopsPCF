@@ -57,10 +57,11 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
   const queryParameters = url.searchParams;
   const _navigateUrl = queryParameters.get("returnto");
   const cbsId = queryParameters.get("id");
+  const cusbSurveyId = queryParameters.get("cbsid");
   const [filteredTreeData, setFilteredTreeData] = useState([]);
   const [workItemsBySurveyId, setWorkItemsBySurveyId] = useState<any>();
   const [allInternalIdsBySurveyId, setAllInternalIdsBySurveyId] =
-    useState<any>(internalIds);
+    useState<any>();
   const [selectedNodes, setSelectedNodes] = useState<any>([]);
   const [savedMappingFieldsData, setSavedMappingFieldsData] = useState<any>([]);
   const [treeData, setTreeData] = useState<any>([]);
@@ -73,25 +74,25 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
   const [selectedItemsWorkItemType, setSelectedItemsWorkItemType] = useState<string[]>([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
 
-  const fetchRequestToGenerateTree = async () => {
+  const fetchRequestToGenerateTree1 = async () => {
     fetchAllInternalIdsByBusinessSurveyId(cbsId)
       .then(async (res: any) => {
         const data: any = await res?.map((item: any) => JSON.parse(item?.data));
         setAllInternalIdsBySurveyId(data?.flatMap((obj: any) => obj.results));
         const ids = data?.flatMap((obj: any) => obj.results);
-        console.log("cbsId#", cbsId);
+        console.log("cbsId#", cbsId,"::",data);
 
         fetchWorkItemsByBusinessSurveyId(cbsId)
           .then(async (val: any) => {
             const workItems = await val?.data;
             const jsonData = JSON.parse(workItems);
             setWorkItemsBySurveyId(jsonData?.results);
-            const internalIds = await ids?.map((item: any) => {
+            const allInternalIdsBySurveyId = await ids?.map((item: any) => {
               return item?.internalid;
             });
             const filteredData1 = await jsonData?.results?.filter(
               (item: any) => {
-                return internalIds?.includes(item?.internalid);
+                return allInternalIdsBySurveyId?.includes(item?.internalid);
               }
             );
             filteredData1?.forEach((item: any) => {
@@ -111,6 +112,36 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
       .catch((err) => console.log("error getting all ids", err));
   };
 
+  const fetchRequestToGenerateTree = async () => {
+    fetchWorkItemsByBusinessSurveyId(cbsId)
+          .then(async (val: any) => {
+            console.log("jsonDataVal*5",val);
+            const jsonData = val?.data;
+            console.log("jsonData",jsonData);
+            console.log("jsonData412",jsonData?.result);
+            
+            const jsonFilterData = await jsonData?.result?.filter(
+              (item: any) => {
+                return item;
+              }
+            );
+            jsonFilterData?.forEach((item: any) => {
+              for (const field in item) {
+                if (item[field].includes("🟥", "🟧", "🟨", "🟩")) {
+                  const valueParts = item[field].split(" ");
+                  const extractedValue = valueParts[1];
+                  item[field] = extractedValue;
+                }
+              }
+            });
+            setFilteredTreeData(jsonFilterData);
+            console.log("filteredData@@", jsonFilterData);
+          })
+          .catch((err: any) => console.log("error getting work items", err));
+  };
+
+
+  
   useEffect(() => {
     fetchRequestToGenerateTree();
 
@@ -289,6 +320,51 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
     // Initialize the root nodes
     const rootNode = buildTree("parent");
     console.log("rootNode", rootNode);
+
+    function addParentWorkItemField(arr:any) {
+      const newArray = [];
+    
+      for (const item of arr) {
+        const newItem = { ...item };
+    
+        if (newItem.children && newItem.children.length > 0) {
+          newItem.children = addParentWorkItemField(newItem.children);
+        }
+    
+        if (newItem.parentKey !== "parent" && newItem.workItemBody && newItem.workItemBody.length > 0) {
+          newItem.workItemBody.forEach((workItem:any) => {
+            if (workItem.fieldData && workItem.fieldData.length > 0) {
+              workItem.fieldData.push({
+                "referencePath": "",
+                "value": "",
+                "name": "parentworkitem"
+              });
+            }
+          });
+        }
+    
+        newArray.push(newItem);
+      }
+    
+      return newArray;
+    }
+    
+    // Create a new array with the modifications
+    const modifiedArr = addParentWorkItemField(rootNode);
+
+    const obj = {"surveyId": cbsId,
+  "businessSurveyId": cusbSurveyId,
+  "userId": "1eb6844e-5c33-ee11-bdf5-6045bd10f18c",
+  data: modifiedArr
+}
+
+console.log("obj",obj);
+
+const response: any = await generateDevops(
+  window?.parent?.createDevopsWorkItemURL,
+  obj
+);
+
     async function processNode(
       node: any,
       parentUrl: any = null,
@@ -326,9 +402,9 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
       }
     }
     // Loop through the tree and make API calls
-    for (const node of rootNode) {
-      processNode(node);
-    }
+    // for (const node of rootNode) {
+    //   processNode(node);
+    // }
   };
 
   const fetchFieldMappingData = async () => {
@@ -361,42 +437,44 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
     };
     function constructTree(data: any, parentId: any) {
       const childrenData = data.filter(
-        (item: any) => item["Parent Work Item"] === parentId
+        (item: any) => item.parentWorkItem === parentId
       );
       const childrenNodes = childrenData.map((child: any) => {
-        const { Title, workitemid, ...rest } = child;
-        const newNode = createNode(Title, workitemid, child);
-        newNode.children = constructTree(data, child.sequanceid);
+        var id =  Math.random().toString(16).slice(2)
+        const { title, workitemResponseId, ...rest } = child;
+        const newNode = createNode(title, workitemResponseId+id, child);
+        newNode.children = constructTree(data, child?.workitemResponseId);
         return newNode;
       });
       return childrenNodes;
     }
     const _filtertedItemArr = filteredTreeData?.filter((item: any) =>
       savedMappingFieldsData?.some((_item: any) => {
-        return _item.key === item["Work item type"];
+        return _item.key === item?.workItemType;
       })
     );
     console.log("_filtertedItemArr", _filtertedItemArr);
     const treeData = _filtertedItemArr.map((item: any) => {
-      const { Title, sequanceid, ...rest } = item;
-      const newNode = createNode(Title, sequanceid, item);
+      var id =  Math.random().toString(16).slice(2)
+      const { title, workitemResponseId, ...rest } = item;
+      const newNode = createNode(title, workitemResponseId+id, item);
       console.log("newNodsee", newNode);
-      newNode.children = constructTree(_filtertedItemArr, item.sequanceid);
+      newNode.children = constructTree(_filtertedItemArr, item?.workitemResponseId);
       return newNode;
     });
 
-    const sequanceIds = new Set();
-    for (const item of treeData) {
-      for (const child of item.children || []) {
-        sequanceIds.add(child.rest.sequanceid);
-      }
-    }
+    // const sequanceIds = new Set();
+    // for (const item of treeData) {
+    //   for (const child of item.children || []) {
+    //     sequanceIds.add(child.rest.sequanceid);
+    //   }
+    // }
 
-    const _filteredTreeData = treeData.filter(
-      (item: any) => !sequanceIds.has(item.key)
-    );
-    console.log("_filteredTreeData*", _filteredTreeData);
-    setTreeData(_filteredTreeData);
+    // const _filteredTreeData = treeData.filter(
+    //   (item: any) => !sequanceIds.has(item.key)
+    // );
+    console.log("_filteredTreeData*", treeData);
+    setTreeData(treeData);
     const getAllTreeNodeKeys = (_filteredTreeData: any) => {
       const keys: string[] = [];
       for (const item of _filteredTreeData) {
@@ -408,9 +486,66 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
       }
       return keys;
     };
-    const keys = getAllTreeNodeKeys(_filteredTreeData);
+    const keys = getAllTreeNodeKeys(treeData);
     setSelectedKeys(keys);
   };
+
+
+  // const onchangeTreeData = () => {
+  //   const createNode = (title:any, key:any, rest, children) => {
+  //     return { title, key, rest, children: children || [] };
+  //   };
+  //   function constructTree(data, parentId) {
+      
+  //     const childrenData = data.filter(
+  //       (item) => item.parentWorkItem === parentId
+  //     );
+  //     const childrenNodes = childrenData.map((child) => {
+  //       var id =  Math.random().toString(16).slice(2)
+  //       const { title, workitemResponseId, ...rest } = child;
+  //       const newNode = createNode(title, workitemResponseId+id, child);
+  //       newNode.children = constructTree(data, child?.workitemResponseId);
+  //       return newNode;
+  //     });
+  //     return childrenNodes;
+  //   }
+    
+  //   console.log("_filtertedItemArr", result);
+  //   const treeData = result?.result.map((item) => {
+  //       var id =  Math.random().toString(16).slice(2)
+  //     const { title, workitemResponseId, ...rest } = item;
+  //     const newNode = createNode(title, workitemResponseId+id, item);
+  //     console.log("newNodsee", newNode);
+  //     newNode.children = constructTree(result?.result, item?.workitemResponseId);
+  //     return newNode;
+  //   });
+
+  //   // const sequanceIds = new Set();
+  //   // for (const item of treeData) {
+  //   //   for (const child of item.children || []) {
+  //   //     sequanceIds.add(child.rest.workitemResponseId);
+  //   //   }
+  //   // }
+
+  //   // const _filteredTreeData = treeData.filter(
+  //   //   (item) => !sequanceIds.has(item.key)
+  //   // );
+  //   console.log("_filteredTreeData*", treeData);
+  //   // setTreeData(_filteredTreeData);
+  //   // const getAllTreeNodeKeys = (_filteredTreeData) => {
+  //   //   const keys = [];
+  //   //   for (const item of _filteredTreeData) {
+  //   //     keys.push(item.key);
+  //   //     if (item.children && item.children.length > 0) {
+  //   //       const childKeys = getAllTreeNodeKeys(item.children);
+  //   //       keys.push(...childKeys);
+  //   //     }
+  //   //   }
+  //   //   return keys;
+  //   // };
+  //   // const keys = getAllTreeNodeKeys(_filteredTreeData);
+  //   // setSelectedKeys(keys);
+  // };
 
   useEffect(() => {
     fetchWorkItemTypes()
@@ -551,7 +686,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid }) => {
   console.log("results", results);
 
   const handleExpandTree = (isexpand:any)=> {
-    console.log("state",isexpand);
+    console.log("state",isexpand,treeData);
    if(isexpand){
     const  expandKey=  treeData.map((node:any)=> node.key)
    console.log("expandKey",expandKey);
