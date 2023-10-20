@@ -9,10 +9,11 @@ interface ConnectionProps {
   url:any
   setLoader:any
   saveConnectingDetails:any,
-  connectionSaveData:any
+  connectionSaveData:any,
+  language:any
 }
 
- const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData, connectionFetch,url,setLoader,saveConnectingDetails,connectionSaveData})=> {
+ const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData, connectionFetch,url,setLoader,saveConnectingDetails,connectionSaveData,language})=> {
   const [form] = Form.useForm();
   const [error, setError] = useState<boolean>(false);
   const [modal, contextHolder] = Modal.useModal()
@@ -103,19 +104,19 @@ const confirm = (values:any,url:any) => {
     <Form form={form} initialValues={obj} className='connection-form'>
       <Row gutter={20}>
         <Col span={12}>
-          <span className='label'>Organization URL</span>
+          <span className='label'>{language?.DevOpsConfiguration_OrganizationUrlTitle}</span>
           <Form.Item className="custom-form-wrap" name="organizationUri" label="" rules={[{ required: true, message: 'Please enter Organization URL' }]}>
             <Input />
           </Form.Item>
         </Col>
         <Col span={12}>
-        <span className='label'>DevOps Project</span>
+        <span className='label'>{language?.DevOpsConfiguration_DevOpsProjectTitle}</span>
           <Form.Item className="custom-form-wrap" name="projectName" rules={[{ required: true, message: 'Please enter DevOps Project' }]}>
             <Input />
           </Form.Item>
         </Col>
         <Col span={12}>
-        <span className='label'>Authorization Token</span>
+        <span className='label'>{language?.DevOpsConfiguration_AuthorizationTokenTitle}</span>
           <Form.Item className="custom-form-wrap" name="personalAccessToken" rules={[{ required: true, message: 'Please enter Authorization Token' }]}>
             <Input />
           </Form.Item>
@@ -124,7 +125,7 @@ const confirm = (values:any,url:any) => {
         <div className="button-form">
           <Form.Item>
             <Button type="primary" htmlType="submit" onClick={handleFormSubmit}>
-              Connect
+            {language?.DevOpsConfiguration_ConnectButton}
             </Button>
           </Form.Item>
         </div>

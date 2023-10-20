@@ -46,6 +46,7 @@ interface CommonTableProps extends TableProps<any> {
   setPickListArr?: any;
   isGuid?: any;
   setCurrentFeildData?:any
+  language?:any,
 }
 
 interface TableColumn {
@@ -79,6 +80,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
   setWorkitemTypeData,
   setCurrentFeildData,
   isGuid,
+  language,
   ...rest
 }) => {
   const [tableData, setTableData] = useState(dataSource);
@@ -745,6 +747,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
             { title: "Set as Default", onClickHandler: "" },
             { title: "Save", onClickHandler: "" },
           ]}
+          language={language}
           Content={
             <>
               <TableComponent
@@ -764,6 +767,7 @@ const TableComponent: React.FC<CommonTableProps> = ({
                 defaultPickListData={defaultPickListRecord}
                 saveMappingItems={() => {}}
                 isGuid={isGuid}
+                language={language}
               />
 
               <div
@@ -778,14 +782,14 @@ const TableComponent: React.FC<CommonTableProps> = ({
                   onClick={handleCancel}
                   style={{ marginLeft: "5px" }}
                 >
-                  Cancel
+                   {language?.DevOpsConfiguration_CancelButton}
                 </Button>
                 <Button
                   className="ant-btn-primary"
                   onClick={savePickListData}
                   style={{ marginLeft: "5px" }}
                 >
-                  Save
+                 {language?.DevOpsConfiguration_SaveButton}
                 </Button>
               </div>
             </>

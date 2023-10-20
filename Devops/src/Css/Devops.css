@@ -271,7 +271,7 @@
 }
 
 .multiSelectDropDown {
-  margin-left: '2rem';
+  margin: 3px !important;
 }
 .multi-select-dropdown {
   width :  283px;
@@ -283,8 +283,19 @@
 }
 
 .workitem-checkbox {
-  margin-left: 14rem;
+  margin-left: 38rem;
 }
 .collapse-btn {
   margin: 8px;
+}
+
+.workitemSummary{
+font-family: Roboto;
+font-size: 25px;
+font-weight: 700;
+line-height: 23px;
+letter-spacing: 0em;
+text-align: left;
+color: #292D32;
+margin: 5px;
 }

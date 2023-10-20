@@ -7,12 +7,13 @@ interface PopupProps {
   buttons: any[];
   Content: any;
   onOk: () => void;
-  Ispicklist?:any
+  Ispicklist?:any,
+  language:any
 }
 
 // button = {title: "", onClickHandler(params), visible, onClose, styles: {width, height, color, fontColor, fontSize, fontWeight}}
 
-const PopupComponent: React.FC<PopupProps> = ({ visible, onClose, buttons, Content,onOk,Ispicklist }) => {
+const PopupComponent: React.FC<PopupProps> = ({ visible, onClose, buttons, Content,onOk,Ispicklist,language }) => {
 
   useEffect(()=>{
 console.log("pickList",Content);
@@ -36,7 +37,7 @@ console.log("pickList",Content);
       <div style={{ overflowY: 'hidden', }}>
         {/* Content */}
         {/* ... */}
-        <p className='modal-title'>{Ispicklist  ? "Field Mapping" :"Work Item Field Mapping"}</p>
+        <p className='modal-title'>{Ispicklist  ? language?.DevOpsConfiguration_FieldMappingTitle : language?.DevOpsConfiguration_WorkItemFieldMappingTitle}</p>
         {Content}
       </div>
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import { Button, notification, Radio, RadioChangeEvent, Spin } from "antd";
 // import $ from 'jquery';
 import TableComponent from "../Components/TableComponent";
@@ -20,6 +20,7 @@ import {
 } from "../Api/devopsApis";
 import DevopsTree from "../DevopsTree/DevopsTree";
 import axios from "axios";
+import { languageTranslator } from "../language/languagetranslator";
 
 declare global {
   interface Window {
@@ -29,96 +30,82 @@ declare global {
     devopsWorkItemFields: any;
     devopsWorkItemFieldURL: any;
     DevopsCreateWorkItem: any;
+    userId:any
+  }
+}
+
+const initialState = {
+  DevOpsConfiguration_SaveButton: 'Save', 
+  DevOpsConfiguration_SetAsDefaultButton:'Set as Default',
+  DevOpsConfiguration_CancelButton:'Cancel',
+  DevOpsConfiguration_NextButton:'Next',
+  DevOpsConfiguration_DevopsWorkitemTitle: 'DevOps Work Items',
+  DevOpsConfiguration_ConnectionDetailsTitle: 'Connection Details',
+  DevOpsConfiguration_MappingWorkItemTypeTitle:'Mapping - Work Item Types',
+  DevOpsConfiguration_OrganizationUrlTitle: 'Organization URL',
+  DevOpsConfiguration_DevOpsProjectTitle: 'DevOps Project',
+  DevOpsConfiguration_AuthorizationTokenTitle: 'Authorization Token',
+  DevOpsConfiguration_ConnectButton: 'Connect',
+  DevOpsConfiguration_FieldMappingTitle: 'Field Mapping',
+  DevOpsConfiguration_WorkItemFieldMappingTitle: 'Work Item Field Mapping',
+   DevOpsTree_MigrateTitle : "Migrate to DevOps",
+   DevOpsTree_ShowNewWorkItemsTitle : "Show new work items",
+   DevOpsTree_ApplyBtn : "Apply",
+   DevOpsTree_CollapseBtn : "Collapse All",
+   DevOpsTree_ExpandBtn : " Expand All",
+   DevOpsTree_workItemTitle :"DevOps Work Item Summary",
+   DevOpsTree_BackBTN :"Back"
+
+};
+
+function stateReducer(state:any, action:any) {
+  switch (action.type) {
+    case 'SAVEBTN':
+      return { ...state, DevOpsConfiguration_SaveButton: action.value };
+    case 'SETASDEFAULTBTN':
+      return { ...state, DevOpsConfiguration_SetAsDefaultButton: action.value };
+    case 'CANCELBTN':
+      return { ...state, DevOpsConfiguration_CancelButton: action.value };
+    case 'NEXTBTN':
+      return { ...state, DevOpsConfiguration_NextButton: action.value };
+    case 'DEVOPSWORKITEMTITLE':
+      return { ...state, DevOpsConfiguration_DevopsWorkitemTitle: action.value };
+    case 'CONNECTIONDETAILSTITLE':
+      return { ...state, DevOpsConfiguration_ConnectionDetailsTitle: action.value };
+    case 'MAPPINGWORKITEMTYPETITLE':
+      return { ...state, DevOpsConfiguration_MappingWorkItemTypeTitle: action.value };
+    case 'ORGANIZATIONURLTITLE':
+      return { ...state, DevOpsConfiguration_OrganizationUrlTitle: action.value };
+    case 'DEVOPSPROJECTTITLE':
+      return { ...state, DevOpsConfiguration_DevOpsProjectTitle: action.value };
+    case 'AUTHORIZATIONTOKENTITLE':
+      return { ...state, DevOpsConfiguration_AuthorizationTokenTitle: action.value };
+    case 'CONNECTBUTTONTITLE':
+      return { ...state, DevOpsConfiguration_ConnectButton: action.value };
+    case 'FIELDMAPPINGTITLE':
+      return { ...state, DevOpsConfiguration_FieldMappingTitle: action.value };
+    case 'WORKITEMFIELDMAPPINGTITLE':
+      return { ...state, DevOpsConfiguration_WorkItemFieldMappingTitle: action.value };
+    case 'MIGRATETITLE':
+      return { ...state, DevOpsTree_MigrateTitle: action.value };
+    case 'SHOWNEWWORKITEMSTITLE':
+      return { ...state, DevOpsTree_ShowNewWorkItemsTitle: action.value };
+    case 'APPLYBTN':
+      return { ...state, DevOpsTree_ApplyBtn: action.value };
+    case 'COLLAPSEBTN':
+      return { ...state, DevOpsTree_CollapseBtn: action.value };
+    case 'EXPANDBTN':
+      return { ...state, DevOpsTree_ExpandBtn: action.value };
+      case 'WORKiTEMSUMMARYTITLE':
+        return { ...state, DevOpsTree_workItemTitle: action.value };
+   case 'WORKITEMBACKBTN':
+          return { ...state, DevOpsTree_BackBTN: action.value };
+    default:
+      return state;
   }
 }
 
 export default function ConnectionContainer() {
-  const dataSource1 = [
-    {
-      key: "1",
-      name: "Issue",
-      gyde_name: "N/A",
-      mapping: "Mapping",
-      enable: false,
-    }, // info: 'Additional info for John Doe',
-    {
-      key: "2",
-      name: "Epic",
-      gyde_name: "Epic",
-      mapping: "Mapping",
-      enable: true,
-    }, // info: 'Additional info for Jane Smith'
-    {
-      key: "3",
-      name: "Task",
-      gyde_name: "Task",
-      mapping: "Mapping",
-      enable: true,
-    }, //info: 'Additional info for Jhon Smith'
-    {
-      key: "4",
-      name: "Test Case",
-      gyde_name: "Test Case",
-      mapping: "Mapping",
-      enable: true,
-    },
-    {
-      key: "5",
-      name: "Test Plan",
-      gyde_name: "Test Plan",
-      mapping: "Mapping",
-      enable: true,
-    },
-    {
-      key: "6",
-      name: "Test Suite",
-      gyde_name: "",
-      mapping: "Mapping",
-      enable: false,
-    },
-    {
-      key: "7",
-      name: "Shared Steps",
-      gyde_name: "",
-      mapping: "Mapping",
-      enable: false,
-    },
-    {
-      key: "8",
-      name: "Shared Parameter",
-      gyde_name: "",
-      mapping: "Mapping",
-      enable: false,
-    },
-    {
-      key: "9",
-      name: "Code Review Request",
-      gyde_name: "",
-      mapping: "Mapping",
-      enable: false,
-    },
-    {
-      key: "10",
-      name: "Code Review Response",
-      gyde_name: "",
-      mapping: "Mapping",
-      enable: false,
-    },
-    {
-      key: "11",
-      name: "Feedback Request",
-      gyde_name: "",
-      mapping: "Mapping",
-      enable: false,
-    },
-    {
-      key: "12",
-      name: "Feedback Response",
-      gyde_name: "",
-      mapping: "Mapping",
-      enable: false,
-    },
-  ];
   const [dataArr, setDataArr] = useState<any>([]);
   const [dataFieldArr, setFieldDataArr] = useState<any>([]);
   const [devopsWorkItemTypes, setDevopsWorkItemTypes] = useState<any>([]);
@@ -164,6 +151,13 @@ export default function ConnectionContainer() {
   const [connectionSaveData, setConnectionSaveData] = useState<any>();
   const [saveConnectionDetail, setSaveConnectionDetail] = useState<any>();
   const [currentFeildData, setCurrentFeildData] = useState<any>([]);
+
+  const [language, dispatch] = useReducer(stateReducer, initialState);
+
+console.log("userIdCrrent", window?.parent?.userId);
+
+
+
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
   console.log("queryParameters", queryParameters);
@@ -536,6 +530,10 @@ export default function ConnectionContainer() {
       setIsLoading(false);
     }
   };
+
+  // useEffect(()=> {
+  //   languageTranslator(dispatch,initialState);
+  // },[])
 
   useEffect(() => {
     if (isLoading === false) {
@@ -1228,10 +1226,10 @@ export default function ConnectionContainer() {
     <div className="devops-container">
       {!isTreeViewVisible && connectionSaveData?.type === "success" ? (
         <Spin spinning={isLoading}>
-          <h1 className="title">DevOps Work Items</h1>
+          <h1 className="title">{language?.DevOpsConfiguration_DevopsWorkitemTitle}</h1>
           <div className="bg-wrap">
             <h3 className="sub-title">
-              <span>Connection Details</span>
+              <span>{language?.DevOpsConfiguration_ConnectionDetailsTitle}</span>
               <span>
                 {" "}
                 <h5 className="sub-title2">{configurationData?.gyde_name} </h5>
@@ -1248,6 +1246,7 @@ export default function ConnectionContainer() {
               setLoader={setIsLoading}
               saveConnectingDetails={saveConnectingDetails}
               connectionSaveData={connectionSaveData}
+              language={language}
             />
 
             {devopsResult && (
@@ -1273,7 +1272,7 @@ export default function ConnectionContainer() {
                     />
                   )}
 
-                <h3 className="sub-title mt-20">Mapping - Work Item Types</h3>
+                <h3 className="sub-title mt-20">{language?.DevOpsConfiguration_MappingWorkItemTypeTitle}</h3>
                 <TableComponent
                   dataSource={...retrieveDevopsMapping}
                   columns={workItemColumns}
@@ -1303,6 +1302,7 @@ export default function ConnectionContainer() {
                   setWorkitemTypeData={setWorkitemTypeData}
                   setCurrentFeildData={setCurrentFeildData}
                   isGuid={guId ? true : false}
+                  language={language}
                 />
 
                 <div className="flex-end-wrap">
@@ -1314,7 +1314,7 @@ export default function ConnectionContainer() {
                       window.location.href = `/${_navigateUrl}`;
                     }}
                   >
-                    Cancel
+                     {language?.DevOpsConfiguration_CancelButton}
                   </Button>
                   {dataAfterSave?.length > 0 &&
                   checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
@@ -1325,7 +1325,7 @@ export default function ConnectionContainer() {
                       htmlType="button"
                       onClick={() => setIsTreeViewVisible(true)}
                     >
-                      Next
+                     {language?.DevOpsConfiguration_NextButton}
                     </Button>
                   ) : (
                     <Button
@@ -1347,7 +1347,7 @@ export default function ConnectionContainer() {
                       //     : ""
                       // }
                     >
-                      Save
+                      {language?.DevOpsConfiguration_SaveButton}
                     </Button>
                   )}
                 </div>
@@ -1359,13 +1359,14 @@ export default function ConnectionContainer() {
                 onOk={handleOk}
                 onClose={handleCancel}
                 buttons={[
-                  { title: "Cancel", onClickHandler: handleCancel },
+                  { title: language?.DevOpsConfiguration_CancelButton, onClickHandler: handleCancel },
                   {
-                    title: "Set as Default",
+                    title: language?.DevOpsConfiguration_SetAsDefaultButton,
                     onClickHandler: savePopupModelData,
                   },
-                  { title: "Save", onClickHandler: savePopupModelData },
+                  { title: language?.DevOpsConfiguration_SaveButton, onClickHandler: savePopupModelData },
                 ]}
+                language={language}
                 Content={
                   <div>
                     <Spin spinning={isLoading}>
@@ -1383,6 +1384,7 @@ export default function ConnectionContainer() {
                         currentPickListData={dataArr}
                         setMappingType={setmMppedField}
                         isGuid={guId ? true : false}
+                        language={language}
                       />
 
                       <div
@@ -1400,7 +1402,7 @@ export default function ConnectionContainer() {
                           }}
                           style={{ marginLeft: "5px" }}
                         >
-                          Cancel
+                          {language?.DevOpsConfiguration_CancelButton}
                         </Button>
                         <Button
                           className="ant-btn-primary"
@@ -1410,7 +1412,7 @@ export default function ConnectionContainer() {
                           }}
                           style={{ marginLeft: "5px" }}
                         >
-                          Set as Default
+                            {language?.DevOpsConfiguration_SetAsDefaultButton}
                         </Button>
                         <Button
                           className="ant-btn-primary"
@@ -1419,7 +1421,7 @@ export default function ConnectionContainer() {
                           }}
                           style={{ marginLeft: "5px" }}
                         >
-                          Save
+                          {language?.DevOpsConfiguration_SaveButton}
                         </Button>
                       </div>
                     </Spin>
@@ -1430,7 +1432,7 @@ export default function ConnectionContainer() {
           </div>
         </Spin>
       ) : (
-        <DevopsTree guid={guId} defaultGuid={defaultGuId} />
+        <DevopsTree guid={guId} defaultGuid={defaultGuId}  language ={language}/>
       )}
     </div>
   );
