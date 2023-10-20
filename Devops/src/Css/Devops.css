@@ -262,7 +262,7 @@
   align-items: center;
 }
 
-.disable-save-btn {
+.work-item-summary .disable-save-btn {
   cursor: not-allowed !important;
   border-color: #d9d9d9 !important;
   color: rgba(0, 0, 0, 0.25) !important;
@@ -270,32 +270,86 @@
   box-shadow: none !important;
 }
 
-.multiSelectDropDown {
-  margin: 3px !important;
+.work-item-summary .multiSelectDropDown {
+  width: 22%;
 }
-.multi-select-dropdown {
+
+.work-item-summary .multi-select-dropdown {
   width :  283px;
   height: 35px;
-  padding: 3px, 11px, 3px, 11px;
+  padding: 0 15px; 
   border-radius: 5px;
   gap: 10px;
-  
+  text-align: left;
 }
 
-.workitem-checkbox {
+.work-item-summary .multi-select-dropdown .arrow-icon {
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+.work-item-summary .btn-wrap {
+  margin-bottom: 30px;
+}
+
+.work-item-summary .flex-center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.work-item-summary .text-right {
+  text-align: right;
+}
+
+.work-item-summary .mt-20 {
+  margin-top: 20px;
+}
+
+.work-item-summary .multi-select-dropdown .icon {
+  position: absolute;
+  right: 15px;
+  top: 9px;
+  height: 16px;
+}
+
+.work-item-summary .dropdown-wrap {
+  display: flex;
+  margin-bottom: 10px;
+  justify-content: space-between;
+}
+
+.work-item-summary .workitem-checkbox {
   margin-left: 38rem;
 }
-.collapse-btn {
-  margin: 8px;
+
+.work-item-summary .collapse-btn {
+ color: #00AEA7;
 }
 
-.workitemSummary{
-font-family: Roboto;
-font-size: 25px;
-font-weight: 700;
-line-height: 23px;
-letter-spacing: 0em;
-text-align: left;
-color: #292D32;
-margin: 5px;
+.work-item-summary .collapse-btn .icon{
+  height: 17px;
+  margin-right: 5px;
+}
+
+.work-item-summary .ant-tree-treenode {
+  padding: 20px !important;
+}
+
+.work-item-summary .ant-tree-treenode {
+  margin-bottom: 3px;
+}
+
+.work-item-summary .ant-tree-switcher {
+  line-height: 20px;
+}
+
+.work-item-summary .workitemSummary{
+  font-size: 25px;
+  font-weight: 700;
+  line-height: 23px;
+  letter-spacing: 0em;
+  text-align: left;
+  color: #292D32;
+  margin-bottom: 30px;
 }
