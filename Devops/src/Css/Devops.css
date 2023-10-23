@@ -325,6 +325,7 @@
 
 .work-item-summary .collapse-btn {
  color: #00AEA7;
+ margin-right: 10px;
 }
 
 .work-item-summary .collapse-btn .icon{
@@ -347,9 +348,24 @@
 .work-item-summary .workitemSummary{
   font-size: 25px;
   font-weight: 700;
-  line-height: 23px;
   letter-spacing: 0em;
   text-align: left;
   color: #292D32;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.work-item-summary .heading{
+  display: flex;
+  align-items: center;
   margin-bottom: 30px;
+}
+
+.work-item-summary .list-img {
+  margin-right: 5px;
+  margin-bottom: 0;
+}
+
+.work-item-summary .ant-tree-list-holder {
+  padding: 20px 10px;
 }
