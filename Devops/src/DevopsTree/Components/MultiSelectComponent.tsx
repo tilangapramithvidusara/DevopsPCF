@@ -82,7 +82,7 @@ const MultiSelectComponent :React.FC <MultiSelectComponentProps>  = ({treeData,i
       className='multi-select-dropdown'
     >
       <Button>
-       <a> {itemName}</a><DownOutlined  style={{marginRight:'5rem',marginLeft:"5px"}}/> <img src={selectedItems?.length  ? '/filledfilter.png' :'/outlinefilter.png'} alt="icon" className="icon"/> 
+       <a> {itemName}</a><DownOutlined  className='arrow-icon'/> <img src={selectedItems?.length  ? '/filledfilter.png' :'/outlinefilter.png'} alt="icon" className="icon"/> 
       </Button>
       
     </Dropdown>

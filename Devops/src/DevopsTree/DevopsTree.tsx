@@ -750,11 +750,11 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   };
 
   return (
-    <>
+    <div className="work-item-summary">
     <h1 className="workitemSummary"> {language?.DevOpsTree_workItemTitle}</h1>
       {treeData?.length && selectedKeys?.length > 0 ? (
         <>
-          <div style={{ display: "flex", marginBottom: "10px" }}>
+          <div className="dropdown-wrap">
             {results?.Moscow.length > 0 && (
               <div className="multiSelectDropDown">
                 <MultiSelectComponent
@@ -812,14 +812,14 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
 
             <Button
               type="primary"
-              style={{ marginLeft: "2rem" }}
               onClick={handleSearch}
             >
               {language?.DevOpsTree_ApplyBtn}
             </Button>
           </div>
-          <div>
-            <Button
+          <div className="btn-wrap flex-center">
+            <div>
+              <Button
               onClick={() => {
                 handleExpandTree(false);
               }}
@@ -831,7 +831,6 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                 src="/collapse.png"
                 alt="icon"
                 className="icon"
-                style={{ marginLeft: "5px" }}
               />{" "}
               {language?.DevOpsTree_CollapseBtn}
             </Button>
@@ -847,12 +846,11 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                 src="/expand.png"
                 alt="icon"
                 className="icon"
-                style={{ marginLeft: "5px" }}
               />{" "}
               {language?.DevOpsTree_ExpandBtn}
             </Button>
-
-            <Checkbox className="workitem-checkbox">
+            </div>
+            <Checkbox className="workitem-checkbox  flex-center">
               {" "}
               {language?.DevOpsTree_ShowNewWorkItemsTitle}
             </Checkbox>
@@ -868,7 +866,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
             onCheck={onCheck}
             treeData={treeData}
           />
-          <span>
+          <div className="text-right mt-20">
             <Button
               className="cancel-btn mr-10"
               type="primary"
@@ -889,12 +887,12 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
             >
               {language?.DevOpsTree_MigrateTitle}
             </Button>
-          </span>
+          </div>
         </>
       ) : (
         <Spin />
       )}
-    </>
+    </div>
   );
 };
 
