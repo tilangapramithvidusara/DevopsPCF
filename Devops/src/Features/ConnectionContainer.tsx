@@ -17,6 +17,7 @@ import {
   fetWorkItemsbyId,
   saveConnectiondata,
   fetchDevopsConnectionDetails,
+  getDevopsWorkItemType,
 } from "../Api/devopsApis";
 import DevopsTree from "../DevopsTree/DevopsTree";
 import axios from "axios";
@@ -60,45 +61,45 @@ const initialState = {
 
 function stateReducer(state:any, action:any) {
   switch (action.type) {
-    case 'SAVEBTN':
+    case 'DevOpsConfiguration_SaveButton':
       return { ...state, DevOpsConfiguration_SaveButton: action.value };
-    case 'SETASDEFAULTBTN':
+    case 'DevOpsConfiguration_SetAsDefaultButton':
       return { ...state, DevOpsConfiguration_SetAsDefaultButton: action.value };
-    case 'CANCELBTN':
+    case 'DevOpsConfiguration_CancelButton':
       return { ...state, DevOpsConfiguration_CancelButton: action.value };
-    case 'NEXTBTN':
+    case 'DevOpsConfiguration_NextButton':
       return { ...state, DevOpsConfiguration_NextButton: action.value };
-    case 'DEVOPSWORKITEMTITLE':
+    case 'DevOpsConfiguration_DevopsWorkitemTitle':
       return { ...state, DevOpsConfiguration_DevopsWorkitemTitle: action.value };
-    case 'CONNECTIONDETAILSTITLE':
+    case 'DevOpsConfiguration_ConnectionDetailsTitle':
       return { ...state, DevOpsConfiguration_ConnectionDetailsTitle: action.value };
-    case 'MAPPINGWORKITEMTYPETITLE':
+    case 'DevOpsConfiguration_MappingWorkItemTypeTitle':
       return { ...state, DevOpsConfiguration_MappingWorkItemTypeTitle: action.value };
-    case 'ORGANIZATIONURLTITLE':
+    case 'DevOpsConfiguration_OrganizationUrlTitle':
       return { ...state, DevOpsConfiguration_OrganizationUrlTitle: action.value };
-    case 'DEVOPSPROJECTTITLE':
+    case 'DevOpsConfiguration_DevOpsProjectTitle':
       return { ...state, DevOpsConfiguration_DevOpsProjectTitle: action.value };
-    case 'AUTHORIZATIONTOKENTITLE':
+    case 'DevOpsConfiguration_AuthorizationTokenTitle':
       return { ...state, DevOpsConfiguration_AuthorizationTokenTitle: action.value };
-    case 'CONNECTBUTTONTITLE':
+    case 'DevOpsConfiguration_ConnectButton':
       return { ...state, DevOpsConfiguration_ConnectButton: action.value };
-    case 'FIELDMAPPINGTITLE':
+    case 'DevOpsConfiguration_FieldMappingTitle':
       return { ...state, DevOpsConfiguration_FieldMappingTitle: action.value };
-    case 'WORKITEMFIELDMAPPINGTITLE':
+    case 'DevOpsConfiguration_WorkItemFieldMappingTitle':
       return { ...state, DevOpsConfiguration_WorkItemFieldMappingTitle: action.value };
-    case 'MIGRATETITLE':
+    case 'DevOpsTree_MigrateTitle':
       return { ...state, DevOpsTree_MigrateTitle: action.value };
-    case 'SHOWNEWWORKITEMSTITLE':
+    case 'DevOpsTree_ShowNewWorkItemsTitle':
       return { ...state, DevOpsTree_ShowNewWorkItemsTitle: action.value };
-    case 'APPLYBTN':
+    case 'DevOpsTree_ApplyBtn':
       return { ...state, DevOpsTree_ApplyBtn: action.value };
-    case 'COLLAPSEBTN':
+    case 'DevOpsTree_CollapseBtn':
       return { ...state, DevOpsTree_CollapseBtn: action.value };
-    case 'EXPANDBTN':
+    case 'DevOpsTree_ExpandBtn':
       return { ...state, DevOpsTree_ExpandBtn: action.value };
-      case 'WORKiTEMSUMMARYTITLE':
+      case 'DevOpsTree_workItemTitle':
         return { ...state, DevOpsTree_workItemTitle: action.value };
-   case 'WORKITEMBACKBTN':
+   case 'DevOpsTree_BackBTN':
           return { ...state, DevOpsTree_BackBTN: action.value };
     default:
       return state;
@@ -166,6 +167,12 @@ console.log("userIdCrrent", window?.parent?.userId);
   const _pId = queryParameters.get("pid");
   const _itemId = queryParameters.get("id");
   const _navigateUrl = queryParameters.get("returnto");
+
+ useEffect(()=>{
+
+ // languageTranslator(dispatch,initialState)
+ },[])
+
   const showModal = () => {
     const data: string | null = localStorage.getItem("items");
     const authData: any = data ? JSON.parse(data) : null;
@@ -673,9 +680,20 @@ console.log("userIdCrrent", window?.parent?.userId);
 
     console.log("_migrate", _migrate);
 
+    getWorkItemTypesFromSurveySetting();
+
     devopsWorkItemTypes && setCrmWorkItemTypes(JSON.parse(devopsWorkItemTypes));
     getConnectionDetails();
   }, []);
+
+
+  const getWorkItemTypesFromSurveySetting = async() => {
+ console.log(":_itemId",_itemId);
+ 
+     const workItemType  = await getDevopsWorkItemType(_itemId,"workItemType")
+     console.log("workItemType",workItemType);
+     
+  }
 
   const getConnectionDetails = async () => {
     let _result: any = await fetchDevopsConnectionDetails(cusId, cbsId);

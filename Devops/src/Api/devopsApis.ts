@@ -456,3 +456,25 @@ export const createMappingFile = async (_data: any, guid: any) => {
   }
 
 };
+
+export const getDevopsWorkItemType = async(id:any,type:any) => {
+
+    try{
+     const _data :any = await axios.get(`https://designdevportal-uk.powerappsportals.com/en-US/get-document-templates/?gydesurveyid=${id}&type=surveymodules`);
+ console.log("getDevopsWorkItemType",_data);
+ 
+     let result =_data?.data
+     console.log("result",result);
+     
+     if (type === "module") {
+      return result?.resultsModule.map((item: any) => item.gyde_name);
+    } else if (type === "workItemType") {
+      return result?.resultsWorkItemType.map((item: any) => item.gyde_name);
+    } else {
+      throw new Error("Invalid 'type' parameter");
+    }
+    }catch(e){
+      console.log("getDevopsWorkItemType",e);
+      
+    }
+}

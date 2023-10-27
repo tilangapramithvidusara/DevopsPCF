@@ -6,6 +6,8 @@ declare global {
 
 export const languageTranslator = async(dispatch:any, initialState:any)=> {
 
+  console.log("langue Call");
+  
     const url = await window.parent.Xrm.Utility.getGlobalContext().getClientUrl();
     const language = await window.parent.Xrm.Utility.getGlobalContext().userSettings.languageId
     const webResourceUrl = `${url}/WebResources/gyde_localizedstrings.${language}.resx`;
@@ -35,6 +37,9 @@ export const languageTranslator = async(dispatch:any, initialState:any)=> {
       // });
 
       Object.keys(initialState).map(async (key, index) => {
+
+        console.log("language:",key);
+        
         const parser = new DOMParser();
         const xmlDoc = parser.parseFromString(data, "text/xml");
         const dataNode:any = xmlDoc.querySelector(`data[name="${key}"]`);

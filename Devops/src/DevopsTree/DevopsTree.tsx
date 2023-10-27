@@ -7,7 +7,7 @@ import {
   fetchWorkItemsByBusinessSurveyId,
   generateDevops,
 } from "../DevopsTree/DevopsTreeApi/Api";
-import { fetchFieldMapping } from "../Api/devopsApis";
+import { fetchFieldMapping, getDevopsWorkItemType } from "../Api/devopsApis";
 import { TreeViewData } from "../Constants/Samples/sample";
 import MultiSelectComponent from "./Components/MultiSelectComponent";
 // import { findNodeAndRelations } from "../helper/GetParentNode";
@@ -49,6 +49,10 @@ const internalIds: any = [
     internalid: "DV-439_DV-440_DV-441",
   },
 ];
+
+
+
+
 interface TreeView {
   guid: any;
   defaultGuid: any;
@@ -74,11 +78,12 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   const [selectedItemsMoscow, setSelectedItemsMoscow] = useState<string[]>([]);
   const [selectedItemsPhase, setSelectedItemsPhase] = useState<string[]>([]);
   const [selectedItemsModule, setSelectedItemsModule] = useState<string[]>([]);
+  const [surveySettingDataArr, setSurveySettingDataArr] = useState<any>();
   const [selectedItemsWorkItemType, setSelectedItemsWorkItemType] = useState<
     string[]
   >([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
-
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   console.log("currentUser:", window?.parent?.userId);
 
   const fetchRequestToGenerateTree1 = async () => {
@@ -161,6 +166,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   };
 
   const handleMigrateToDevops = async () => {
+    setIsLoading(true)
     function flattenHierarchy(item: any) {
       const flatList = [item];
       for (const child of item.children) {
@@ -305,32 +311,71 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
             ? formattedParentWorkItem
             : "parent",
           workItemBody: _workItemBody,
-          workItemId: item?.rest["Workitem Id"],
-          sequenceId: parentId,
+         // workItemId: item?.rest["Workitem Id"],
+          sequenceId: item?.key,
           workitemResponseId: item?.rest["Workitem Response Id"],
         };
       })
       .flat();
-    function buildTree(parentId: any) {
-      const children = [];
-      const filterArray = generateRequestBody?.filter(
-        (item: any) => item != null
-      );
-      for (const item of filterArray) {
-        if (item.parentKey === parentId) {
-          const child: any = {
-            ...item,
-            children: buildTree(item.sequenceId),
-          };
-          children.push(child);
-        }
-      }
-      return children;
-    }
-    // Initialize the root nodes
-    const rootNode = buildTree("parent");
-    console.log("rootNode*", rootNode);
+    // function buildTree(parentId: any) {
+    //   const children = [];
+    //   const filterArray = generateRequestBody?.filter(
+    //     (item: any) => item != null
+    //   );
+    //   for (const item of filterArray) {
+    //     if (item.parentKey === parentId) {
+    //       const child: any = {
+    //         ...item,
+    //         children: buildTree(item.sequenceId),
+    //       };
+    //       children.push(child);
+    //     }
+    //   }
+    //   return children;
+    // }
+    // // Initialize the root nodes
+    // const rootNode = buildTree("parent");
+    // console.log("rootNode*", rootNode);
+    const newArr = generateRequestBody?.map((node:any)=> {
+      const childArr =  generateRequestBody?.filter(((f:any) => {
+        return node?.sequenceId ===  f.parentKey
+ 
+      }))
+      node.children = childArr
+   return node;
+  
+ })
+ const sequanceIds = new Set();
+ 
+ function collectChildrenParentKeys(items:any) {
+   for (const item of items) {
+     for (const child of item.children || []) {
+       sequanceIds.add(child.parentKey);
+       if (child.children && child.children.length > 0) {
+         collectChildrenParentKeys(child.children);
+       }
+     }
+   }
+ }
+ 
+ collectChildrenParentKeys(newArr);
+ 
+ console.log("sequanceIds", sequanceIds);
+ 
+ const _filteredRootTreeData = newArr.filter(
+     (item:any) => !sequanceIds.has(item.parentKey)
+   );
+  console.log("_filteredRootTreeData",_filteredRootTreeData);
+ 
+  const _addParentKeyData = _filteredRootTreeData?.map((item:any) => ({
+    ...item,
+    parentKey: "parent"
+  }));
 
+  console.log("_addParentKeyData",_addParentKeyData);
+ console.log("newArr",newArr);
+ 
+ 
     function addParentWorkItemField(arr: any) {
       const newArray = [];
 
@@ -364,7 +409,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     }
 
     // Create a new array with the modifications
-    const modifiedArr = addParentWorkItemField(rootNode);
+    const modifiedArr = addParentWorkItemField(_addParentKeyData);
 
     const obj = {
       surveyId: cbsId,
@@ -379,6 +424,9 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
       window?.parent?.createDevopsWorkItemURL,
       obj
     );
+  console.log("responseMigrate",response);
+  
+    setIsLoading(false)
 
     async function processNode(
       node: any,
@@ -443,24 +491,29 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   };
 
   useEffect(() => {
+    console.log("ocnChangeTreeData");
+    
     onchangeTreeData();
   }, [filteredTreeData]);
 
   const onchangeTreeData = () => {
-    const createNode = (title: any, key: any, rest: any, children?: any) => {
-      return { title, key, rest, children: children || [] };
+    console.log("ocnChangeTreeData");
+    const createNode = (title: any,disabled:any= false, key: any, rest: any, children?: any) => {
+      return { title,disabled, key, rest, children: children || [] };
     };
     function constructTree(data: any, parentId: any) {
       const childrenData = data.filter(
         (item: any) => item["Parent Work Item"] === parentId
       );
       const childrenNodes = childrenData.map((child: any) => {
+        const _nodeTitle = child?.['Title'] +' - '+ child?.['Devops Id'];
+        let disabled =  child?.['Devops Id'] ? true:false
         const {
           Title: title,
           "Workitem Response Id": workitemResponseId,
           ...rest
         } = child;
-        const newNode = createNode(title, workitemResponseId, rest);
+        const newNode = createNode(_nodeTitle,disabled, workitemResponseId, child);
         newNode.children = constructTree(data, workitemResponseId);
         return newNode;
       });
@@ -473,13 +526,18 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     );
     console.log("_filtertedItemArr", _filtertedItemArr);
     const treeData = _filtertedItemArr.map((item: any) => {
-      var id = Math.random().toString(16).slice(2);
+      
+        const _nodeTitle = item?.['Title'] +' - '+ item?.['Devops Id'];
+        let disabled =  item?.['Devops Id'] ? true:false
+        console.log("wokrDisable",disabled, item?.['Devops Id'] );
+        
       const {
-        Title: title,
+        Title: title  ,
         "Workitem Response Id": workitemResponseId,
+        
         ...rest
       } = item;
-      const newNode = createNode(title, workitemResponseId, item);
+      const newNode = createNode(_nodeTitle, disabled,workitemResponseId, item);
       console.log("newNodsee", newNode);
       newNode.children = constructTree(
         _filtertedItemArr,
@@ -588,8 +646,22 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
 
   const handleSearch = () => {
     setTreeData(intialTreeState)
+
+    const phaseArr = selectedItemsPhase.map((item) => {
+      if (item === 'Phase 1') {
+        return "1";
+      } else if (item === 'Phase 2') {
+        return "2";
+      } else if (item === 'Phase 3') {
+        return "3";
+      } else if (item === 'Phase 4') {
+        return "4";
+      } else {
+        return ""; // Handle other cases here
+      }
+    });
     const filters = {
-      Phase: selectedItemsPhase,
+      Phase: phaseArr,
       Moscow: selectedItemsMoscow,
       Module: selectedItemsModule,
       workItemType: selectedItemsWorkItemType,
@@ -597,8 +669,6 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     };
     const findTree = (nodes: any, filters: any) => {
       console.log("nodes8777", nodes, filters);
-    
-
       const filteredNodes = nodes.filter((node: any) => {
         const Phase = node?.rest?.Phase;
         const Moscow = node?.rest?.Moscow;
@@ -646,7 +716,9 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
       return filteredNodes;
     };
     console.log("filters", filters);
-    const filteredTree = findTree(treeData, filters);
+    console.log("intialTreeState",intialTreeState);
+    
+    const filteredTree = findTree(intialTreeState, filters);
     console.log("searcArr", filteredTree);
     setTreeData(filteredTree);
   };
@@ -727,7 +799,37 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     );
   }, [selectedItemsModule, selectedItemsMoscow, selectedItemsPhase]);
 
-  const results = extractProperties(treeData);
+  //const results = extractProperties(treeData);
+
+  const results ={
+    "Phase": [
+        "Phase 1",
+        "Phase 2",
+        "Phase 3",
+        "Phase 4",
+    ],
+    "Moscow": [
+        "Must",
+        "Should",
+        "Could",
+        "Will not",
+    ],
+    "Module": [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+    ],
+    "workItemType": [
+       ""
+    ]
+}
   console.log("results", results);
 
   const handleExpandTree = (isexpand: any) => {
@@ -748,18 +850,58 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     // or, you can remove all expanded children keys.
     setExpandedKeys(expandedKeysValue);
   };
+ useEffect(()=> {
+  getWorkItemTypesFromSurveySetting();
+ },[])
 
+ const getWorkItemTypesFromSurveySetting = async() => {
+  console.log(":_itemId",cbsId);
+  
+      const workItemModule  = await getDevopsWorkItemType(cbsId,"module")
+      const workItemType = await getDevopsWorkItemType(cbsId,"workItemType")
+      console.log("workItemType",workItemType);
+
+      const results ={
+        "Phase": [
+            "Phase 1",
+            "Phase 2",
+            "Phase 3",
+            "Phase 4",
+        ],
+        "Moscow": [
+            "Must",
+            "Should",
+            "Could",
+            "Will not",
+        ],
+        "Module":workItemModule,
+        "workItemType":workItemType
+    }
+      setSurveySettingDataArr(results)
+   }
+
+  const showhandleWorkItem = () => {
+    fetchRequestToGenerateTree();
+  };
+ console.log("surveySettingDataArr",surveySettingDataArr);
+ 
   return (
     <div className="work-item-summary">
-    <h1 className="workitemSummary"> {language?.DevOpsTree_workItemTitle}</h1>
+  
       {treeData?.length && selectedKeys?.length > 0 ? (
+        
         <>
+         <div className="heading">
+         <img src="/list.png" className="list-img" alt="list"/>
+         <h1 className="workitemSummary"> {language?.DevOpsTree_workItemTitle}</h1>
+         </div>
+        
           <div className="dropdown-wrap">
-            {results?.Moscow.length > 0 && (
+            {surveySettingDataArr?.Moscow.length > 0 && (
               <div className="multiSelectDropDown">
                 <MultiSelectComponent
                   itemName={"Moscow"}
-                  treeData={results?.Moscow.length ? results?.Moscow : []}
+                  treeData={surveySettingDataArr?.Moscow.length ? surveySettingDataArr?.Moscow : []}
                   handleCheckboxChange={handleCheckboxChange}
                   selectedItems={
                     selectedItemsMoscow?.length ? selectedItemsMoscow : []
@@ -767,11 +909,11 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                 />
               </div>
             )}
-            {results?.Module.length > 0 && (
+            {surveySettingDataArr?.Module.length > 0 && (
               <div className="multiSelectDropDown">
                 <MultiSelectComponent
                   itemName={"Module"}
-                  treeData={results?.Module.length ? results?.Module : []}
+                  treeData={surveySettingDataArr?.Module.length ? surveySettingDataArr?.Module : []}
                   handleCheckboxChange={handleCheckboxChange}
                   selectedItems={
                     selectedItemsModule?.length ? selectedItemsModule : []
@@ -780,11 +922,11 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
               </div>
             )}
 
-            {results?.Phase.length > 0 && (
+            {surveySettingDataArr?.Phase.length > 0 && (
               <div className="multiSelectDropDown">
                 <MultiSelectComponent
                   itemName={"Phase"}
-                  treeData={results?.Phase.length ? results?.Phase : []}
+                  treeData={surveySettingDataArr?.Phase.length ? surveySettingDataArr?.Phase : []}
                   handleCheckboxChange={handleCheckboxChange}
                   selectedItems={
                     selectedItemsPhase?.length ? selectedItemsPhase : []
@@ -793,12 +935,12 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
               </div>
             )}
 
-            {results?.workItemType.length > 0 && (
+            {surveySettingDataArr?.workItemType.length > 0 && (
               <div className="multiSelectDropDown">
                 <MultiSelectComponent
                   itemName={"workItemType"}
                   treeData={
-                    results?.workItemType.length ? results?.workItemType : []
+                    surveySettingDataArr?.workItemType.length ? surveySettingDataArr?.workItemType : []
                   }
                   handleCheckboxChange={handleCheckboxChange}
                   selectedItems={
@@ -850,11 +992,12 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
               {language?.DevOpsTree_ExpandBtn}
             </Button>
             </div>
-            <Checkbox className="workitem-checkbox  flex-center">
+            <Checkbox className="workitem-checkbox  flex-center" onChange={showhandleWorkItem}>
               {" "}
               {language?.DevOpsTree_ShowNewWorkItemsTitle}
             </Checkbox>
           </div>
+          <Spin spinning={isLoading}> 
           <Tree
             checkable
             onExpand={onExpand}
@@ -887,7 +1030,9 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
             >
               {language?.DevOpsTree_MigrateTitle}
             </Button>
+            
           </div>
+          </Spin>
         </>
       ) : (
         <Spin />
