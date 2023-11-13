@@ -1,4 +1,4 @@
-import { Button, Checkbox, Input, Spin, Tree } from "antd";
+import { Button, Checkbox, Input, Spin, Tree,notification } from "antd";
 import type { DataNode, TreeProps } from "antd/es/tree";
 import React, { useEffect, useState } from "react";
 import {
@@ -70,11 +70,13 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   const [allInternalIdsBySurveyId, setAllInternalIdsBySurveyId] =
     useState<any>();
   const [selectedNodes, setSelectedNodes] = useState<any>([]);
+  const [currentSelectedNodes, setCurrentSelectedNodes] = useState<any>([]);
   const [savedMappingFieldsData, setSavedMappingFieldsData] = useState<any>([]);
   const [treeData, setTreeData] = useState<any>([]);
   const [selectedKeys, setSelectedKeys] = useState<any>([]);
   const [selectedItem, setSelectedItem] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [checkKey, setcheckKey] = useState<any>([]); 
   const [selectedItemsMoscow, setSelectedItemsMoscow] = useState<string[]>([]);
   const [selectedItemsPhase, setSelectedItemsPhase] = useState<string[]>([]);
   const [selectedItemsModule, setSelectedItemsModule] = useState<string[]>([]);
@@ -86,46 +88,51 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   console.log("currentUser:", window?.parent?.userId);
 
-  const fetchRequestToGenerateTree1 = async () => {
-    fetchAllInternalIdsByBusinessSurveyId(cbsId)
-      .then(async (res: any) => {
-        const data: any = await res?.map((item: any) => JSON.parse(item?.data));
-        setAllInternalIdsBySurveyId(data?.flatMap((obj: any) => obj.results));
-        const ids = data?.flatMap((obj: any) => obj.results);
-        console.log("cbsId#", cbsId, "::", data);
+  // const fetchRequestToGenerateTree1 = async () => {
+  //   fetchAllInternalIdsByBusinessSurveyId(cbsId)
+  //     .then(async (res: any) => {
+  //       const data: any = await res?.map((item: any) => JSON.parse(item?.data));
+  //       setAllInternalIdsBySurveyId(data?.flatMap((obj: any) => obj.results));
+  //       const ids = data?.flatMap((obj: any) => obj.results);
+  //       console.log("cbsId#", cbsId, "::", data);
 
-        fetchWorkItemsByBusinessSurveyId(cbsId)
-          .then(async (val: any) => {
-            const workItems = await val?.data;
-            const jsonData = JSON.parse(workItems);
-            setWorkItemsBySurveyId(jsonData?.results);
-            const allInternalIdsBySurveyId = await ids?.map((item: any) => {
-              return item?.internalid;
-            });
-            const filteredData1 = await jsonData?.results?.filter(
-              (item: any) => {
-                return allInternalIdsBySurveyId?.includes(item?.internalid);
-              }
-            );
-            filteredData1?.forEach((item: any) => {
-              for (const field in item) {
-                if (item[field].includes("🟥", "🟧", "🟨", "🟩")) {
-                  const valueParts = item[field].split(" ");
-                  const extractedValue = valueParts[1];
-                  item[field] = extractedValue;
-                }
-              }
-            });
-            setFilteredTreeData(filteredData1);
-            console.log("filteredData@@", filteredData1);
-          })
-          .catch((err: any) => console.log("error getting work items", err));
-      })
-      .catch((err) => console.log("error getting all ids", err));
-  };
+  //       fetchWorkItemsByBusinessSurveyId(cbsId)
+  //         .then(async (val: any) => {
+  //           const workItems = await val?.data;
+  //           const jsonData = JSON.parse(workItems);
+  //           setWorkItemsBySurveyId(jsonData?.results);
+  //           const allInternalIdsBySurveyId = await ids?.map((item: any) => {
+  //             return item?.internalid;
+  //           });
+  //           const filteredData1 = await jsonData?.results?.filter(
+  //             (item: any) => {
+  //               return allInternalIdsBySurveyId?.includes(item?.internalid);
+  //             }
+  //           );
+  //           filteredData1?.forEach((item: any) => {
+  //             for (const field in item) {
+  //               if (item[field].includes("🟥", "🟧", "🟨", "🟩")) {
+  //                 const valueParts = item[field].split(" ");
+  //                 const extractedValue = valueParts[1];
+  //                 item[field] = extractedValue;
+  //               }
+  //             }
+  //           });
+  //           setFilteredTreeData(filteredData1);
+  //           console.log("filteredData@@", filteredData1);
+  //         })
+  //         .catch((err: any) => console.log("error getting work items", err));
+  //     })
+  //     .catch((err) => console.log("error getting all ids", err));
+  // };
 
   const fetchRequestToGenerateTree = async () => {
-    fetchWorkItemsByBusinessSurveyId(cbsId)
+    const data: string | null = localStorage.getItem("items");
+    const authData: any = data ? JSON.parse(data) : null;
+
+    console.log("TREELocal",authData);
+    
+    fetchWorkItemsByBusinessSurveyId(cbsId,cusbSurveyId,authData?.organizationUri,authData?.projectName)
       .then(async (val: any) => {
         console.log("jsonDataVal*5", val);
         const jsonData = val?.data;
@@ -151,6 +158,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   };
 
   useEffect(() => {
+
+  
     fetchRequestToGenerateTree();
 
     console.log(
@@ -162,7 +171,32 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   console.log("filteredData", filteredTreeData);
 
   const onCheck: TreeProps["onCheck"] = (checkedKeys, info) => {
+    console.log("check",info, "info?.checkedNodes",info?.checkedNodes ,"checkedKeys",checkedKeys);
+    
     setSelectedNodes(info?.checkedNodes);
+    let checkedKeysNode :any =checkedKeys;
+    const filteredArray = treeData.filter((item:any) => {
+      const itemKey = item.key;
+  
+      // Check if the item's key is not in the keys array
+      if (checkedKeysNode?.checked.includes(itemKey)) {
+          // If not in the keys array, check child arrays if they have keys to exclude
+          if (item.children && item.children.length > 0) {
+              item.children = item.children.filter((child:any) => {
+                  const childKey = child.key;
+                  return checkedKeysNode?.checked.includes(childKey);
+              });
+          }
+          return true; // Include the item in the filtered array
+      }
+  
+      return false; // Exclude the item
+  });
+
+  console.log("setCurrentSelectedNodes",filteredArray);
+  
+  setCurrentSelectedNodes(filteredArray)
+
   };
 
   const handleMigrateToDevops = async () => {
@@ -178,7 +212,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     for (const item of treeData) {
       flattenedData.push(...flattenHierarchy(item));
     }
-    const nodesToMap = selectedNodes?.length ? selectedNodes : flattenedData;
+    const nodesToMap = selectedNodes?.length ? currentSelectedNodes : flattenedData;
     console.log("flattenedData", nodesToMap);
     const allNodes = nodesToMap.map((item: any) => {
       let fieldsWithReferncePAth = savedMappingFieldsData?.map(
@@ -195,7 +229,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
               });
 
               console.log("x values", x);
-
+              // item?.rest[_item?.sourceWorkItem]
               if (x[0] === _item?.sourceWorkItem && _item.isPickListComplete) {
                 const defaultOption =
                   _item.defaultOptionList?.defaultOptionList[0];
@@ -238,7 +272,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                             ? _item?.devopsWorkItem
                             : _item?.sourceWorkItem,
                         referencePath: `/fields/${_item?.fieldReferenceName}`,
-                        value: item?.rest[_item?.sourceWorkItem],
+                        value: item?.rest[_item?.sourceWorkItem] === "N/A" ?  "" : item?.rest[_item?.sourceWorkItem],
                       }
                     );
                   }
@@ -248,22 +282,40 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                   _item?.sourceWorkItem !== "Parent Work Item" &&
                   _item?.devopsWorkItem !== "N/A" &&
                   _item?.sourceWorkItem !== "Work item type" &&
-                  _item?.fieldReferenceName !== "" &&
-                  item?.rest[_item?.sourceWorkItem]
+                  _item?.fieldReferenceName !== "" 
+                  
                 ) {
-                  return (
-                    x[0] === _item?.sourceWorkItem && {
-                      columnName:
-                        _item?.devopsWorkItem !== undefined
-                          ? _item?.devopsWorkItem
-                          : _item?.sourceWorkItem,
-                      referencePath: `/fields/${_item?.fieldReferenceName}`,
-                      value: item?.rest[_item?.sourceWorkItem],
-                    }
-                  );
+                  if(_item?.sourceWorkItem === "Grid question response"){
+                    return (
+                     {
+                        columnName:
+                           _item?.sourceWorkItem,
+                        referencePath: `/fields/${_item?.fieldReferenceName}`,
+                        value: "",
+                      }
+                    );
+                   }
+                  else {
+                    return (
+                    
+                      x[0] === _item?.sourceWorkItem && {
+                        columnName:
+                          _item?.devopsWorkItem !== undefined
+                            ? _item?.devopsWorkItem
+                            : _item?.sourceWorkItem,
+                        referencePath: `/fields/${_item?.fieldReferenceName}`,
+                        value: item?.rest[_item?.sourceWorkItem] === "N/A" ?  "" : item?.rest[_item?.sourceWorkItem],
+                      }
+                    );
+                  }
                 }
               }
             });
+
+            console.log("matchFiledArr",matchFiledArr);
+            // const _matchFiledArr = matchFiledArr?.length && matchFiledArr.filter(((f:any) => f !== undefined))
+
+            // console.log("matchFiledArr",_matchFiledArr);
           return {
             key: _fields?.key,
             targetTable: _fields?.targetTable,
@@ -311,8 +363,9 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
             ? formattedParentWorkItem
             : "parent",
           workItemBody: _workItemBody,
-         // workItemId: item?.rest["Workitem Id"],
+          workItemId: item?.rest["Workitem Id"],
           sequenceId: item?.key,
+          devOpsId: item?.rest["Devops Id"],
           workitemResponseId: item?.rest["Workitem Response Id"],
         };
       })
@@ -425,7 +478,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
       obj
     );
   console.log("responseMigrate",response);
-  
+  fetchRequestToGenerateTree();
     setIsLoading(false)
 
     async function processNode(
@@ -468,6 +521,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     // for (const node of rootNode) {
     //   processNode(node);
     // }
+ 
+  
   };
 
   const fetchFieldMappingData = async () => {
@@ -499,7 +554,12 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   const onchangeTreeData = () => {
     console.log("ocnChangeTreeData");
     const createNode = (title: any,disabled:any= false, key: any, rest: any, children?: any) => {
-      return { title,disabled, key, rest, children: children || [] };
+      return {  title : (
+        <>
+          <div className= {disabled ? "":isMigrated ? "show-workItem-checkbox": ""}>{title}</div>
+          
+        </>
+      ),disabled, key, rest, children: children || [] };
     };
     function constructTree(data: any, parentId: any) {
       const childrenData = data.filter(
@@ -525,6 +585,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
       })
     );
     console.log("_filtertedItemArr", _filtertedItemArr);
+
+    const isMigrated = _filtertedItemArr?.some((item:any)=> item?.['Devops Id'] !== "")
     const treeData = _filtertedItemArr.map((item: any) => {
       
         const _nodeTitle = item?.['Title'] +' - '+ item?.['Devops Id'];
@@ -720,7 +782,12 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     
     const filteredTree = findTree(intialTreeState, filters);
     console.log("searcArr", filteredTree);
-    setTreeData(filteredTree);
+    if(filteredTree?.length){
+      setTreeData(filteredTree);
+    }else{
+      notification?.warning({message:"Can't find the searched item in the tree"})
+    }
+    
   };
 
   const extractProperties = (arr: any) => {
@@ -779,7 +846,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
         setSelectedItemsModule([...selectedItemsModule, item]);
       }
     }
-    if (itemName === "workItemType") {
+    if (itemName === "Work Item Type") {
       if (selectedItemsWorkItemType.includes(item)) {
         setSelectedItemsWorkItemType(
           selectedItemsWorkItemType.filter((i) => i !== item)
@@ -881,6 +948,9 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
    }
 
   const showhandleWorkItem = () => {
+    setTreeData([])
+    console.log("check");
+ setcheckKey(!checkKey)
     fetchRequestToGenerateTree();
   };
  console.log("surveySettingDataArr",surveySettingDataArr);
@@ -938,7 +1008,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
             {surveySettingDataArr?.workItemType.length > 0 && (
               <div className="multiSelectDropDown">
                 <MultiSelectComponent
-                  itemName={"workItemType"}
+                  itemName={"Work Item Type"}
                   treeData={
                     surveySettingDataArr?.workItemType.length ? surveySettingDataArr?.workItemType : []
                   }
@@ -992,7 +1062,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
               {language?.DevOpsTree_ExpandBtn}
             </Button>
             </div>
-            <Checkbox className="workitem-checkbox  flex-center" onChange={showhandleWorkItem}>
+            <Checkbox  checked= {checkKey} className="workitem-checkbox  flex-center" onChange={showhandleWorkItem}>
               {" "}
               {language?.DevOpsTree_ShowNewWorkItemsTitle}
             </Checkbox>

@@ -261,6 +261,24 @@ console.log("userIdCrrent", window?.parent?.userId);
       if (devopsData?.status === "success") {
         const crmData = JSON.parse(devopsWorkItemFields);
         console.log("crmData==>", crmData);
+
+        const gridResponeData = {
+          "SchemaName": "Document output & partner notes",
+          "AttributeType": "Memo",
+          "Options": null
+        }
+        const dcOutput = {
+          "SchemaName": "Document output",
+          "AttributeType": "Memo",
+          "Options": null
+        }
+        const partnerNotes = {
+          "SchemaName": "Partner notes",
+          "AttributeType": "Memo",
+          "Options": null
+        }
+        crmData?.push(gridResponeData,dcOutput,partnerNotes)
+        console.log("gridResponeData"),crmData;
         let tableData = crmData?.map((crm: any, key: any) => {
           let dropdownArr: any = devopsData?.data
             .filter(
@@ -269,19 +287,19 @@ console.log("userIdCrrent", window?.parent?.userId);
                 devOps.fieldName !== "Title" &&
                 (((crm.AttributeType === "Memo" ||
                   crm.AttributeType === "String" ||
-                  crm.AttributeType === "Lookup") &&
-                  (devOps.attributeType === "String" ||
+                  crm.AttributeType === "Lookup") &&  crm?.Options === null &&
+                  (devOps.attributeType === "String" ||  
                     devOps.attributeType === "PlainText" ||
                     devOps.attributeType === "TreePath" ||
                     devOps.attributeType === "StringTreePath" ||
                     devOps.attributeType === "Identity")) ||
-                  (crm.AttributeType === "Memo" &&
+                  (crm.AttributeType === "Memo"  && crm?.Options === null && 
                     (devOps.attributeType === "Html" ||
                       devOps.attributeType === "History" ||
                       devOps.attributeType === "HistoryHtml")) ||
-                  (crm.AttributeType === "String" &&
+                  (crm.AttributeType === "String"  && crm?.Options === null&&
                     devOps.attributeType === "DateTime") ||
-                  (crm.AttributeType === "Decimal" &&
+                  (crm.AttributeType === "Decimal" && crm?.Options === null&&
                     (devOps.attributeType === "Integer" ||
                       devOps.attributeType === "Double")) ||
                   (crm.AttributeType === "Picklist" &&
@@ -289,9 +307,9 @@ console.log("userIdCrrent", window?.parent?.userId);
                       devOps.attributeType === "PicklistString" ||
                       devOps.attributeType === "DoublePicklist")) ||
                   ((crm.AttributeType === "String" ||
-                    crm.AttributeType === "Lookup") &&
+                    crm.AttributeType === "Lookup") && crm?.Options === null &&
                     devOps.attributeType === "defaultGuId") ||
-                  (crm.AttributeType === "Boolean" &&
+                  (crm.AttributeType === "Boolean" && crm?.Options === null &&
                     devOps.attributeType === "Boolean") ||
                   (crm?.Options != undefined &&
                     crm?.Options?.length &&
@@ -682,7 +700,7 @@ console.log("userIdCrrent", window?.parent?.userId);
 
     getWorkItemTypesFromSurveySetting();
 
-    devopsWorkItemTypes && setCrmWorkItemTypes(JSON.parse(devopsWorkItemTypes));
+    //devopsWorkItemTypes && setCrmWorkItemTypes(JSON.parse(devopsWorkItemTypes));
     getConnectionDetails();
   }, []);
 
@@ -692,6 +710,7 @@ console.log("userIdCrrent", window?.parent?.userId);
  
      const workItemType  = await getDevopsWorkItemType(_itemId,"workItemType")
      console.log("workItemType",workItemType);
+     workItemType?.length && setCrmWorkItemTypes(workItemType)
      
   }
 

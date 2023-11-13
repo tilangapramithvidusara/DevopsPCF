@@ -31,22 +31,44 @@ export const fetchWorkItemTypes = ()=> {
   })
 }
 
-export const fetchWorkItemsByBusinessSurveyId = async( id:any)=> {
+export const fetchWorkItemsByBusinessSurveyId = async( id:any,busId:any,orgUrl:any,pName:any)=> {
   console.log("#buisID",id);
   
    // id = '73e7d54d-7c03-ee11-8f6e-6045bd0fcbc6';
   return await new Promise((resolve,reject)=>{
      window.parent.webapi.safeAjax({
     type: "GET",
-    url: `/getsurveyworkItems/?type=workitem&id=${id}`,
+   // url: `/getsurveyworkItems/?type=workitem&id=${id}`,
+    url: `/getsurveyworkItems/?type=workitem&id=${id}&businessSurveyId=${busId}&ganizationurl=${orgUrl}&projectname=${pName}`,
     contentType: "application/json",
     success: function (data: any, textStatus: any, xhr: any) {
       console.log("GetWorkItemTypes",data);
       console.log("type of",typeof data);
-      let _data = JSON.parse(data)
+
+      if (/("Description":\s*"[^"]*")/.test(data)) {
+        data = data.replace(/"Description": "([^"]*)",/g, function (match:any, description:any) {
+          var updatedDescription = description.replace(/\n/g, "\\n");
+          return `"Description": "${updatedDescription}",`;
+        });
+    
+        try {
+          var jsonData = JSON.parse(data);
+         
+          console.log("jsonParseData", jsonData);
+          resolve({ type: "success", data : jsonData});
+        } catch (error) {
+          console.error("Error parsing JSON: " + error);
+        }
+      } else {
+        try {
+          var _data = JSON.parse(data);
       console.log("jsonParseData", _data);
-      
       resolve({ type: "success", data : _data});
+        } catch (error) {
+          console.error("Error parsing JSON: " + error);
+        }
+      }
+     
     },
     error: function (request: any, status: any, thrown: any) {
       reject({ type: "error", status: request.status });
