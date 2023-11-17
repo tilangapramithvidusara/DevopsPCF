@@ -1,0 +1,25 @@
+{
+  "DevOpsConfiguration_SaveButton": "Enregistrer", 
+  "DevOpsConfiguration_SetAsDefaultButton": "Définir comme défaut",
+  "DevOpsConfiguration_CancelButton": "Annuler",
+  "DevOpsConfiguration_NextButton": "Suivant",
+  "DevOpsConfiguration_DevopsWorkitemTitle": "Éléments de travail DevOps",
+  "DevOpsConfiguration_ConnectionDetailsTitle": "Détails de connexion",
+  "DevOpsConfiguration_MappingWorkItemTypeTitle": "Mapping - Types d'éléments de travail",
+  "DevOpsConfiguration_OrganizationUrlTitle": "URL de l'organisation",
+  "DevOpsConfiguration_DevOpsProjectTitle": "Projet DevOps",
+  "DevOpsConfiguration_AuthorizationTokenTitle": "Jeton d'autorisation",
+  "DevOpsConfiguration_ConnectButton": "Connecter",
+  "DevOpsConfiguration_FieldMappingTitle": "Mapping de champs",
+  "DevOpsConfiguration_WorkItemFieldMappingTitle": "Mapping des champs d'éléments de travail",
+  "DevOpsTree_MigrateTitle": "Migrer vers DevOps",
+  "DevOpsTree_ShowNewWorkItemsTitle": "Afficher les nouveaux éléments de travail",
+  "DevOpsTree_ApplyBtn": "Appliquer",
+  "DevOpsTree_CollapseBtn": "Réduire tout",
+  "DevOpsTree_ExpandBtn": "Étendre tout",
+  "DevOpsTree_workItemTitle": "Résumé des éléments de travail DevOps",
+  "DevOpsTree_BackBTN": "Retour",
+  "DevOps Generator": "Générateur DevOps",
+  "Configure Mapping": "Configurer le mappage"
+
+}

@@ -1,6 +1,7 @@
 import React, { useEffect, useReducer, useState } from "react";
 import { Button, notification, Radio, RadioChangeEvent, Spin } from "antd";
 // import $ from 'jquery';
+import { Trans, useTranslation } from "react-i18next";
 import TableComponent from "../Components/TableComponent";
 import PopupComponent from "../Components/PopupComponent";
 import ConnectionComponent from "../Components/ConnectionComponent";
@@ -263,17 +264,17 @@ console.log("userIdCrrent", window?.parent?.userId);
         console.log("crmData==>", crmData);
 
         const gridResponeData = {
-          "SchemaName": "Document output & partner notes",
+          "SchemaName": "Document Output & Partner Notes",
           "AttributeType": "Memo",
           "Options": null
         }
         const dcOutput = {
-          "SchemaName": "Document output",
+          "SchemaName": "Document Output",
           "AttributeType": "Memo",
           "Options": null
         }
         const partnerNotes = {
-          "SchemaName": "Partner notes",
+          "SchemaName": "Partner Notes",
           "AttributeType": "Memo",
           "Options": null
         }
@@ -284,7 +285,7 @@ console.log("userIdCrrent", window?.parent?.userId);
             .filter(
               (devOps: any) =>
                 devOps.fieldName !== "Work Item Type" &&
-                devOps.fieldName !== "Title" &&
+                devOps.fieldName !== "Title" && 
                 (((crm.AttributeType === "Memo" ||
                   crm.AttributeType === "String" ||
                   crm.AttributeType === "Lookup") &&  crm?.Options === null &&
@@ -1263,10 +1264,10 @@ console.log("userIdCrrent", window?.parent?.userId);
     <div className="devops-container">
       {!isTreeViewVisible && connectionSaveData?.type === "success" ? (
         <Spin spinning={isLoading}>
-          <h1 className="title">{language?.DevOpsConfiguration_DevopsWorkitemTitle}</h1>
+          <h1 className="title"><Trans>DevOpsConfiguration_DevopsWorkitemTitle</Trans></h1>
           <div className="bg-wrap">
             <h3 className="sub-title">
-              <span>{language?.DevOpsConfiguration_ConnectionDetailsTitle}</span>
+              <span> <Trans>DevOpsConfiguration_ConnectionDetailsTitle</Trans></span>
               <span>
                 {" "}
                 <h5 className="sub-title2">{configurationData?.gyde_name} </h5>
@@ -1296,9 +1297,9 @@ console.log("userIdCrrent", window?.parent?.userId);
                   ) && (
                     <Radio.Group
                       options={[
-                        { label: "DevOps Generator", value: "devopsGenerator" },
+                        { label: <Trans>DevOps Generator</Trans>, value: "devopsGenerator" },
                         {
-                          label: "Configure Mapping",
+                          label:  <Trans>Configure Mapping</Trans>,
                           value: "configureMapping",
                         },
                       ]}
@@ -1309,7 +1310,7 @@ console.log("userIdCrrent", window?.parent?.userId);
                     />
                   )}
 
-                <h3 className="sub-title mt-20">{language?.DevOpsConfiguration_MappingWorkItemTypeTitle}</h3>
+                <h3 className="sub-title mt-20"> <Trans>DevOpsConfiguration_MappingWorkItemTypeTitle</Trans></h3>
                 <TableComponent
                   dataSource={...retrieveDevopsMapping}
                   columns={workItemColumns}
@@ -1351,7 +1352,7 @@ console.log("userIdCrrent", window?.parent?.userId);
                       window.location.href = `/${_navigateUrl}`;
                     }}
                   >
-                     {language?.DevOpsConfiguration_CancelButton}
+                    <Trans>DevOpsConfiguration_CancelButton</Trans>
                   </Button>
                   {dataAfterSave?.length > 0 &&
                   checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
@@ -1361,8 +1362,8 @@ console.log("userIdCrrent", window?.parent?.userId);
                       type="primary"
                       htmlType="button"
                       onClick={() => setIsTreeViewVisible(true)}
-                    >
-                     {language?.DevOpsConfiguration_NextButton}
+                    > <Trans>DevOpsConfiguration_NextButton</Trans>
+                    
                     </Button>
                   ) : (
                     <Button
@@ -1383,8 +1384,8 @@ console.log("userIdCrrent", window?.parent?.userId);
                       //     ? "disable-save-btn"
                       //     : ""
                       // }
-                    >
-                      {language?.DevOpsConfiguration_SaveButton}
+                    > <Trans>DevOpsConfiguration_SaveButton</Trans>
+                    
                     </Button>
                   )}
                 </div>
@@ -1438,8 +1439,8 @@ console.log("userIdCrrent", window?.parent?.userId);
                             handleCancel();
                           }}
                           style={{ marginLeft: "5px" }}
-                        >
-                          {language?.DevOpsConfiguration_CancelButton}
+                        ><Trans>DevOpsConfiguration_CancelButton</Trans>
+                         
                         </Button>
                         <Button
                           className="ant-btn-primary"
@@ -1448,8 +1449,8 @@ console.log("userIdCrrent", window?.parent?.userId);
                             /* Handle button click */
                           }}
                           style={{ marginLeft: "5px" }}
-                        >
-                            {language?.DevOpsConfiguration_SetAsDefaultButton}
+                        ><Trans>DevOpsConfiguration_SetAsDefaultButton</Trans>
+                  
                         </Button>
                         <Button
                           className="ant-btn-primary"
@@ -1457,8 +1458,9 @@ console.log("userIdCrrent", window?.parent?.userId);
                             savePopupModelData("Save");
                           }}
                           style={{ marginLeft: "5px" }}
-                        >
-                          {language?.DevOpsConfiguration_SaveButton}
+                        ><Trans>DevOpsConfiguration_SaveButton</Trans>
+                  
+                        
                         </Button>
                       </div>
                     </Spin>

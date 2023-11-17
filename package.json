@@ -15,13 +15,17 @@
   "dependencies": {
     "@ant-design/icons": "^5.1.4",
     "@types/antd": "^1.0.0",
+    "@types/i18next": "^13.0.0",
+    "@types/react-i18next": "^8.1.0",
     "antd": "^5.6.1",
     "axios": "^1.4.0",
     "http-proxy-middleware": "^2.0.6",
+    "i18next": "^22.5.1",
     "json-loader": "^0.5.7",
     "liquidjs": "^10.8.4",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "react-i18next": "^12.3.1"
   },
   "devDependencies": {
     "@microsoft/eslint-plugin-power-apps": "^0.2.6",

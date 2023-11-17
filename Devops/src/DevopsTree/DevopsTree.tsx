@@ -1,4 +1,4 @@
-import { Button, Checkbox, Input, Spin, Tree,notification } from "antd";
+import { Button, Checkbox, Input, Spin, Tree,notification, Tooltip } from "antd";
 import type { DataNode, TreeProps } from "antd/es/tree";
 import React, { useEffect, useState } from "react";
 import {
@@ -10,6 +10,7 @@ import {
 import { fetchFieldMapping, getDevopsWorkItemType } from "../Api/devopsApis";
 import { TreeViewData } from "../Constants/Samples/sample";
 import MultiSelectComponent from "./Components/MultiSelectComponent";
+import { Trans, useTranslation } from "react-i18next";
 // import { findNodeAndRelations } from "../helper/GetParentNode";
 
 declare global {
@@ -200,6 +201,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   };
 
   const handleMigrateToDevops = async () => {
+    console.log("handleMigrateToDevopsx");
     setIsLoading(true)
     function flattenHierarchy(item: any) {
       const flatList = [item];
@@ -229,8 +231,11 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
               });
 
               console.log("x values", x);
+              console.log("x _items", _item);
               // item?.rest[_item?.sourceWorkItem]
-              if (x[0] === _item?.sourceWorkItem && _item.isPickListComplete) {
+              if (x[0] === _item?.sourceWorkItem && _item.isPickListComplete && _item?.devopsWorkItem  !== "N/A") {
+                console.log("migaratePiclickst", x[0] ,_item?.sourceWorkItem ,_item.isPickListComplete);
+                
                 const defaultOption =
                   _item.defaultOptionList?.defaultOptionList[0];
                 const crmOptionIndex = defaultOption?.crmOption.indexOf(
@@ -285,7 +290,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                   _item?.fieldReferenceName !== "" 
                   
                 ) {
-                  if(_item?.sourceWorkItem === "Grid question response"){
+                  if(_item?.sourceWorkItem === "Document Output & Partner Notes"){
                     return (
                      {
                         columnName:
@@ -295,6 +300,26 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                       }
                     );
                    }
+                else if(_item?.sourceWorkItem === "Document Output"){
+                  return (
+                    {
+                       columnName:
+                          _item?.sourceWorkItem,
+                       referencePath: `/fields/${_item?.fieldReferenceName}`,
+                       value: "",
+                     }
+                   );
+                }else if( _item?.sourceWorkItem === "Partner Notes"){
+                  return (
+                    {
+                       columnName:
+                          _item?.sourceWorkItem,
+                       referencePath: `/fields/${_item?.fieldReferenceName}`,
+                       value: "",
+                     }
+                   );
+
+                }
                   else {
                     return (
                     
@@ -314,8 +339,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
 
             console.log("matchFiledArr",matchFiledArr);
             // const _matchFiledArr = matchFiledArr?.length && matchFiledArr.filter(((f:any) => f !== undefined))
-
-            // console.log("matchFiledArr",_matchFiledArr);
+            // const filteredArray = matchFiledArr.filter((item:any) => item !== false && item !== null && item !== undefined && typeof item === 'object');
+            // console.log("filteredArray",filteredArray);
           return {
             key: _fields?.key,
             targetTable: _fields?.targetTable,
@@ -340,13 +365,20 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
         const parentId = item?.rest["Workitem Response Id"];
         const formattedParentWorkItem = parentWorkItem;
         const _workItemBody = workItems.map((item: any) => {
-          const fieldData = item.matchFiledArr
-            .filter((_item: any) => _item !== undefined)
+          const _fieldData = item.matchFiledArr
+            .filter((_item: any) =>  _item !== false && _item !== null && _item !== undefined && typeof _item === 'object')
             .map((data: any) => ({
               referencePath: data?.referencePath,
               value: data?.value,
               name: data?.columnName,
             }));
+
+            const fieldData =  _fieldData.filter((item:any) => {
+              if (item?.name !== "Document Output"&& item?.name !== "Partner Notes"&& item?.name  !== "Document Output & Partner Notes") {
+                  return item.value !== "";
+              }
+              return true;
+            });
           const data: string | null = localStorage.getItem("items");
           const authData: any = data && JSON.parse(data);
           return {
@@ -554,11 +586,19 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   const onchangeTreeData = () => {
     console.log("ocnChangeTreeData");
     const createNode = (title: any,disabled:any= false, key: any, rest: any, children?: any) => {
+
+      console.log("itemRest",rest, rest?.['Busniess Survey Name']);
+      
       return {  title : (
-        <>
-          <div className= {disabled ? "":isMigrated ? "show-workItem-checkbox": ""}>{title}</div>
+        
+       
+      <div style={{display:'flex'}}>
+      <div className= {disabled ? "":isMigrated ? "show-workItem-checkbox": ""}>{title}</div>  {rest?.['Workitem Id']  && cbsId === rest?.['Busniess Survey Id'] &&  <Tooltip  title= {rest?.['Busniess Survey Name']} trigger="hover">
+          <i className="fa fa-info-circle icon-tree"  />
+        </Tooltip> }
+      </div>
           
-        </>
+        
       ),disabled, key, rest, children: children || [] };
     };
     function constructTree(data: any, parentId: any) {
@@ -963,11 +1003,11 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
         <>
          <div className="heading">
          <img src="/list.png" className="list-img" alt="list"/>
-         <h1 className="workitemSummary"> {language?.DevOpsTree_workItemTitle}</h1>
+         <h1 className="workitemSummary"> <Trans>DevOpsTree_workItemTitle</Trans></h1>
          </div>
         
           <div className="dropdown-wrap">
-            {surveySettingDataArr?.Moscow.length > 0 && (
+            { (
               <div className="multiSelectDropDown">
                 <MultiSelectComponent
                   itemName={"Moscow"}
@@ -979,7 +1019,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                 />
               </div>
             )}
-            {surveySettingDataArr?.Module.length > 0 && (
+            { (
               <div className="multiSelectDropDown">
                 <MultiSelectComponent
                   itemName={"Module"}
@@ -992,7 +1032,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
               </div>
             )}
 
-            {surveySettingDataArr?.Phase.length > 0 && (
+            { (
               <div className="multiSelectDropDown">
                 <MultiSelectComponent
                   itemName={"Phase"}
@@ -1005,7 +1045,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
               </div>
             )}
 
-            {surveySettingDataArr?.workItemType.length > 0 && (
+            {(
               <div className="multiSelectDropDown">
                 <MultiSelectComponent
                   itemName={"Work Item Type"}
@@ -1025,8 +1065,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
             <Button
               type="primary"
               onClick={handleSearch}
-            >
-              {language?.DevOpsTree_ApplyBtn}
+            ><Trans>DevOpsTree_ApplyBtn</Trans>
+         
             </Button>
           </div>
           <div className="btn-wrap flex-center">
@@ -1044,7 +1084,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                 alt="icon"
                 className="icon"
               />{" "}
-              {language?.DevOpsTree_CollapseBtn}
+              <Trans>DevOpsTree_CollapseBtn</Trans>
+              
             </Button>
             <Button
               onClick={() => {
@@ -1059,12 +1100,15 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                 alt="icon"
                 className="icon"
               />{" "}
-              {language?.DevOpsTree_ExpandBtn}
+                <Trans>DevOpsTree_ExpandBtn</Trans>
+            
+            
             </Button>
             </div>
             <Checkbox  checked= {checkKey} className="workitem-checkbox  flex-center" onChange={showhandleWorkItem}>
               {" "}
-              {language?.DevOpsTree_ShowNewWorkItemsTitle}
+              <Trans>DevOpsTree_ShowNewWorkItemsTitle</Trans>
+             
             </Checkbox>
           </div>
           <Spin spinning={isLoading}> 
@@ -1089,7 +1133,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                 window.location.reload();
               }}
             >
-              {language?.DevOpsTree_BackBTN}
+               <Trans>DevOpsTree_BackBTN</Trans>
+              
             </Button>
 
             <Button
@@ -1097,8 +1142,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
               htmlType="button"
               onClick={handleMigrateToDevops}
               style={{ marginTop: 10 }}
-            >
-              {language?.DevOpsTree_MigrateTitle}
+            > <Trans>DevOpsTree_MigrateTitle</Trans>
+            
             </Button>
             
           </div>
@@ -1112,3 +1157,5 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
 };
 
 export default DevopsTree;
+
+

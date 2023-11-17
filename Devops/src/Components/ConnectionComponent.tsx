@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Form, Input, Button, Row, Col, notification, Modal} from 'antd';
 import { fetchWorkItemTypesFromDevops } from '../Api/devopsApis';
 import { ExclamationCircleOutlined } from '@ant-design/icons';
-
+import { Trans, useTranslation } from "react-i18next";
 interface ConnectionProps {
   setWorkItemData:any,
   connectionFetch:any,
@@ -104,19 +104,20 @@ const confirm = (values:any,url:any) => {
     <Form form={form} initialValues={obj} className='connection-form'>
       <Row gutter={20}>
         <Col span={12}>
-          <span className='label'>{language?.DevOpsConfiguration_OrganizationUrlTitle}</span>
+          <span className='label'> <Trans>DevOpsConfiguration_OrganizationUrlTitle</Trans></span>
           <Form.Item className="custom-form-wrap" name="organizationUri" label="" rules={[{ required: true, message: 'Please enter Organization URL' }]}>
             <Input />
           </Form.Item>
         </Col>
         <Col span={12}>
-        <span className='label'>{language?.DevOpsConfiguration_DevOpsProjectTitle}</span>
+        <span className='label'>
+        <Trans>DevOpsConfiguration_DevOpsProjectTitle</Trans></span>
           <Form.Item className="custom-form-wrap" name="projectName" rules={[{ required: true, message: 'Please enter DevOps Project' }]}>
             <Input />
           </Form.Item>
         </Col>
         <Col span={12}>
-        <span className='label'>{language?.DevOpsConfiguration_AuthorizationTokenTitle}</span>
+        <span className='label'><Trans>DevOpsConfiguration_AuthorizationTokenTitle</Trans></span>
           <Form.Item className="custom-form-wrap" name="personalAccessToken" rules={[{ required: true, message: 'Please enter Authorization Token' }]}>
             <Input />
           </Form.Item>
@@ -125,7 +126,7 @@ const confirm = (values:any,url:any) => {
         <div className="button-form">
           <Form.Item>
             <Button type="primary" htmlType="submit" onClick={handleFormSubmit}>
-            {language?.DevOpsConfiguration_ConnectButton}
+            <Trans>DevOpsConfiguration_ConnectButton</Trans>
             </Button>
           </Form.Item>
         </div>
