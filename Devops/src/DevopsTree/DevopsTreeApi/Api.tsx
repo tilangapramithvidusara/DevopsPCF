@@ -39,7 +39,7 @@ export const fetchWorkItemsByBusinessSurveyId = async( id:any,busId:any,orgUrl:a
      window.parent.webapi.safeAjax({
     type: "GET",
    // url: `/getsurveyworkItems/?type=workitem&id=${id}`,
-    url: `/getsurveyworkItems/?type=workitem&id=${id}&businessSurveyId=${busId}&ganizationurl=${orgUrl}&projectname=${pName}`,
+    url: `/getsurveyworkItems/?type=workitem&id=${id}&businessSurveyId=${busId}&organizationurl=${orgUrl}&projectname=${pName}`,
     contentType: "application/json",
     success: function (data: any, textStatus: any, xhr: any) {
       console.log("GetWorkItemTypes",data);

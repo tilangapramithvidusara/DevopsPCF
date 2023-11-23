@@ -263,22 +263,27 @@ console.log("userIdCrrent", window?.parent?.userId);
         const crmData = JSON.parse(devopsWorkItemFields);
         console.log("crmData==>", crmData);
 
-        const gridResponeData = {
-          "SchemaName": "Document Output & Partner Notes",
-          "AttributeType": "Memo",
-          "Options": null
-        }
-        const dcOutput = {
-          "SchemaName": "Document Output",
-          "AttributeType": "Memo",
-          "Options": null
-        }
-        const partnerNotes = {
-          "SchemaName": "Partner Notes",
-          "AttributeType": "Memo",
-          "Options": null
-        }
-        crmData?.push(gridResponeData,dcOutput,partnerNotes)
+        // const businessProcessid = {
+        //   "SchemaName": "Business Process ID",
+        //   "AttributeType": "Memo",
+        //   "Options": null
+        // }
+        // const gridResponeData = {
+        //   "SchemaName": "Document Output & Partner Notes",
+        //   "AttributeType": "Memo",
+        //   "Options": null
+        // }
+        // const dcOutput = {
+        //   "SchemaName": "Document Output",
+        //   "AttributeType": "Memo",
+        //   "Options": null
+        // }
+        // const partnerNotes = {
+        //   "SchemaName": "Partner Notes",
+        //   "AttributeType": "Memo",
+        //   "Options": null
+        // }
+        // crmData?.push(businessProcessid,gridResponeData,dcOutput,partnerNotes)
         console.log("gridResponeData"),crmData;
         let tableData = crmData?.map((crm: any, key: any) => {
           let dropdownArr: any = devopsData?.data
@@ -453,7 +458,7 @@ console.log("userIdCrrent", window?.parent?.userId);
         if (updatedSavedData?.length) {
           const newupdatedArr = updatedSavedData[0]["value"].map(
             (item: any) => {
-              const _latestItem = _tableData.find((table: any) => {
+              const _latestItem = tableData.find((table: any) => {
                 return item.sourceWorkItem === table.sourceWorkItem;
               });
               console.log(
@@ -479,6 +484,7 @@ console.log("userIdCrrent", window?.parent?.userId);
                     ...item,
                     defaultOptionList: [],
                     dropdown: _latestItem.dropdown,
+                    devopsWorkItem: "N/A"
                   };
                 }
               } else {
@@ -490,7 +496,7 @@ console.log("userIdCrrent", window?.parent?.userId);
           setTaskDataArr(newupdatedArr);
         } else if (updatedDefaultData?.data?.length) {
           const newupdatedArr = updatedDefaultData?.data.map((item: any) => {
-            const _latestItem = _tableData.find((table: any) => {
+            const _latestItem = tableData.find((table: any) => {
               return item.sourceWorkItem === table.sourceWorkItem;
             });
             console.log("_latestItemD", _latestItem, ":", item.sourceWorkItem);
@@ -510,6 +516,7 @@ console.log("userIdCrrent", window?.parent?.userId);
                   ...item,
                   defaultOptionList: [],
                   dropdown: _latestItem.dropdown,
+                  devopsWorkItem: "N/A"
                 };
               }
             } else{
@@ -616,17 +623,36 @@ console.log("userIdCrrent", window?.parent?.userId);
           "load when saved data retrieving.....",
           JsonMappedData
         );
-        const validateData = await JsonMappedData?.data?.map((item: any) => {
+        const validateData = await JsonMappedData?.data?.map((item:any) => {
           return {
             ...item,
+            enable:devopsWorkItemTypes?.find(
+              (res :any) => res == item?.gyde_name
+            ) === undefined ? false : item?.enable,
             gyde_name:
-              item?.gyde_name === "N/A"
-                ? "N/A"
-                : devopsWorkItemTypes?.find(
-                    (res: any) => res == item?.gyde_name
-                  ),
+            devopsWorkItemTypes?.find(
+              (res:any) => res == item?.gyde_name
+            )  ? devopsWorkItemTypes?.find(
+              (res:any) => res == item?.gyde_name
+            ) : "N/A",
           };
         });
+        
+        
+        
+        
+        
+        // .map((item: any) => {
+        //   return {
+        //     ...item,
+        //     gyde_name:
+        //       item?.gyde_name === "N/A"
+        //         ? "N/A"
+        //         : devopsWorkItemTypes?.find(
+        //             (res: any) => res == item?.gyde_name
+        //           ),
+        //   };
+        // });
         setRetrieveDevopsMapping(validateData);
         setDataAfterSave(validateData);
         console.log("JsonMappedData", validateData);
@@ -1059,9 +1085,9 @@ console.log("userIdCrrent", window?.parent?.userId);
     record.gyde_name = `gyde devOps config ${recordType}${hours}${minutes}${seconds}`;
     record["gyde_customerorpartner@odata.bind"] =
       recordType === "default" ? `/accounts(${_pId})` : `/accounts(${cusId})`; // Lookup
-    record[
+      recordType !== "default" ?   record[
       "gyde_customerbusinesssurvey@odata.bind"
-    ] = `/gyde_customerbusinesssurveies(${cbsId})`; // Lookup
+    ] = `/gyde_customerbusinesssurveies(${cbsId})` : ""; // Lookup
     record.gyde_defaultsetting = false;
     console.log("record1", record, recordType);
     setIsLoading(true);

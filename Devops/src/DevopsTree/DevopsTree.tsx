@@ -77,7 +77,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   const [selectedKeys, setSelectedKeys] = useState<any>([]);
   const [selectedItem, setSelectedItem] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
-  const [checkKey, setcheckKey] = useState<any>([]); 
+  const [checkKey, setcheckKey] = useState<any>(true); 
   const [selectedItemsMoscow, setSelectedItemsMoscow] = useState<string[]>([]);
   const [selectedItemsPhase, setSelectedItemsPhase] = useState<string[]>([]);
   const [selectedItemsModule, setSelectedItemsModule] = useState<string[]>([]);
@@ -289,7 +289,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                   _item?.sourceWorkItem !== "Work item type" &&
                   _item?.fieldReferenceName !== "" 
                   
-                ) {
+                ) 
+                {
                   if(_item?.sourceWorkItem === "Document Output & Partner Notes"){
                     return (
                      {
@@ -300,7 +301,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                       }
                     );
                    }
-                else if(_item?.sourceWorkItem === "Document Output"){
+                 if(_item?.sourceWorkItem === "Document Output"){
                   return (
                     {
                        columnName:
@@ -309,7 +310,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                        value: "",
                      }
                    );
-                }else if( _item?.sourceWorkItem === "Partner Notes"){
+                } if( _item?.sourceWorkItem === "Partner Notes"){
                   return (
                     {
                        columnName:
@@ -505,13 +506,28 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
 
     console.log("obj", obj);
 
-    const response: any = await generateDevops(
-      window?.parent?.createDevopsWorkItemURL,
-      obj
-    );
-  console.log("responseMigrate",response);
-  fetchRequestToGenerateTree();
-    setIsLoading(false)
+    if(modifiedArr?.length){
+      const response: any = await generateDevops(
+        window?.parent?.createDevopsWorkItemURL,
+        obj
+      );
+    console.log("responseMigrate",response);
+  
+   if(response?.status === 200){
+    setTreeData([])
+    fetchRequestToGenerateTree();
+  
+    notification?.success({message:"Work Items successfully migrated to Azure Board.!"})
+   }else{
+  
+    notification?.error({message:" Unable to migrate the Work Items  to Azure Board.!"})
+   }
+    }else{
+      notification?.error({message:"Unable to migrate the selected Work Items without Parent Work Item to Azure Board.!'"})
+    }
+   
+  
+ setIsLoading(false)
 
     async function processNode(
       node: any,
@@ -593,7 +609,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
         
        
       <div style={{display:'flex'}}>
-      <div className= {disabled ? "":isMigrated ? "show-workItem-checkbox": ""}>{title}</div>  {rest?.['Workitem Id']  && cbsId === rest?.['Busniess Survey Id'] &&  <Tooltip  title= {rest?.['Busniess Survey Name']} trigger="hover">
+      <div className= {disabled ? "":checkKey && isMigrated ? "show-workItem-checkbox": ""}>{title}</div>  {rest?.['Workitem Id']  && cbsId !== rest?.['Busniess Survey Id'] &&  <Tooltip  title= {rest?.['Busniess Survey Name']} trigger="hover">
           <i className="fa fa-info-circle icon-tree"  />
         </Tooltip> }
       </div>
@@ -789,18 +805,38 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
         console.log("tag7741", filters.Phase.includes(Phase));
 
         if (filters?.Phase && filters.Phase.includes(Phase)) {
+          node.title = (
+            <div style={{ color: 'red', fontWeight: 'bold' }}>
+             {node.title}
+            </div>
+          );
           return true; // Include the node if it matches the filter
         }
         if (filters?.Moscow && filters.Moscow.includes(Moscow)) {
+          node.title = (
+            <div style={{ color: 'red', fontWeight: 'bold' }}>
+             {node.title}
+            </div>
+          );
           return true; // Include the node if it matches the filter
         }
         if (filters?.Module && filters.Module.includes(Module)) {
+          node.title = (
+            <div style={{ color: 'red', fontWeight: 'bold' }}>
+             {node.title}
+            </div>
+          );
           return true; // Include the node if it matches the filter
         }
         if (
           filters?.workItemType &&
           filters.workItemType.includes(workItemType)
         ) {
+          node.title = (
+            <div style={{ color: 'red', fontWeight: 'bold' }}>
+             {node.title}
+            </div>
+          );
           return true; // Include the node if it matches the filter
         }
         // Check child nodes recursively
@@ -942,10 +978,27 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   const handleExpandTree = (isexpand: any) => {
     console.log("state", isexpand, treeData);
     if (isexpand) {
-      const expandKey = treeData.map((node: any) => node.key);
-      console.log("expandKey", expandKey);
-
-      setExpandedKeys(expandKey);
+      const extractKeys = (data :any, keysArray:any) => {
+        if (data && data.key) {
+          keysArray.push(data.key);
+        }
+      
+        if (data.children && data.children.length > 0) {
+          data.children.forEach((child:any) => extractKeys(child, keysArray));
+        }
+      
+        return keysArray;
+      };
+      
+      // Initialize an empty array to store all keys
+      const allKeys :any= [];
+      
+      // Iterate over each item in the JSON data array
+      treeData.forEach((item:any) => extractKeys(item, allKeys));
+      
+      // Output the result
+      console.log(allKeys);
+      setExpandedKeys(allKeys)
     } else {
       setExpandedKeys([]);
     }
