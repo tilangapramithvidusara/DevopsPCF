@@ -17,6 +17,7 @@ export class Devops implements ComponentFramework.StandardControl<IInputs, IOutp
   ): void {
     this.container = container;
 
+
     // Fetch the configuration dynamically
     // fetch("./config.json") // Replace with the actual path to your configuration file
     //   .then((response) => response.json())
@@ -36,7 +37,7 @@ export class Devops implements ComponentFramework.StandardControl<IInputs, IOutp
         //   apiKey: config.apiKey,
         //   apiEndpoint: config.apiEndpoint,
         // };
-    ReactDOM.render(React.createElement(App), this.container);
+    ReactDOM.render(React.createElement(App,{context:context}), this.container);
   }
 
   public updateView(context: ComponentFramework.Context<IInputs>): void {

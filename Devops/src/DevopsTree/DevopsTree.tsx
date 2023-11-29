@@ -175,26 +175,29 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     console.log("check",info, "info?.checkedNodes",info?.checkedNodes ,"checkedKeys",checkedKeys);
     
     setSelectedNodes(info?.checkedNodes);
-    let checkedKeysNode :any =checkedKeys;
-    const filteredArray = treeData.filter((item:any) => {
-      const itemKey = item.key;
+    const filterNodesByCheckedKeys = (node :any, checkedKeys:any, filterFunction:any) => {
+      const isNodeIncluded = filterFunction(node, checkedKeys);
   
-      // Check if the item's key is not in the keys array
-      if (checkedKeysNode?.checked.includes(itemKey)) {
-          // If not in the keys array, check child arrays if they have keys to exclude
-          if (item.children && item.children.length > 0) {
-              item.children = item.children.filter((child:any) => {
-                  const childKey = child.key;
-                  return checkedKeysNode?.checked.includes(childKey);
-              });
-          }
-          return true; // Include the item in the filtered array
+      if (isNodeIncluded) {
+          return {
+              ...node,
+              children: node.children?.map((child:any) => filterNodesByCheckedKeys(child, checkedKeys, filterFunction)).filter(Boolean),
+          };
       }
   
-      return false; // Exclude the item
-  });
-
-  console.log("setCurrentSelectedNodes",filteredArray);
+      else{
+        return null
+      }
+  };
+      
+    const genericFilterFunction = (node :any, checkedKeys :any) => checkedKeys.includes(node.key);
+    let checkedKeysNode :any =checkedKeys;
+    const checkedKeysResult = checkedKeysNode?.checked;
+    const filteredArray = treeData
+        ?.map((item:any) => filterNodesByCheckedKeys(item, checkedKeysResult, genericFilterFunction))
+        .filter(Boolean);
+    
+    console.log("filteredTree", filteredArray);
   
   setCurrentSelectedNodes(filteredArray)
 
@@ -810,6 +813,13 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
              {node.title}
             </div>
           );
+          if (node.children && node.children.length > 0) {
+            const filteredChildren = findTree(node.children, filters);
+            if (filteredChildren.length > 0) {
+              node.children = filteredChildren; // Update the children with filtered ones
+              return true; // Include the node if it has filtered children
+            }
+          }
           return true; // Include the node if it matches the filter
         }
         if (filters?.Moscow && filters.Moscow.includes(Moscow)) {
@@ -818,6 +828,13 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
              {node.title}
             </div>
           );
+          if (node.children && node.children.length > 0) {
+            const filteredChildren = findTree(node.children, filters);
+            if (filteredChildren.length > 0) {
+              node.children = filteredChildren; // Update the children with filtered ones
+              return true; // Include the node if it has filtered children
+            }
+          }
           return true; // Include the node if it matches the filter
         }
         if (filters?.Module && filters.Module.includes(Module)) {
@@ -826,6 +843,13 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
              {node.title}
             </div>
           );
+          if (node.children && node.children.length > 0) {
+            const filteredChildren = findTree(node.children, filters);
+            if (filteredChildren.length > 0) {
+              node.children = filteredChildren; // Update the children with filtered ones
+              return true; // Include the node if it has filtered children
+            }
+          }
           return true; // Include the node if it matches the filter
         }
         if (
@@ -837,6 +861,13 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
              {node.title}
             </div>
           );
+          if (node.children && node.children.length > 0) {
+            const filteredChildren = findTree(node.children, filters);
+            if (filteredChildren.length > 0) {
+              node.children = filteredChildren; // Update the children with filtered ones
+              return true; // Include the node if it has filtered children
+            }
+          }
           return true; // Include the node if it matches the filter
         }
         // Check child nodes recursively
@@ -861,6 +892,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     if(filteredTree?.length){
       setTreeData(filteredTree);
     }else{
+      setTreeData([]);
+      fetchRequestToGenerateTree();
       notification?.warning({message:"Can't find the searched item in the tree"})
     }
     
