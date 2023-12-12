@@ -33,14 +33,21 @@ export const fetchWorkItemTypes = ()=> {
 
 export const fetchWorkItemsByBusinessSurveyId = async( id:any,busId:any,orgUrl:any,pName:any)=> {
   console.log("#buisID",id);
+  const timestamp = new Date().getTime(); // Generate a timestamp for cache-busting
+  console.log("cache",timestamp);
   
    // id = '73e7d54d-7c03-ee11-8f6e-6045bd0fcbc6';
   return await new Promise((resolve,reject)=>{
      window.parent.webapi.safeAjax({
     type: "GET",
    // url: `/getsurveyworkItems/?type=workitem&id=${id}`,
-    url: `/getsurveyworkItems/?type=workitem&id=${id}&businessSurveyId=${busId}&organizationurl=${orgUrl}&projectname=${pName}`,
+    url: `/getsurveyworkItems/?type=workitem&id=${id}&businessSurveyId=${busId}&organizationurl=${orgUrl}&projectname=${pName}&timestamp=${timestamp}`,
     contentType: "application/json",
+    cache: false,
+    headers:{
+      'Cache-Control':'no-cache',
+      'Pragma':'no-cache'
+    },
     success: function (data: any, textStatus: any, xhr: any) {
       console.log("GetWorkItemTypes",data);
       console.log("type of",typeof data);

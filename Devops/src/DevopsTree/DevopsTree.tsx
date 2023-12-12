@@ -170,9 +170,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   }, []);
 
   console.log("filteredData", filteredTreeData);
-
   const onCheck: TreeProps["onCheck"] = (checkedKeys, info) => {
-    console.log("check",info, "info?.checkedNodes",info?.checkedNodes ,"checkedKeys",checkedKeys);
+    console.log("checkRt",info, "info?.checkedNodes",info?.checkedNodes ,"checkedKeys",checkedKeys);
     
     setSelectedNodes(info?.checkedNodes);
     const filterNodesByCheckedKeys = (node :any, checkedKeys:any, filterFunction:any) => {
@@ -198,9 +197,17 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
         .filter(Boolean);
     
     console.log("filteredTree", filteredArray);
+    
+   
+
+
+  
+  console.log("setCurrentSelectedNodesUTR",filteredArray);
+
+  
+
   
   setCurrentSelectedNodes(filteredArray)
-
   };
 
   const handleMigrateToDevops = async () => {
@@ -214,10 +221,10 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
       return flatList;
     }
     const flattenedData = [];
-    for (const item of treeData) {
+    for (const item of selectedNodes?.length ? currentSelectedNodes: treeData) {
       flattenedData.push(...flattenHierarchy(item));
     }
-    const nodesToMap = selectedNodes?.length ? currentSelectedNodes : flattenedData;
+    const nodesToMap = flattenedData;
     console.log("flattenedData", nodesToMap);
     const allNodes = nodesToMap.map((item: any) => {
       let fieldsWithReferncePAth = savedMappingFieldsData?.map(
@@ -353,12 +360,13 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
         }
       );
 
-      console.log("fieldsWithReferncePAth*", fieldsWithReferncePAth);
-
+      console.log("fieldsWithReferncePAth2*", fieldsWithReferncePAth);
       let _workItems = fieldsWithReferncePAth.filter((currentWorkItem: any) => {
         return item?.rest?.["WorkItem Type"] === currentWorkItem?.key;
       });
       return { item, workItems: _workItems };
+  // }
+
     });
     console.log("allNodes", allNodes);
     const generateRequestBody = allNodes
@@ -425,6 +433,9 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     // // Initialize the root nodes
     // const rootNode = buildTree("parent");
     // console.log("rootNode*", rootNode);
+
+    console.log("generateRequestBody",generateRequestBody);
+    
     const newArr = generateRequestBody?.map((node:any)=> {
       const childArr =  generateRequestBody?.filter(((f:any) => {
         return node?.sequenceId ===  f.parentKey
@@ -517,15 +528,21 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     console.log("responseMigrate",response);
   
    if(response?.status === 200){
-    setTreeData([])
-    fetchRequestToGenerateTree();
-  
     notification?.success({message:"Work Items successfully migrated to Azure Board.!"})
+    setTreeData([])
+    setTimeout(() => {
+      fetchRequestToGenerateTree();
+      setCurrentSelectedNodes([])
+      setSelectedNodes([])
+    }, 2000);
    }else{
-  
+    setCurrentSelectedNodes([])
+    setSelectedNodes([])
     notification?.error({message:" Unable to migrate the Work Items  to Azure Board.!"})
    }
     }else{
+      setCurrentSelectedNodes([])
+      setSelectedNodes([])
       notification?.error({message:"Unable to migrate the selected Work Items without Parent Work Item to Azure Board.!'"})
     }
    
@@ -766,8 +783,12 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   }, []);
 
   const handleSearch = () => {
-    setTreeData(intialTreeState)
+    setTreeData([])
+    fetchRequestToGenerateTree();
+   
+ setTimeout(()=> {
 
+  if(treeData?.length){    
     const phaseArr = selectedItemsPhase.map((item) => {
       if (item === 'Phase 1') {
         return "1";
@@ -894,8 +915,10 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     }else{
       setTreeData([]);
       fetchRequestToGenerateTree();
-      notification?.warning({message:"Can't find the searched item in the tree"})
+      notification?.warning({message:"No such item exists.."})
     }
+  }
+ },2000)
     
   };
 
@@ -1226,6 +1249,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
             <Button
               type="primary"
               htmlType="button"
+              disabled={isLoading ? true : false}
               onClick={handleMigrateToDevops}
               style={{ marginTop: 10 }}
             > <Trans>DevOpsTree_MigrateTitle</Trans>

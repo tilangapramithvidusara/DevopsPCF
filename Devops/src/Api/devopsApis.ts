@@ -460,8 +460,9 @@ export const createMappingFile = async (_data: any, guid: any) => {
 export const getDevopsWorkItemType = async(id:any,type:any) => {
 
     try{
-     const _data :any = await axios.get(`https://designdevportal-uk.powerappsportals.com/en-US/get-document-templates/?gydesurveyid=${id}&type=surveymodules`);
- console.log("getDevopsWorkItemType",_data);
+
+     const _data :any = await axios.get(`~/get-document-templates/?gydesurveyid=${id}&type=surveymodules`);
+ console.log("getDevopsWorkItemTypeData",_data);
  
      let result =_data?.data
      console.log("result",result);
