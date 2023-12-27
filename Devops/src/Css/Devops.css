@@ -389,3 +389,15 @@ font: bold;
   margin-top: -3px;
   /* margin-bottom: 0px; */
 }
+
+.filter-checkbox{
+
+   color: red;
+   font-weight: bold;
+}
+
+.filter-Remove-checkbox{
+
+  color: green;
+  font-weight: bold;
+}

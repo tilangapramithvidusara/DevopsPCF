@@ -1,4 +1,4 @@
-import { Button, Checkbox, Input, Spin, Tree,notification, Tooltip } from "antd";
+import { Button, Checkbox, Input, Spin, Tree,notification, Tooltip,Space } from "antd";
 import type { DataNode, TreeProps } from "antd/es/tree";
 import React, { useEffect, useState } from "react";
 import {
@@ -88,7 +88,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   console.log("currentUser:", window?.parent?.userId);
-
+  const [api, contextHolder] = notification.useNotification();
   // const fetchRequestToGenerateTree1 = async () => {
   //   fetchAllInternalIdsByBusinessSurveyId(cbsId)
   //     .then(async (res: any) => {
@@ -127,6 +127,12 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   //     .catch((err) => console.log("error getting all ids", err));
   // };
 
+  const close = () => {
+    console.log(
+      'Notification was closed. Either the close button was clicked or duration time elapsed.',
+    );
+  };
+  
   const fetchRequestToGenerateTree = async () => {
     const data: string | null = localStorage.getItem("items");
     const authData: any = data ? JSON.parse(data) : null;
@@ -268,7 +274,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
                             ? _item?.devopsWorkItem
                             : _item?.sourceWorkItem,
                         referencePath: `/fields/${_item?.fieldReferenceName}`,
-                        value: devOpsValue,
+                        value: devOpsValue === "N/A" ? "" : devOpsValue,
                       }
                     );
                   }
@@ -528,13 +534,13 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     console.log("responseMigrate",response);
   
    if(response?.status === 200){
-    notification?.success({message:"Work Items successfully migrated to Azure Board.!"})
-    setTreeData([])
-    setTimeout(() => {
-      fetchRequestToGenerateTree();
-      setCurrentSelectedNodes([])
-      setSelectedNodes([])
-    }, 2000);
+    // setTreeData([])
+    // setCurrentSelectedNodes([])
+    // setSelectedNodes([])
+    // let url = `${window?.origin}/en-US/gyde365-survey-edit/?id=${cbsId}`
+      // window.location.href = `${window?.origin}/en-US/gyde365-survey-edit/?id=${cbsId}`\
+      openNotification()
+    
    }else{
     setCurrentSelectedNodes([])
     setSelectedNodes([])
@@ -611,6 +617,35 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     } else {
       return [];
     }
+  };
+
+
+  const openNotification = () => {
+    const key = `open${Date.now()}`;
+    const btn = (
+      <Space>
+        <Button type="link" size="small" onClick={() =>{
+window.location.reload();
+api.destroy()
+        }}>
+          Cancel
+        </Button>
+        <Button type="primary" size="small" onClick={() => {
+           window.location.href = `${window?.origin}/en-US/gyde365-survey-edit/?id=${cbsId}`
+           api.destroy(key)
+        } }>
+          Ok
+        </Button>
+      </Space>
+    );
+    api.open({
+      message: 'Migration Alert',
+      description:
+        'Migration process will take a while. Do you want to view the status in Job History page?',
+      btn,
+      key,
+      onClose: close,
+    });
   };
 
   useEffect(() => {
@@ -1106,7 +1141,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
  
   return (
     <div className="work-item-summary">
-  
+  {contextHolder}
       {treeData?.length && selectedKeys?.length > 0 ? (
         
         <>

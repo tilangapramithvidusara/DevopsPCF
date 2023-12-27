@@ -50,31 +50,33 @@ export const fetchWorkItemsByBusinessSurveyId = async( id:any,busId:any,orgUrl:a
     },
     success: function (data: any, textStatus: any, xhr: any) {
       console.log("GetWorkItemTypes",data);
-      console.log("type of",typeof data);
+      console.log("type of*",typeof data);
+
 
       if (/("Description":\s*"[^"]*")/.test(data)) {
         data = data.replace(/"Description": "([^"]*)",/g, function (match:any, description:any) {
           var updatedDescription = description.replace(/\n/g, "\\n");
           return `"Description": "${updatedDescription}",`;
-        });
+        });  
+    }
+    if (/("Acceptance Criteria":\s*"[^"]*")/.test(data)) {
     
+        console.log("valiud");
+        data = data.replace(/"Acceptance Criteria": "([^"]*)",/g, function (match:any, description:any) {
+          var updatedDescription = description.replace(/\n/g, "\\n");
+          return `"Acceptance Criteria": "${updatedDescription}",`;
+          
+        });
+        
+    }
         try {
           var jsonData = JSON.parse(data);
-         
           console.log("jsonParseData", jsonData);
           resolve({ type: "success", data : jsonData});
         } catch (error) {
           console.error("Error parsing JSON: " + error);
         }
-      } else {
-        try {
-          var _data = JSON.parse(data);
-      console.log("jsonParseData", _data);
-      resolve({ type: "success", data : _data});
-        } catch (error) {
-          console.error("Error parsing JSON: " + error);
-        }
-      }
+     
      
     },
     error: function (request: any, status: any, thrown: any) {
