@@ -6,6 +6,7 @@ import {
   fetchWorkItemTypes,
   fetchWorkItemsByBusinessSurveyId,
   generateDevops,
+  migaratedJobStatus,
 } from "../DevopsTree/DevopsTreeApi/Api";
 import { fetchFieldMapping, getDevopsWorkItemType } from "../Api/devopsApis";
 import { TreeViewData } from "../Constants/Samples/sample";
@@ -58,8 +59,9 @@ interface TreeView {
   guid: any;
   defaultGuid: any;
   language: any;
+  currentSequence:any
 }
-const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
+const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language ,currentSequence}) => {
   const url = new URL(window.location.href);
   const queryParameters = url.searchParams;
   const _navigateUrl = queryParameters.get("returnto");
@@ -87,8 +89,10 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   >([]);
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  console.log("currentUser:", window?.parent?.userId);
+  console.log("currentUser:", window?.parent?.userId,currentSequence);
   const [api, contextHolder] = notification.useNotification();
+  const [jobHistoryStatus, setJobHistoryStatus] =useState<any>(false);
+
   // const fetchRequestToGenerateTree1 = async () => {
   //   fetchAllInternalIdsByBusinessSurveyId(cbsId)
   //     .then(async (res: any) => {
@@ -132,7 +136,20 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
       'Notification was closed. Either the close button was clicked or duration time elapsed.',
     );
   };
+
+
+  useEffect(()=> {
+    hanldeMigratePrograss()
+  },[])
   
+  const hanldeMigratePrograss = async()=> {
+
+    const  migratedStatus :any = await migaratedJobStatus(cbsId)
+ console.log("migratedStatus",migratedStatus);
+ 
+    setJobHistoryStatus(migratedStatus?.data > 0 ? true :false)
+
+  }
   const fetchRequestToGenerateTree = async () => {
     const data: string | null = localStorage.getItem("items");
     const authData: any = data ? JSON.parse(data) : null;
@@ -176,46 +193,85 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
   }, []);
 
   console.log("filteredData", filteredTreeData);
-  const onCheck: TreeProps["onCheck"] = (checkedKeys, info) => {
-    console.log("checkRt",info, "info?.checkedNodes",info?.checkedNodes ,"checkedKeys",checkedKeys);
+  // const onCheck: TreeProps["onCheck"] = (checkedKeys, info) => {
+  //   console.log("checkRt",info, "info?.checkedNodes",info?.checkedNodes ,"checkedKeys",checkedKeys);
     
-    setSelectedNodes(info?.checkedNodes);
-    const filterNodesByCheckedKeys = (node :any, checkedKeys:any, filterFunction:any) => {
-      const isNodeIncluded = filterFunction(node, checkedKeys);
+  //   setSelectedNodes(info?.checkedNodes);
+  //   const filterNodesByCheckedKeys = (node :any, checkedKeys:any, filterFunction:any) => {
+  //     const isNodeIncluded = filterFunction(node, checkedKeys);
   
-      if (isNodeIncluded) {
-          return {
-              ...node,
-              children: node.children?.map((child:any) => filterNodesByCheckedKeys(child, checkedKeys, filterFunction)).filter(Boolean),
-          };
-      }
+  //     if (isNodeIncluded) {
+  //         return {
+  //             ...node,
+  //             children: node.children?.map((child:any) => filterNodesByCheckedKeys(child, checkedKeys, filterFunction)).filter(Boolean),
+  //         };
+  //     }
   
-      else{
-        return null
-      }
-  };
+  //     else{
+  //       return null
+  //     }
+  // };
       
-    const genericFilterFunction = (node :any, checkedKeys :any) => checkedKeys.includes(node.key);
-    let checkedKeysNode :any =checkedKeys;
-    const checkedKeysResult = checkedKeysNode?.checked;
-    const filteredArray = treeData
-        ?.map((item:any) => filterNodesByCheckedKeys(item, checkedKeysResult, genericFilterFunction))
-        .filter(Boolean);
+  //   const genericFilterFunction = (node :any, checkedKeys :any) => checkedKeys.includes(node.key);
+  //   let checkedKeysNode :any =checkedKeys;
+  //   const checkedKeysResult = checkedKeysNode?.checked;
+  //   const filteredArray = treeData
+  //       ?.map((item:any) => filterNodesByCheckedKeys(item, checkedKeysResult, genericFilterFunction))
+  //       .filter(Boolean);
     
-    console.log("filteredTree", filteredArray);
+  //   console.log("filteredTree", filteredArray);
     
    
 
 
   
-  console.log("setCurrentSelectedNodesUTR",filteredArray);
+  // console.log("setCurrentSelectedNodesUTR",filteredArray);
 
   
 
   
-  setCurrentSelectedNodes(filteredArray)
+  // setCurrentSelectedNodes(filteredArray)
+  // };
+
+  const onCheck: TreeProps["onCheck"] = (checkedKeys, info) => {
+    console.log("checkRt",info, "info?.checkedNodes",info?.checkedNodes ,"checkedKeys",checkedKeys);
+    setSelectedNodes(info?.checkedNodes);
+    const handleParentLevel = (treeData:any)=> {
+      return  treeData
+          ?.map((item:any) => {
+            console.log("item223",item);
+            
+            return filterNodesByCheckedKeys(item, checkedKeysResult, genericFilterFunction)
+          })
+          .filter(Boolean);
+      } 
+    const filterNodesByCheckedKeys = (node :any, checkedKeys:any, filterFunction:any) => {
+      const isNodeIncluded = filterFunction(node, checkedKeys);
+      console.log("isNodeIncluded",isNodeIncluded,node); 
+      if (isNodeIncluded) {
+          return {
+              ...node,
+              children: node.children?.map((child:any) => filterNodesByCheckedKeys(child, checkedKeys, filterFunction)).filter(Boolean).flat(Infinity),
+          };
+      }
+      else if(!isNodeIncluded && node?.children?.length){
+       return handleParentLevel(node?.children)
+      }
+      else{
+        return null
+      }
   };
-
+    const genericFilterFunction = (node :any, checkedKeys :any) => {
+      console.log("node963",node,checkedKeys);   
+     return checkedKeys.includes(node.key);
+    }
+    let checkedKeysNode :any =checkedKeys;
+    const checkedKeysResult = checkedKeysNode?.checked;
+    const filteredArray = handleParentLevel(treeData)
+    console.log("filteredTree", filteredArray)
+  console.log("setCurrentSelectedNodesUTR",filteredArray.flat(Infinity));
+  setCurrentSelectedNodes(filteredArray.flat(Infinity))
+  };
   const handleMigrateToDevops = async () => {
     console.log("handleMigrateToDevopsx");
     setIsLoading(true)
@@ -540,6 +596,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language }) => {
     // let url = `${window?.origin}/en-US/gyde365-survey-edit/?id=${cbsId}`
       // window.location.href = `${window?.origin}/en-US/gyde365-survey-edit/?id=${cbsId}`\
       openNotification()
+      hanldeMigratePrograss()
     
    }else{
     setCurrentSelectedNodes([])
@@ -690,15 +747,35 @@ api.destroy()
       });
       return childrenNodes;
     }
+
+    
     const _filtertedItemArr = filteredTreeData?.filter((item: any) =>
       savedMappingFieldsData?.some((_item: any) => {
         return _item.key === item?.["WorkItem Type"];
       })
     );
     console.log("_filtertedItemArr", _filtertedItemArr);
-
-    const isMigrated = _filtertedItemArr?.some((item:any)=> item?.['Devops Id'] !== "")
-    const treeData = _filtertedItemArr.map((item: any) => {
+    const handleCurrentSequence = (sequenceType:any)=> {
+      let sequenceOrder = sequenceType === "ws" ? "Workitem Item Template Sequance" : "Business Process Id"
+      console.log("sequenceOrder",sequenceOrder);
+      
+     return _filtertedItemArr.sort((a, b) => {
+      const valueA = a[sequenceOrder] === "" ? Infinity : parseInt(a[sequenceOrder]);
+      const valueB = b[sequenceOrder] === "" ? Infinity : parseInt(b[sequenceOrder]);
+    
+      return valueA - valueB;
+    });
+    }
+  
+    const sortedWorkITems =  currentSequence === "Work Item Sequence" ? handleCurrentSequence("ws"): currentSequence === "Business Process ID" ?  handleCurrentSequence("bs") :_filtertedItemArr
+    console.log("sortedWorkITems",sortedWorkITems);
+    if(sortedWorkITems?.length === 0) {
+      console.log("No Sequence Match",sortedWorkITems);
+      return ;
+      
+    }
+    const isMigrated = sortedWorkITems?.some((item:any)=> item?.['Devops Id'] !== "")
+    const treeData = sortedWorkITems?.map((item: any) => {
       
         const _nodeTitle = item?.['Title'] +' - '+ item?.['Devops Id'];
         let disabled =  item?.['Devops Id'] ? true:false
@@ -713,7 +790,7 @@ api.destroy()
       const newNode = createNode(_nodeTitle, disabled,workitemResponseId, item);
       console.log("newNodsee", newNode);
       newNode.children = constructTree(
-        _filtertedItemArr,
+        sortedWorkITems,
         item?.["Workitem Response Id"]
       );
       return newNode;
@@ -1136,6 +1213,7 @@ api.destroy()
     console.log("check");
  setcheckKey(!checkKey)
     fetchRequestToGenerateTree();
+    hanldeMigratePrograss();
   };
  console.log("surveySettingDataArr",surveySettingDataArr);
  
@@ -1284,7 +1362,7 @@ api.destroy()
             <Button
               type="primary"
               htmlType="button"
-              disabled={isLoading ? true : false}
+              disabled={isLoading ? true : jobHistoryStatus ? true : false}
               onClick={handleMigrateToDevops}
               style={{ marginTop: 10 }}
             > <Trans>DevOpsTree_MigrateTitle</Trans>

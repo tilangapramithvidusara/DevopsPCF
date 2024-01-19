@@ -211,7 +211,7 @@ export const fetchDevopsConnectionDetails = (id: any, bId: any) => {
   return new Promise((resolve: any, rejects: any) => {
     window.parent.webapi.safeAjax({
       type: "GET",
-      url: `/_api/gyde_devopsconfigurations?$select=gyde_devopsconfigurationid,_gyde_customerbusinesssurvey_value,_gyde_customerorpartner_value,gyde_defaultsetting,gyde_devopsfieldmappings,gyde_devopsfieldmappings_name,gyde_devopsmappingcomplete,gyde_devopsmappings,gyde_devopsmappings_name,gyde_name,gyde_devopsorganizationurl,gyde_devopsprojectname,statecode,versionnumber&$filter=(_gyde_customerorpartner_value eq ${id} and _gyde_customerbusinesssurvey_value eq ${bId} )`,
+      url: `/_api/gyde_devopsconfigurations?$select=gyde_devopsconfigurationid,_gyde_customerbusinesssurvey_value,_gyde_customerorpartner_value,gyde_defaultsetting,gyde_devopsfieldmappings,gyde_devopsfieldmappings_name,gyde_devopsmappingcomplete,gyde_devopsmappings,gyde_devopsmappings_name,gyde_name,gyde_devopsorganizationurl,gyde_devopsprojectname,gyde_sequenceby,statecode,versionnumber&$filter=(_gyde_customerorpartner_value eq ${id} and _gyde_customerbusinesssurvey_value eq ${bId} )`,
       contentType: "application/json",
       headers: {
         Prefer: "odata.include-annotations=*",
@@ -224,6 +224,7 @@ export const fetchDevopsConnectionDetails = (id: any, bId: any) => {
           let _fetchData :any = {}
           _fetchData.gyde_devopsprojectname = results.value[0]["gyde_devopsprojectname"]; // Guid
           _fetchData.gyde_devopsorganizationurl = results.value[0]["gyde_devopsorganizationurl"]; // Guid
+          _fetchData.gyde_sequenceby = results.value[0]["gyde_sequenceby"]; // Guid
           console.log("fetchDevopsConfig");
 
           resolve({ type: "success", connectionDetails: _fetchData });

@@ -52,23 +52,38 @@ export const fetchWorkItemsByBusinessSurveyId = async( id:any,busId:any,orgUrl:a
       console.log("GetWorkItemTypes",data);
       console.log("type of*",typeof data);
 
+      const keys = Array.from(new Set(data.match(/"([^"]+)":/g).map((match: any) => match.replace(/"/g, '').replace(/:/g, '').trim())));
+console.log(keys);
 
-      if (/("Description":\s*"[^"]*")/.test(data)) {
-        data = data.replace(/"Description": "([^"]*)",/g, function (match:any, description:any) {
-          var updatedDescription = description.replace(/\n/g, "\\n");
-          return `"Description": "${updatedDescription}",`;
-        });  
-    }
-    if (/("Acceptance Criteria":\s*"[^"]*")/.test(data)) {
-    
-        console.log("valiud");
-        data = data.replace(/"Acceptance Criteria": "([^"]*)",/g, function (match:any, description:any) {
-          var updatedDescription = description.replace(/\n/g, "\\n");
-          return `"Acceptance Criteria": "${updatedDescription}",`;
-          
+function handleMultilineProperty(key:any) {
+    if (new RegExp(`("${key}":\\s*"[^"]*")`).test(data)) {
+        console.log("key",key);
+        data = data.replace(new RegExp(`"${key}": "([^"]*)",`, 'g'), function (match:any, propValue:any) {
+            const updatedValue = propValue.replace(/\n/g, "\\n");
+            return `"${key}": "${updatedValue}",`;
         });
-        
     }
+}
+keys.forEach(key => handleMultilineProperty(key));
+
+
+
+    //   if (/("Description":\s*"[^"]*")/.test(data)) {
+    //     data = data.replace(/"Description": "([^"]*)",/g, function (match:any, description:any) {
+    //       var updatedDescription = description.replace(/\n/g, "\\n");
+    //       return `"Description": "${updatedDescription}",`;
+    //     });  
+    // }
+    // if (/("Acceptance Criteria":\s*"[^"]*")/.test(data)) {
+    
+    //     console.log("valiud");
+    //     data = data.replace(/"Acceptance Criteria": "([^"]*)",/g, function (match:any, description:any) {
+    //       var updatedDescription = description.replace(/\n/g, "\\n");
+    //       return `"Acceptance Criteria": "${updatedDescription}",`;
+          
+    //     });
+        
+    // }
         try {
           var jsonData = JSON.parse(data);
           console.log("jsonParseData", jsonData);
@@ -112,4 +127,31 @@ export const fetchAllInternalIdsByBusinessSurveyId = async(id:any) => {
   });
 
   return await Promise.all(promises);
+}
+
+export const migaratedJobStatus = (id:any)=> {
+
+  return new Promise((resolve,reject)=> {
+
+    window.parent.webapi.safeAjax({
+      type: "GET",
+      url: `/_api/gyde_devopsjobhistories?$filter=(statuscode eq 300600001 and _gyde_gyde365survey_value eq ${id})&$count=true`,
+      contentType: "application/json",
+      headers: {
+          "Prefer": "odata.include-annotations=*"
+      },
+      success: function (data :any, textStatus :any, xhr :any) {
+          var results = data;
+          console.log("jobhistroy",results);
+          var odata_count = results["@odata.count"];
+          console.log("odata_count",odata_count);
+          resolve({ type: "success", data :odata_count });
+      },
+      error: function (xhr:any, textStatus:any, errorThrown:any) {
+          console.log(xhr);
+          reject({ type: "error", status: xhr.status });
+      }
+  });
+
+  })
 }

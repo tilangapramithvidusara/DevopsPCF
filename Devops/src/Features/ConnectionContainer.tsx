@@ -1,5 +1,12 @@
 import React, { useEffect, useReducer, useState } from "react";
-import { Button, notification, Radio, RadioChangeEvent, Spin } from "antd";
+import {
+  Button,
+  notification,
+  Radio,
+  RadioChangeEvent,
+  Select,
+  Spin,
+} from "antd";
 // import $ from 'jquery';
 import { Trans, useTranslation } from "react-i18next";
 import TableComponent from "../Components/TableComponent";
@@ -32,76 +39,93 @@ declare global {
     devopsWorkItemFields: any;
     devopsWorkItemFieldURL: any;
     DevopsCreateWorkItem: any;
-    userId:any
+    userId: any;
   }
 }
 
 const initialState = {
-  DevOpsConfiguration_SaveButton: 'Save', 
-  DevOpsConfiguration_SetAsDefaultButton:'Set as Default',
-  DevOpsConfiguration_CancelButton:'Cancel',
-  DevOpsConfiguration_NextButton:'Next',
-  DevOpsConfiguration_DevopsWorkitemTitle: 'DevOps Work Items',
-  DevOpsConfiguration_ConnectionDetailsTitle: 'Connection Details',
-  DevOpsConfiguration_MappingWorkItemTypeTitle:'Mapping - Work Item Types',
-  DevOpsConfiguration_OrganizationUrlTitle: 'Organization URL',
-  DevOpsConfiguration_DevOpsProjectTitle: 'DevOps Project',
-  DevOpsConfiguration_AuthorizationTokenTitle: 'Authorization Token',
-  DevOpsConfiguration_ConnectButton: 'Connect',
-  DevOpsConfiguration_FieldMappingTitle: 'Field Mapping',
-  DevOpsConfiguration_WorkItemFieldMappingTitle: 'Work Item Field Mapping',
-   DevOpsTree_MigrateTitle : "Migrate to DevOps",
-   DevOpsTree_ShowNewWorkItemsTitle : "Show new work items",
-   DevOpsTree_ApplyBtn : "Apply",
-   DevOpsTree_CollapseBtn : "Collapse All",
-   DevOpsTree_ExpandBtn : " Expand All",
-   DevOpsTree_workItemTitle :"DevOps Work Item Summary",
-   DevOpsTree_BackBTN :"Back"
-
+  DevOpsConfiguration_SaveButton: "Save",
+  DevOpsConfiguration_SetAsDefaultButton: "Set as Default",
+  DevOpsConfiguration_CancelButton: "Cancel",
+  DevOpsConfiguration_NextButton: "Next",
+  DevOpsConfiguration_DevopsWorkitemTitle: "DevOps Work Items",
+  DevOpsConfiguration_ConnectionDetailsTitle: "Connection Details",
+  DevOpsConfiguration_MappingWorkItemTypeTitle: "Mapping - Work Item Types",
+  DevOpsConfiguration_OrganizationUrlTitle: "Organization URL",
+  DevOpsConfiguration_DevOpsProjectTitle: "DevOps Project",
+  DevOpsConfiguration_AuthorizationTokenTitle: "Authorization Token",
+  DevOpsConfiguration_ConnectButton: "Connect",
+  DevOpsConfiguration_FieldMappingTitle: "Field Mapping",
+  DevOpsConfiguration_WorkItemFieldMappingTitle: "Work Item Field Mapping",
+  DevOpsTree_MigrateTitle: "Migrate to DevOps",
+  DevOpsTree_ShowNewWorkItemsTitle: "Show new work items",
+  DevOpsTree_ApplyBtn: "Apply",
+  DevOpsTree_CollapseBtn: "Collapse All",
+  DevOpsTree_ExpandBtn: " Expand All",
+  DevOpsTree_workItemTitle: "DevOps Work Item Summary",
+  DevOpsTree_BackBTN: "Back",
 };
 
-function stateReducer(state:any, action:any) {
+function stateReducer(state: any, action: any) {
   switch (action.type) {
-    case 'DevOpsConfiguration_SaveButton':
+    case "DevOpsConfiguration_SaveButton":
       return { ...state, DevOpsConfiguration_SaveButton: action.value };
-    case 'DevOpsConfiguration_SetAsDefaultButton':
+    case "DevOpsConfiguration_SetAsDefaultButton":
       return { ...state, DevOpsConfiguration_SetAsDefaultButton: action.value };
-    case 'DevOpsConfiguration_CancelButton':
+    case "DevOpsConfiguration_CancelButton":
       return { ...state, DevOpsConfiguration_CancelButton: action.value };
-    case 'DevOpsConfiguration_NextButton':
+    case "DevOpsConfiguration_NextButton":
       return { ...state, DevOpsConfiguration_NextButton: action.value };
-    case 'DevOpsConfiguration_DevopsWorkitemTitle':
-      return { ...state, DevOpsConfiguration_DevopsWorkitemTitle: action.value };
-    case 'DevOpsConfiguration_ConnectionDetailsTitle':
-      return { ...state, DevOpsConfiguration_ConnectionDetailsTitle: action.value };
-    case 'DevOpsConfiguration_MappingWorkItemTypeTitle':
-      return { ...state, DevOpsConfiguration_MappingWorkItemTypeTitle: action.value };
-    case 'DevOpsConfiguration_OrganizationUrlTitle':
-      return { ...state, DevOpsConfiguration_OrganizationUrlTitle: action.value };
-    case 'DevOpsConfiguration_DevOpsProjectTitle':
+    case "DevOpsConfiguration_DevopsWorkitemTitle":
+      return {
+        ...state,
+        DevOpsConfiguration_DevopsWorkitemTitle: action.value,
+      };
+    case "DevOpsConfiguration_ConnectionDetailsTitle":
+      return {
+        ...state,
+        DevOpsConfiguration_ConnectionDetailsTitle: action.value,
+      };
+    case "DevOpsConfiguration_MappingWorkItemTypeTitle":
+      return {
+        ...state,
+        DevOpsConfiguration_MappingWorkItemTypeTitle: action.value,
+      };
+    case "DevOpsConfiguration_OrganizationUrlTitle":
+      return {
+        ...state,
+        DevOpsConfiguration_OrganizationUrlTitle: action.value,
+      };
+    case "DevOpsConfiguration_DevOpsProjectTitle":
       return { ...state, DevOpsConfiguration_DevOpsProjectTitle: action.value };
-    case 'DevOpsConfiguration_AuthorizationTokenTitle':
-      return { ...state, DevOpsConfiguration_AuthorizationTokenTitle: action.value };
-    case 'DevOpsConfiguration_ConnectButton':
+    case "DevOpsConfiguration_AuthorizationTokenTitle":
+      return {
+        ...state,
+        DevOpsConfiguration_AuthorizationTokenTitle: action.value,
+      };
+    case "DevOpsConfiguration_ConnectButton":
       return { ...state, DevOpsConfiguration_ConnectButton: action.value };
-    case 'DevOpsConfiguration_FieldMappingTitle':
+    case "DevOpsConfiguration_FieldMappingTitle":
       return { ...state, DevOpsConfiguration_FieldMappingTitle: action.value };
-    case 'DevOpsConfiguration_WorkItemFieldMappingTitle':
-      return { ...state, DevOpsConfiguration_WorkItemFieldMappingTitle: action.value };
-    case 'DevOpsTree_MigrateTitle':
+    case "DevOpsConfiguration_WorkItemFieldMappingTitle":
+      return {
+        ...state,
+        DevOpsConfiguration_WorkItemFieldMappingTitle: action.value,
+      };
+    case "DevOpsTree_MigrateTitle":
       return { ...state, DevOpsTree_MigrateTitle: action.value };
-    case 'DevOpsTree_ShowNewWorkItemsTitle':
+    case "DevOpsTree_ShowNewWorkItemsTitle":
       return { ...state, DevOpsTree_ShowNewWorkItemsTitle: action.value };
-    case 'DevOpsTree_ApplyBtn':
+    case "DevOpsTree_ApplyBtn":
       return { ...state, DevOpsTree_ApplyBtn: action.value };
-    case 'DevOpsTree_CollapseBtn':
+    case "DevOpsTree_CollapseBtn":
       return { ...state, DevOpsTree_CollapseBtn: action.value };
-    case 'DevOpsTree_ExpandBtn':
+    case "DevOpsTree_ExpandBtn":
       return { ...state, DevOpsTree_ExpandBtn: action.value };
-      case 'DevOpsTree_workItemTitle':
-        return { ...state, DevOpsTree_workItemTitle: action.value };
-   case 'DevOpsTree_BackBTN':
-          return { ...state, DevOpsTree_BackBTN: action.value };
+    case "DevOpsTree_workItemTitle":
+      return { ...state, DevOpsTree_workItemTitle: action.value };
+    case "DevOpsTree_BackBTN":
+      return { ...state, DevOpsTree_BackBTN: action.value };
     default:
       return state;
   }
@@ -153,12 +177,9 @@ export default function ConnectionContainer() {
   const [connectionSaveData, setConnectionSaveData] = useState<any>();
   const [saveConnectionDetail, setSaveConnectionDetail] = useState<any>();
   const [currentFeildData, setCurrentFeildData] = useState<any>([]);
-
   const [language, dispatch] = useReducer(stateReducer, initialState);
-
-console.log("userIdCrrent", window?.parent?.userId);
-
-
+  const [sequenceBy, setSequenceBy] = useState<String>("");
+  console.log("userIdCrrent", window?.parent?.userId);
 
   // Get the URLSearchParams object from the URL
   const queryParameters = url.searchParams;
@@ -169,10 +190,9 @@ console.log("userIdCrrent", window?.parent?.userId);
   const _itemId = queryParameters.get("id");
   const _navigateUrl = queryParameters.get("returnto");
 
- useEffect(()=>{
-
- // languageTranslator(dispatch,initialState)
- },[])
+  useEffect(() => {
+    // languageTranslator(dispatch,initialState)
+  }, []);
 
   const showModal = () => {
     const data: string | null = localStorage.getItem("items");
@@ -284,28 +304,32 @@ console.log("userIdCrrent", window?.parent?.userId);
         //   "Options": null
         // }
         // crmData?.push(businessProcessid,gridResponeData,dcOutput,partnerNotes)
-        console.log("gridResponeData"),crmData;
+        console.log("gridResponeData"), crmData;
         let tableData = crmData?.map((crm: any, key: any) => {
           let dropdownArr: any = devopsData?.data
             .filter(
               (devOps: any) =>
                 devOps.fieldName !== "Work Item Type" &&
-                devOps.fieldName !== "Title" && 
+                devOps.fieldName !== "Title" &&
                 (((crm.AttributeType === "Memo" ||
                   crm.AttributeType === "String" ||
-                  crm.AttributeType === "Lookup") &&  crm?.Options === null &&
-                  (devOps.attributeType === "String" ||  
+                  crm.AttributeType === "Lookup") &&
+                  crm?.Options === null &&
+                  (devOps.attributeType === "String" ||
                     devOps.attributeType === "PlainText" ||
                     devOps.attributeType === "TreePath" ||
                     devOps.attributeType === "StringTreePath" ||
                     devOps.attributeType === "Identity")) ||
-                  (crm.AttributeType === "Memo"  && crm?.Options === null && 
+                  (crm.AttributeType === "Memo" &&
+                    crm?.Options === null &&
                     (devOps.attributeType === "Html" ||
                       devOps.attributeType === "History" ||
                       devOps.attributeType === "HistoryHtml")) ||
-                  (crm.AttributeType === "String"  && crm?.Options === null&&
+                  (crm.AttributeType === "String" &&
+                    crm?.Options === null &&
                     devOps.attributeType === "DateTime") ||
-                  (crm.AttributeType === "Decimal" && crm?.Options === null&&
+                  (crm.AttributeType === "Decimal" &&
+                    crm?.Options === null &&
                     (devOps.attributeType === "Integer" ||
                       devOps.attributeType === "Double")) ||
                   (crm.AttributeType === "Picklist" &&
@@ -313,13 +337,16 @@ console.log("userIdCrrent", window?.parent?.userId);
                       devOps.attributeType === "PicklistString" ||
                       devOps.attributeType === "DoublePicklist")) ||
                   ((crm.AttributeType === "String" ||
-                    crm.AttributeType === "Lookup") && crm?.Options === null &&
+                    crm.AttributeType === "Lookup") &&
+                    crm?.Options === null &&
                     devOps.attributeType === "defaultGuId") ||
-                  (crm.AttributeType === "Boolean" && crm?.Options === null &&
+                  (crm.AttributeType === "Boolean" &&
+                    crm?.Options === null &&
                     devOps.attributeType === "Boolean") ||
                   (crm?.Options != undefined &&
                     crm?.Options?.length &&
-                    devOps?.hasPicklist === true))
+                    devOps?.hasPicklist === true) || crm?.Options?.length &&
+                    devOps?.attributeType === "String")
             )
             .map((_data: any, key: any) => {
               if (
@@ -484,7 +511,7 @@ console.log("userIdCrrent", window?.parent?.userId);
                     ...item,
                     defaultOptionList: [],
                     dropdown: _latestItem.dropdown,
-                    devopsWorkItem: "N/A"
+                    devopsWorkItem: "N/A",
                   };
                 }
               } else {
@@ -501,28 +528,23 @@ console.log("userIdCrrent", window?.parent?.userId);
             });
             console.log("_latestItemD", _latestItem, ":", item.sourceWorkItem);
 
-            
-
             if (_latestItem) {
               const foundInDropdown = _latestItem.dropdown?.some(
-                (option: any) =>
-                  option?.dropdownValue === item?.devopsWorkItem
+                (option: any) => option?.dropdownValue === item?.devopsWorkItem
               );
               if (foundInDropdown) {
                 return { ...item, dropdown: _latestItem.dropdown };
-              } 
-              else {
+              } else {
                 return {
                   ...item,
                   defaultOptionList: [],
                   dropdown: _latestItem.dropdown,
-                  devopsWorkItem: "N/A"
+                  devopsWorkItem: "N/A",
                 };
               }
-            } else{
+            } else {
               return item;
             }
-            
           });
           console.log("newupdatedArr", newupdatedArr);
 
@@ -551,14 +573,13 @@ console.log("userIdCrrent", window?.parent?.userId);
           },
         ];
         setColumns(columns);
-       // setIsLoading(false);
+        // setIsLoading(false);
         setIsModalOpen(true);
       } else if (devopsData?.status === "error") {
-       // setIsLoading(false);
+        // setIsLoading(false);
         setIsModalOpen(false);
-      }else{
+      } else {
         console.log("trigger Action");
-        
       }
       setIsLoading(false);
     }
@@ -611,6 +632,7 @@ console.log("userIdCrrent", window?.parent?.userId);
     requestType: string,
     isCreate: boolean = false
   ) => {
+    const workItemType = await getDevopsWorkItemType(_itemId, "workItemType");
     let _result: any = await fetchDevopsConfig(cusId, bId);
     console.log("devOpsCOnfig", _result);
     if (_result.type === "updateConfig") {
@@ -623,25 +645,47 @@ console.log("userIdCrrent", window?.parent?.userId);
           "load when saved data retrieving.....",
           JsonMappedData
         );
-        const validateData = await JsonMappedData?.data?.map((item:any) => {
+        const validateData = await JsonMappedData?.data?.map((item: any) => {
           return {
             ...item,
-            enable:devopsWorkItemTypes?.find(
-              (res :any) => res == item?.gyde_name
-            ) === undefined ? false : item?.enable,
-            gyde_name:
-            devopsWorkItemTypes?.find(
-              (res:any) => res == item?.gyde_name
-            )  ? devopsWorkItemTypes?.find(
-              (res:any) => res == item?.gyde_name
-            ) : "N/A",
+            enable:
+              devopsWorkItemTypes?.find(
+                (res: any) => res == item?.gyde_name
+              ) === undefined
+                ? false
+                : item?.enable,
+            gyde_name: devopsWorkItemTypes?.find(
+              (res: any) => res == item?.gyde_name
+            )
+              ? devopsWorkItemTypes?.find((res: any) => res == item?.gyde_name)
+              : "N/A",
           };
         });
+
+        console.log("validate^8",  validateData.filter((item:any) => workItemType.includes(item.name)));
+        const updatedJsonMappedData = validateData.filter((item:any) => workItemType.includes(item.name));
+        console.log("updatedJsonMappedData*",updatedJsonMappedData);
+
+        console.log("crmWorkItemTypes",workItemType);
         
-        
-        
-        
-        
+        workItemType.forEach((value:any) => {
+    const existingItem = validateData.find((item:any) => item.name === value);
+    if (!existingItem) {
+        updatedJsonMappedData.push({
+            key: JsonMappedData.length,
+            name: value,
+            gyde_name: "N/A",
+            enable: false,
+            isCorrectlyMapped: false,
+            fieldMapping: false
+        });
+    }
+});
+
+
+
+   console.log("updatedJsonMappedData",updatedJsonMappedData);
+   
         // .map((item: any) => {
         //   return {
         //     ...item,
@@ -653,8 +697,8 @@ console.log("userIdCrrent", window?.parent?.userId);
         //           ),
         //   };
         // });
-        setRetrieveDevopsMapping(validateData);
-        setDataAfterSave(validateData);
+        setRetrieveDevopsMapping(updatedJsonMappedData);
+        setDataAfterSave(updatedJsonMappedData);
         console.log("JsonMappedData", validateData);
         setIsLoading(false);
         console.log("savedFilteredData...!@#", savedFilteredData);
@@ -678,14 +722,14 @@ console.log("userIdCrrent", window?.parent?.userId);
     if (result.type === "updateDefault") {
       setDefaultGuId(result.id);
       let _result: any = await fetchFieldMapping(result.id);
-      console.log("heyyy",);
+      console.log("heyyy");
       console.log("fetchFieldMapping#", _result);
       if (_result?.type === "success") {
         console.log("AXFIC", result);
-        
+
         const _resultData = _result?.data?.data;
-        console.log("_resultDataDefaultt,",_resultData);
-        
+        console.log("_resultDataDefaultt,", _resultData);
+
         const updatedData = _resultData?.filter((item: any) => {
           if (item.key === mappedField?.source) {
             return item;
@@ -731,35 +775,34 @@ console.log("userIdCrrent", window?.parent?.userId);
     getConnectionDetails();
   }, []);
 
+  const getWorkItemTypesFromSurveySetting = async () => {
+    console.log(":_itemId", _itemId);
 
-  const getWorkItemTypesFromSurveySetting = async() => {
- console.log(":_itemId",_itemId);
- 
-     const workItemType  = await getDevopsWorkItemType(_itemId,"workItemType")
-     console.log("workItemType",workItemType);
-     workItemType?.length && setCrmWorkItemTypes(workItemType)
-     
-  }
+    const workItemType = await getDevopsWorkItemType(_itemId, "workItemType");
+    console.log("workItemType", workItemType);
+    workItemType?.length && setCrmWorkItemTypes(workItemType);
+  };
 
   const getConnectionDetails = async () => {
     let _result: any = await fetchDevopsConnectionDetails(cusId, cbsId);
 
     console.log("_resultASYNC", _result);
     setConnectionSaveData(_result);
+    setSequenceBy(_result?.connectionDetails?.gyde_sequenceby)
   };
 
-  useEffect(() => {
-    axios
-      .get(
-        "https://designv2partner-fapp-uk-dv.azurewebsites.net/api/GetWorkItemTypeFields?code=wOSuVFLCEQ1_GFrvVAuk-GUg5fXs82zdZPsqhN1fSUiNAzFuBnCDRA=="
-      )
-      .then((res) => {
-        console.log("ress11111", res);
-      })
-      .catch((e) => {
-        console.log("errorr1", e);
-      });
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .get(
+  //       "https://designv2partner-fapp-uk-dv.azurewebsites.net/api/GetWorkItemTypeFields?code=wOSuVFLCEQ1_GFrvVAuk-GUg5fXs82zdZPsqhN1fSUiNAzFuBnCDRA=="
+  //     )
+  //     .then((res) => {
+  //       console.log("ress11111", res);
+  //     })
+  //     .catch((e) => {
+  //       console.log("errorr1", e);
+  //     });
+  // }, []);
 
   useEffect(() => {
     console.log("isLoading885", isLoading);
@@ -959,7 +1002,7 @@ console.log("userIdCrrent", window?.parent?.userId);
     } else if (taskDataArr.length) {
       if (buttonType === "Save") {
         if (guId) {
-          let _result :any = await fetchFieldMapping(guId);
+          let _result: any = await fetchFieldMapping(guId);
           let updatedData = _taskDataArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "saved" };
           });
@@ -977,7 +1020,7 @@ console.log("userIdCrrent", window?.parent?.userId);
         let updatedDefaultData: any = await fetchDefaultSettingData(_pId, true);
         console.log("defaultGuIdTag1", updatedDefaultData, defaultGuId);
         if (defaultGuId) {
-          let _result:any = await fetchFieldMapping(defaultGuId);
+          let _result: any = await fetchFieldMapping(defaultGuId);
           let updatedData = _taskDataArr.map((item: any) => {
             return { ...item, ["isSavedType"]: "setasDefault" };
           });
@@ -1028,11 +1071,13 @@ console.log("userIdCrrent", window?.parent?.userId);
     setConfigureSettings(value);
   };
 
+
+
   const handleMappingItemSave = async () => {
     setIsLoading(true);
     if (guId) {
       console.log("formMapp", guId);
-
+      
       let response: any = await createMappingFile(mappedWorkItems, guId);
       console.log("mappinh handle");
       console.log("formMappresponse", response);
@@ -1085,9 +1130,11 @@ console.log("userIdCrrent", window?.parent?.userId);
     record.gyde_name = `gyde devOps config ${recordType}${hours}${minutes}${seconds}`;
     record["gyde_customerorpartner@odata.bind"] =
       recordType === "default" ? `/accounts(${_pId})` : `/accounts(${cusId})`; // Lookup
-      recordType !== "default" ?   record[
-      "gyde_customerbusinesssurvey@odata.bind"
-    ] = `/gyde_customerbusinesssurveies(${cbsId})` : ""; // Lookup
+    recordType !== "default"
+      ? (record[
+          "gyde_customerbusinesssurvey@odata.bind"
+        ] = `/gyde_customerbusinesssurveies(${cbsId})`)
+      : ""; // Lookup
     record.gyde_defaultsetting = false;
     console.log("record1", record, recordType);
     setIsLoading(true);
@@ -1173,8 +1220,8 @@ console.log("userIdCrrent", window?.parent?.userId);
     if (_result.type === "success") {
       const _resultData = _result?.data.data;
 
-      console.log("_resultDataTag",_resultData,_result?.data.data);
-      
+      console.log("_resultDataTag", _resultData, _result?.data.data);
+
       const updatedData = _resultData?.map((item: any) => {
         if (item.key === itemKey?.source) {
           return {
@@ -1237,14 +1284,12 @@ console.log("userIdCrrent", window?.parent?.userId);
     checkFinalMappingStatus(retrieveDevopsMapping, "isCorrectlyMapped")
   );
   const saveFieldmappingData = (data: any, guId: any, mappingStatus: any) => {
+    console.log("saveFieldmappingData", data);
 
-    console.log("saveFieldmappingData",data);
-    
     saveMappingData(data, guId)
       .then((result: any) => {
+        console.log("saveMappingData", result);
 
-        console.log("saveMappingData",result);
-        
         if (result.type === "success") {
           console.log("mappingStatus*7", mappingStatus);
 
@@ -1285,15 +1330,35 @@ console.log("userIdCrrent", window?.parent?.userId);
     //saveConnectionDetail(record);
   };
   console.log("reRenderC*", connectionSaveData, saveConnectionDetail);
+const handleSelectedSequence = (value:any) => {
 
+  console.log("handleSelectedSequence",value);
+  setSaveConnectionDetail((prevRecord:any) => ({
+    ...prevRecord,
+    gyde_sequenceby: value,
+  }));
+  setSequenceBy(value)
+
+}
+const sequenceOption = [
+  { value: 529870000, label: "None" },
+   { value: 529870001, label: "Work Item Sequence" },
+   { value: 529870002, label: "Business Process ID" },
+   
+ ]
   return (
     <div className="devops-container">
       {!isTreeViewVisible && connectionSaveData?.type === "success" ? (
         <Spin spinning={isLoading}>
-          <h1 className="title"><Trans>DevOpsConfiguration_DevopsWorkitemTitle</Trans></h1>
+          <h1 className="title">
+            <Trans>DevOpsConfiguration_DevopsWorkitemTitle</Trans>
+          </h1>
           <div className="bg-wrap">
             <h3 className="sub-title">
-              <span> <Trans>DevOpsConfiguration_ConnectionDetailsTitle</Trans></span>
+              <span>
+                {" "}
+                <Trans>DevOpsConfiguration_ConnectionDetailsTitle</Trans>
+              </span>
               <span>
                 {" "}
                 <h5 className="sub-title2">{configurationData?.gyde_name} </h5>
@@ -1315,28 +1380,52 @@ console.log("userIdCrrent", window?.parent?.userId);
 
             {devopsResult && (
               <>
-                {dataAfterSave?.length > 0 &&
-                  checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
-                  checkFinalMappingStatus(
-                    dataAfterSave,
-                    "isCorrectlyMapped"
-                  ) && (
-                    <Radio.Group
-                      options={[
-                        { label: <Trans>DevOps Generator</Trans>, value: "devopsGenerator" },
-                        {
-                          label:  <Trans>Configure Mapping</Trans>,
-                          value: "configureMapping",
-                        },
-                      ]}
-                      onChange={handleConfigure}
-                      value={configureSettings}
-                      optionType="button"
-                      buttonStyle="solid"
-                    />
-                  )}
+                <div className="devop-btn-group">
+                  <div>
+                  {dataAfterSave?.length > 0 &&
+                    checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
+                    checkFinalMappingStatus(
+                      dataAfterSave,
+                      "isCorrectlyMapped"
+                    ) && (
+                      <Radio.Group
+                        options={[
+                          {
+                            label: <Trans>DevOps Generator</Trans>,
+                            value: "devopsGenerator",
+                          },
+                          {
+                            label: <Trans>Configure Mapping</Trans>,
+                            value: "configureMapping",
+                          },
+                        ]}
+                        onChange={handleConfigure}
+                        value={configureSettings}
+                        optionType="button"
+                        buttonStyle="solid"
+                      />
+                    )}
 
-                <h3 className="sub-title mt-20"> <Trans>DevOpsConfiguration_MappingWorkItemTypeTitle</Trans></h3>
+                    </div>
+
+                  
+<div className="devopsdrpdown-btn">
+                  <a className="sequnce-title">  Sequence By: </a>   <Select
+                         disabled= {dataAfterSave?.length > 0 &&
+                          checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
+                          checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
+                          configureSettings == "devopsGenerator" ? true :false}
+                         style={{width:200}}
+                         defaultValue={sequenceBy ? sequenceOption?.find((element:any) => element?.value == sequenceBy)?.label : "None"}
+                         onChange={handleSelectedSequence}
+                         options={sequenceOption}
+                       /></div>
+                </div>
+
+                <h3 className="sub-title mt-20">
+                  {" "}
+                  <Trans>DevOpsConfiguration_MappingWorkItemTypeTitle</Trans>
+                </h3>
                 <TableComponent
                   dataSource={...retrieveDevopsMapping}
                   columns={workItemColumns}
@@ -1357,7 +1446,7 @@ console.log("userIdCrrent", window?.parent?.userId);
                   }
                   setDropDownValue={(data: any) => {
                     console.log("callSetDrop");
-                   return  setSelectedWorkItem(data)
+                    return setSelectedWorkItem(data);
                   }}
                   // disabled={configureSettings == "devopsGenerator" ? true : false}
                   saveMappingItems={(data: any) => setMappedWorkItems(data)}
@@ -1388,8 +1477,9 @@ console.log("userIdCrrent", window?.parent?.userId);
                       type="primary"
                       htmlType="button"
                       onClick={() => setIsTreeViewVisible(true)}
-                    > <Trans>DevOpsConfiguration_NextButton</Trans>
-                    
+                    >
+                      {" "}
+                      <Trans>DevOpsConfiguration_NextButton</Trans>
                     </Button>
                   ) : (
                     <Button
@@ -1410,8 +1500,9 @@ console.log("userIdCrrent", window?.parent?.userId);
                       //     ? "disable-save-btn"
                       //     : ""
                       // }
-                    > <Trans>DevOpsConfiguration_SaveButton</Trans>
-                    
+                    >
+                      {" "}
+                      <Trans>DevOpsConfiguration_SaveButton</Trans>
                     </Button>
                   )}
                 </div>
@@ -1423,12 +1514,18 @@ console.log("userIdCrrent", window?.parent?.userId);
                 onOk={handleOk}
                 onClose={handleCancel}
                 buttons={[
-                  { title: language?.DevOpsConfiguration_CancelButton, onClickHandler: handleCancel },
+                  {
+                    title: language?.DevOpsConfiguration_CancelButton,
+                    onClickHandler: handleCancel,
+                  },
                   {
                     title: language?.DevOpsConfiguration_SetAsDefaultButton,
                     onClickHandler: savePopupModelData,
                   },
-                  { title: language?.DevOpsConfiguration_SaveButton, onClickHandler: savePopupModelData },
+                  {
+                    title: language?.DevOpsConfiguration_SaveButton,
+                    onClickHandler: savePopupModelData,
+                  },
                 ]}
                 language={language}
                 Content={
@@ -1465,8 +1562,8 @@ console.log("userIdCrrent", window?.parent?.userId);
                             handleCancel();
                           }}
                           style={{ marginLeft: "5px" }}
-                        ><Trans>DevOpsConfiguration_CancelButton</Trans>
-                         
+                        >
+                          <Trans>DevOpsConfiguration_CancelButton</Trans>
                         </Button>
                         <Button
                           className="ant-btn-primary"
@@ -1475,8 +1572,8 @@ console.log("userIdCrrent", window?.parent?.userId);
                             /* Handle button click */
                           }}
                           style={{ marginLeft: "5px" }}
-                        ><Trans>DevOpsConfiguration_SetAsDefaultButton</Trans>
-                  
+                        >
+                          <Trans>DevOpsConfiguration_SetAsDefaultButton</Trans>
                         </Button>
                         <Button
                           className="ant-btn-primary"
@@ -1484,9 +1581,8 @@ console.log("userIdCrrent", window?.parent?.userId);
                             savePopupModelData("Save");
                           }}
                           style={{ marginLeft: "5px" }}
-                        ><Trans>DevOpsConfiguration_SaveButton</Trans>
-                  
-                        
+                        >
+                          <Trans>DevOpsConfiguration_SaveButton</Trans>
                         </Button>
                       </div>
                     </Spin>
@@ -1497,7 +1593,7 @@ console.log("userIdCrrent", window?.parent?.userId);
           </div>
         </Spin>
       ) : (
-        <DevopsTree guid={guId} defaultGuid={defaultGuId}  language ={language}/>
+        <DevopsTree guid={guId} defaultGuid={defaultGuId} language={language} currentSequence = {sequenceBy ?  sequenceOption?.find((element:any) => element?.value == sequenceBy)?.label : "None"} />
       )}
     </div>
   );
