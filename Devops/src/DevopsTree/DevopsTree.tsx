@@ -166,15 +166,20 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language ,currentSe
         const jsonFilterData = await jsonData?.result?.filter((item: any) => {
           return item;
         });
-        jsonFilterData?.forEach((item: any) => {
+
+        console.log("jsonFilterData*63",jsonFilterData);
+        
+        jsonFilterData?.forEach((item:any) => {
           for (const field in item) {
-            if (item[field].includes("🟥", "🟧", "🟨", "🟩")) {
+            if (typeof item[field] === 'string' && (item[field].includes("🟥") || item[field].includes("🟧") || item[field].includes("🟨") || item[field].includes("🟩"))) {
               const valueParts = item[field].split(" ");
               const extractedValue = valueParts[1];
               item[field] = extractedValue;
             }
           }
         });
+
+        console.log("jsonFilterData*",jsonFilterData);
         setFilteredTreeData(jsonFilterData);
         console.log("filteredData@@", jsonFilterData);
       })
@@ -597,6 +602,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language ,currentSe
       // window.location.href = `${window?.origin}/en-US/gyde365-survey-edit/?id=${cbsId}`\
       openNotification()
       hanldeMigratePrograss()
+      fetchRequestToGenerateTree();
     
    }else{
     setCurrentSelectedNodes([])
@@ -715,13 +721,13 @@ api.destroy()
     console.log("ocnChangeTreeData");
     const createNode = (title: any,disabled:any= false, key: any, rest: any, children?: any) => {
 
-      console.log("itemRest",rest, rest?.['Busniess Survey Name']);
+      console.log("itemRest*", rest?.['Workitem Id'] , rest?.['Workitem Id'] && cbsId !== rest?.['Business Survey Id'],rest,":",cbsId, rest?.['Business Survey Id']);
       
       return {  title : (
         
        
       <div style={{display:'flex'}}>
-      <div className= {disabled ? "":checkKey && isMigrated ? "show-workItem-checkbox": ""}>{title}</div>  {rest?.['Workitem Id']  && cbsId !== rest?.['Busniess Survey Id'] &&  <Tooltip  title= {rest?.['Busniess Survey Name']} trigger="hover">
+      <div className= {disabled ? "":checkKey && isMigrated ? "show-workItem-checkbox": ""}>{title}</div>  {rest?.['Workitem Id']  && cbsId !== rest?.['Business Survey Id'] &&  <Tooltip  title= {rest?.['Busniess Survey Name']} trigger="hover">
           <i className="fa fa-info-circle icon-tree"  />
         </Tooltip> }
       </div>
