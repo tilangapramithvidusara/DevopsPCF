@@ -1195,10 +1195,12 @@ export default function ConnectionContainer() {
       itemKey,
       dataSource
     );
-    console.log("_defaultDataSource$%:", _defaultDataSource);
-    let _isSelectedField = _defaultDataSource.every(
+    console.log("_defaultDataSource$%*", _defaultDataSource);
+    let _isSelectedField = _defaultDataSource.filter((f:any)=> f.devopsWorkItem !== "N/A").every(
       (field: any) => field.isSelected
     );
+    console.log("=>Slected",_isSelectedField);
+    
     const filteredObjects = _defaultDataSource.filter(
       (item: any) => item.pickListArr?.length > 0 || item.enable === true
     );

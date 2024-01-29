@@ -241,12 +241,19 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language ,currentSe
   const onCheck: TreeProps["onCheck"] = (checkedKeys, info) => {
     console.log("checkRt",info, "info?.checkedNodes",info?.checkedNodes ,"checkedKeys",checkedKeys);
     setSelectedNodes(info?.checkedNodes);
+    let checkedKeysNode :any =checkedKeys;
+    const checkedKeysResult = checkedKeysNode?.checked;
+    const filterCheckNodes = info?.checked === false
+    ? checkedKeysResult?.filter((item: any) => item !== info?.node?.key)
+    : checkedKeysResult;
+
+    setSelectedKeys(filterCheckNodes)
     const handleParentLevel = (treeData:any)=> {
       return  treeData
           ?.map((item:any) => {
             console.log("item223",item);
             
-            return filterNodesByCheckedKeys(item, checkedKeysResult, genericFilterFunction)
+            return filterNodesByCheckedKeys(item, filterCheckNodes, genericFilterFunction)
           })
           .filter(Boolean);
       } 
@@ -270,8 +277,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language ,currentSe
       console.log("node963",node,checkedKeys);   
      return checkedKeys.includes(node.key);
     }
-    let checkedKeysNode :any =checkedKeys;
-    const checkedKeysResult = checkedKeysNode?.checked;
+   
     const filteredArray = handleParentLevel(treeData)
     console.log("filteredTree", filteredArray)
   console.log("setCurrentSelectedNodesUTR",filteredArray.flat(Infinity));
@@ -1343,7 +1349,7 @@ api.destroy()
           <Tree
             checkable
             onExpand={onExpand}
-            defaultCheckedKeys={[...selectedKeys]}
+            checkedKeys={[...selectedKeys]}
             expandedKeys={expandedKeys}
             // onSelect={onSelect}
             checkStrictly={true}
