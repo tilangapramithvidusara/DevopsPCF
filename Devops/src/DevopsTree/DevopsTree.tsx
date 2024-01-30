@@ -153,7 +153,8 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language ,currentSe
   const fetchRequestToGenerateTree = async () => {
     const data: string | null = localStorage.getItem("items");
     const authData: any = data ? JSON.parse(data) : null;
-
+     setSelectedNodes([])
+     setCurrentSelectedNodes([])
     console.log("TREELocal",authData);
     
     fetchWorkItemsByBusinessSurveyId(cbsId,cusbSurveyId,authData?.organizationUri,authData?.projectName)
@@ -609,6 +610,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language ,currentSe
       openNotification()
       hanldeMigratePrograss()
       fetchRequestToGenerateTree();
+      
     
    }else{
     setCurrentSelectedNodes([])
