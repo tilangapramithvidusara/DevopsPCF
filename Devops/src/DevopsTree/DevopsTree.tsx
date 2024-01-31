@@ -92,44 +92,7 @@ const DevopsTree: React.FC<TreeView> = ({ guid, defaultGuid, language ,currentSe
   console.log("currentUser:", window?.parent?.userId,currentSequence);
   const [api, contextHolder] = notification.useNotification();
   const [jobHistoryStatus, setJobHistoryStatus] =useState<any>(false);
-
-  // const fetchRequestToGenerateTree1 = async () => {
-  //   fetchAllInternalIdsByBusinessSurveyId(cbsId)
-  //     .then(async (res: any) => {
-  //       const data: any = await res?.map((item: any) => JSON.parse(item?.data));
-  //       setAllInternalIdsBySurveyId(data?.flatMap((obj: any) => obj.results));
-  //       const ids = data?.flatMap((obj: any) => obj.results);
-  //       console.log("cbsId#", cbsId, "::", data);
-
-  //       fetchWorkItemsByBusinessSurveyId(cbsId)
-  //         .then(async (val: any) => {
-  //           const workItems = await val?.data;
-  //           const jsonData = JSON.parse(workItems);
-  //           setWorkItemsBySurveyId(jsonData?.results);
-  //           const allInternalIdsBySurveyId = await ids?.map((item: any) => {
-  //             return item?.internalid;
-  //           });
-  //           const filteredData1 = await jsonData?.results?.filter(
-  //             (item: any) => {
-  //               return allInternalIdsBySurveyId?.includes(item?.internalid);
-  //             }
-  //           );
-  //           filteredData1?.forEach((item: any) => {
-  //             for (const field in item) {
-  //               if (item[field].includes("🟥", "🟧", "🟨", "🟩")) {
-  //                 const valueParts = item[field].split(" ");
-  //                 const extractedValue = valueParts[1];
-  //                 item[field] = extractedValue;
-  //               }
-  //             }
-  //           });
-  //           setFilteredTreeData(filteredData1);
-  //           console.log("filteredData@@", filteredData1);
-  //         })
-  //         .catch((err: any) => console.log("error getting work items", err));
-  //     })
-  //     .catch((err) => console.log("error getting all ids", err));
-  // };
+   const [status, setStatus] = useState(true);
 
   const close = () => {
     console.log(
@@ -826,8 +789,7 @@ api.destroy()
 
     console.log("_filteredTreeData", _filteredTreeData);
  
-    setTreeData(_filteredTreeData);
-    setIntialTreeState(_filteredTreeData)
+  
     
     const getAllTreeNodeKeys = (_filteredTreeData: any) => {
       const keys: string[] = [];
@@ -842,6 +804,8 @@ api.destroy()
     };
     const keys = getAllTreeNodeKeys(treeData);
     setSelectedKeys(keys);
+    setTreeData(_filteredTreeData);
+    setIntialTreeState(_filteredTreeData)
   };
 
   // const onchangeTreeData = () => {
@@ -1123,9 +1087,25 @@ api.destroy()
       selectedItemsMoscow
     );
   }, [selectedItemsModule, selectedItemsMoscow, selectedItemsPhase]);
-
+  useEffect(()=> {
+    status ?  handleCheckAll(treeData) : setSelectedKeys([])
+  },[status])
   //const results = extractProperties(treeData);
-
+  const handleCheckAll= (data:any) => {
+    const getAllTreeNodeKeys = (_filteredTreeData: any) => {
+      const keys: string[] = [];
+      for (const item of _filteredTreeData) {
+        keys.push(item.key);
+        if (item.children && item.children.length > 0) {
+          const childKeys = getAllTreeNodeKeys(item.children);
+          keys.push(...childKeys);
+        }
+      }
+      return keys;
+    };
+    const keys = getAllTreeNodeKeys(data);
+    setSelectedKeys(keys);
+  }
   const results ={
     "Phase": [
         "Phase 1",
@@ -1231,10 +1211,14 @@ api.destroy()
   };
  console.log("surveySettingDataArr",surveySettingDataArr);
  
+ const handleToggle = () => {
+  setStatus(!status);
+
+};
   return (
     <div className="work-item-summary">
   {contextHolder}
-      {treeData?.length && selectedKeys?.length > 0 ? (
+      {treeData?.length ?(
         
         <>
          <div className="heading">
@@ -1341,12 +1325,21 @@ api.destroy()
             
             </Button>
             </div>
+
+            <div> <Checkbox
+     checked={status}
+     onChange={handleToggle}
+   >
+     Select All
+   </Checkbox>
+</div>
             <Checkbox  checked= {checkKey} className="workitem-checkbox  flex-center" onChange={showhandleWorkItem}>
               {" "}
               <Trans>DevOpsTree_ShowNewWorkItemsTitle</Trans>
              
             </Checkbox>
           </div>
+          
           <Spin spinning={isLoading}> 
           <Tree
             checkable
