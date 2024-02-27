@@ -179,6 +179,8 @@ export default function ConnectionContainer() {
   const [currentFeildData, setCurrentFeildData] = useState<any>([]);
   const [language, dispatch] = useReducer(stateReducer, initialState);
   const [sequenceBy, setSequenceBy] = useState<String>("");
+
+  const [tempProjectData, setTempProjectData] = useState<any>([]);
   console.log("userIdCrrent", window?.parent?.userId);
 
   // Get the URLSearchParams object from the URL
@@ -345,8 +347,8 @@ export default function ConnectionContainer() {
                     devOps.attributeType === "Boolean") ||
                   (crm?.Options != undefined &&
                     crm?.Options?.length &&
-                    devOps?.hasPicklist === true) || crm?.Options?.length &&
-                    devOps?.attributeType === "String")
+                    devOps?.hasPicklist === true) ||
+                  (crm?.Options?.length && devOps?.attributeType === "String"))
             )
             .map((_data: any, key: any) => {
               if (
@@ -520,7 +522,41 @@ export default function ConnectionContainer() {
             }
           );
           console.log("newupdatedArr", newupdatedArr);
-          setTaskDataArr(newupdatedArr);
+
+          const newItems = tableData.filter(
+            (item :any) =>
+              !newupdatedArr.find(
+                (existingItem:any) =>
+                  existingItem.sourceWorkItem === item.sourceWorkItem
+              )
+          );
+ console.log("not Add",newItems);
+ 
+          let maxKeyInUpdatedSavedData = Math.max(
+            ...newupdatedArr.map((item:any) => item.key),
+            0
+          );
+
+          console.log("maxKeyInUpdatedSavedData", ++maxKeyInUpdatedSavedData);
+          // Adjust the keys of newItems to avoid duplicates
+          let adjustedNewItems = newItems.map((item:any) => ({
+            ...item,
+            key: ++maxKeyInUpdatedSavedData,
+            devopsWorkItem: "N/A",
+            mapping: "",
+            enable: false,
+            defaultOptionList: [],
+            isText: false,
+            isSelected: false,
+            isPickListComplete: false,
+            pickListArr: [],
+            isSavedType: "saved",
+            fieldReferenceName: "",
+          }));
+
+          // Combine updatedSavedData and adjustedNewItems
+          const combinedArray = [...newupdatedArr, ...adjustedNewItems];
+          setTaskDataArr(combinedArray);
         } else if (updatedDefaultData?.data?.length) {
           const newupdatedArr = updatedDefaultData?.data.map((item: any) => {
             const _latestItem = tableData.find((table: any) => {
@@ -546,9 +582,44 @@ export default function ConnectionContainer() {
               return item;
             }
           });
+
+
+          const newItems = tableData.filter(
+            (item :any) =>
+              !newupdatedArr.find(
+                (existingItem:any) =>
+                  existingItem.sourceWorkItem === item.sourceWorkItem
+              )
+          );
+ console.log("not Add",newItems);
+ 
+          let maxKeyInUpdatedSavedData = Math.max(
+            ...newupdatedArr.map((item:any) => item.key),
+            0
+          );
+
+          console.log("maxKeyInUpdatedSavedData", ++maxKeyInUpdatedSavedData);
+          // Adjust the keys of newItems to avoid duplicates
+          let adjustedNewItems = newItems.map((item:any) => ({
+            ...item,
+            key: ++maxKeyInUpdatedSavedData,
+            devopsWorkItem: "N/A",
+            mapping: "",
+            enable: false,
+            defaultOptionList: [],
+            isText: false,
+            isSelected: false,
+            isPickListComplete: false,
+            pickListArr: [],
+            isSavedType: "saved",
+            fieldReferenceName: "",
+          }));
+
+          // Combine updatedSavedData and adjustedNewItems
+          const combinedArray = [...newupdatedArr, ...adjustedNewItems];
           console.log("newupdatedArr", newupdatedArr);
 
-          setTaskDataArr(newupdatedArr);
+          setTaskDataArr(combinedArray);
         } else {
           setTaskDataArr(_tableData);
         }
@@ -662,30 +733,35 @@ export default function ConnectionContainer() {
           };
         });
 
-        console.log("validate^8",  validateData.filter((item:any) => workItemType.includes(item.name)));
-        const updatedJsonMappedData = validateData.filter((item:any) => workItemType.includes(item.name));
-        console.log("updatedJsonMappedData*",updatedJsonMappedData);
+        console.log(
+          "validate^8",
+          validateData.filter((item: any) => workItemType.includes(item.name))
+        );
+        const updatedJsonMappedData = validateData.filter((item: any) =>
+          workItemType.includes(item.name)
+        );
+        console.log("updatedJsonMappedData*", updatedJsonMappedData);
 
-        console.log("crmWorkItemTypes",workItemType);
-        
-        workItemType.forEach((value:any) => {
-    const existingItem = validateData.find((item:any) => item.name === value);
-    if (!existingItem) {
-        updatedJsonMappedData.push({
-            key: JsonMappedData.length,
-            name: value,
-            gyde_name: "N/A",
-            enable: false,
-            isCorrectlyMapped: false,
-            fieldMapping: false
+        console.log("crmWorkItemTypes", workItemType);
+
+        workItemType.forEach((value: any) => {
+          const existingItem = validateData.find(
+            (item: any) => item.name === value
+          );
+          if (!existingItem) {
+            updatedJsonMappedData.push({
+              key: JsonMappedData.length,
+              name: value,
+              gyde_name: "N/A",
+              enable: false,
+              isCorrectlyMapped: false,
+              fieldMapping: false,
+            });
+          }
         });
-    }
-});
 
+        console.log("updatedJsonMappedData", updatedJsonMappedData);
 
-
-   console.log("updatedJsonMappedData",updatedJsonMappedData);
-   
         // .map((item: any) => {
         //   return {
         //     ...item,
@@ -788,7 +864,7 @@ export default function ConnectionContainer() {
 
     console.log("_resultASYNC", _result);
     setConnectionSaveData(_result);
-    setSequenceBy(_result?.connectionDetails?.gyde_sequenceby)
+    setSequenceBy(_result?.connectionDetails?.gyde_sequenceby);
   };
 
   // useEffect(() => {
@@ -1071,13 +1147,11 @@ export default function ConnectionContainer() {
     setConfigureSettings(value);
   };
 
-
-
   const handleMappingItemSave = async () => {
     setIsLoading(true);
     if (guId) {
       console.log("formMapp", guId);
-      
+
       let response: any = await createMappingFile(mappedWorkItems, guId);
       console.log("mappinh handle");
       console.log("formMappresponse", response);
@@ -1196,11 +1270,11 @@ export default function ConnectionContainer() {
       dataSource
     );
     console.log("_defaultDataSource$%*", _defaultDataSource);
-    let _isSelectedField = _defaultDataSource.filter((f:any)=> f.devopsWorkItem !== "N/A").every(
-      (field: any) => field.isSelected
-    );
-    console.log("=>Slected",_isSelectedField);
-    
+    let _isSelectedField = _defaultDataSource
+      .filter((f: any) => f.devopsWorkItem !== "N/A")
+      .every((field: any) => field.isSelected);
+    console.log("=>Slected", _isSelectedField);
+
     const filteredObjects = _defaultDataSource.filter(
       (item: any) => item.pickListArr?.length > 0 || item.enable === true
     );
@@ -1327,34 +1401,35 @@ export default function ConnectionContainer() {
     record.gyde_devopsorganizationurl = data?.organizationUri;
     record.gyde_devopsprojectname = data?.projectName;
     console.log("record", record);
-
+    setTempProjectData(data)
     setSaveConnectionDetail(record);
     //saveConnectionDetail(record);
   };
   console.log("reRenderC*", connectionSaveData, saveConnectionDetail);
-const handleSelectedSequence = (value:any) => {
-
-  console.log("handleSelectedSequence",value);
-  setSaveConnectionDetail((prevRecord:any) => ({
-    ...prevRecord,
-    gyde_sequenceby: value,
-  }));
-  setSequenceBy(value)
-
-}
-const sequenceOption = [
-  { value: 529870000, label: "None" },
-   { value: 529870001, label: "Work Item Sequence" },
-   { value: 529870002, label: "Business Process ID" },
-   
- ]
+  const handleSelectedSequence = (value: any) => {
+    console.log("handleSelectedSequence", value);
+    setSaveConnectionDetail((prevRecord: any) => ({
+      ...prevRecord,
+      gyde_sequenceby: value,
+    }));
+    setSequenceBy(value);
+  };
+  const sequenceOption = [
+    { value: 529870000, label: "None" },
+    { value: 529870001, label: "Work Item Sequence" },
+    { value: 529870002, label: "Business Process ID" },
+  ];
   return (
     <div className="devops-container">
       {!isTreeViewVisible && connectionSaveData?.type === "success" ? (
         <Spin spinning={isLoading}>
-          <h1 className="title">
-            <Trans>DevOpsConfiguration_DevopsWorkitemTitle</Trans>
-          </h1>
+          <div className="heading">
+            <img src="/list.png" className="list-img" alt="list" />
+            <h1 className="workitemSummary">
+              {" "}
+              <Trans>DevOpsConfiguration_DevopsWorkitemTitle</Trans>
+            </h1>
+          </div>
           <div className="bg-wrap">
             <h3 className="sub-title">
               <span>
@@ -1384,44 +1459,60 @@ const sequenceOption = [
               <>
                 <div className="devop-btn-group">
                   <div>
-                  {dataAfterSave?.length > 0 &&
-                    checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
-                    checkFinalMappingStatus(
-                      dataAfterSave,
-                      "isCorrectlyMapped"
-                    ) && (
-                      <Radio.Group
-                        options={[
-                          {
-                            label: <Trans>DevOps Generator</Trans>,
-                            value: "devopsGenerator",
-                          },
-                          {
-                            label: <Trans>Configure Mapping</Trans>,
-                            value: "configureMapping",
-                          },
-                        ]}
-                        onChange={handleConfigure}
-                        value={configureSettings}
-                        optionType="button"
-                        buttonStyle="solid"
-                      />
-                    )}
+                    {dataAfterSave?.length > 0 &&
+                      checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
+                      checkFinalMappingStatus(
+                        dataAfterSave,
+                        "isCorrectlyMapped"
+                      ) && (
+                        <Radio.Group
+                          options={[
+                            {
+                              label: <Trans>DevOps Generator</Trans>,
+                              value: "devopsGenerator",
+                            },
+                            {
+                              label: <Trans>Configure Mapping</Trans>,
+                              value: "configureMapping",
+                            },
+                          ]}
+                          onChange={handleConfigure}
+                          value={configureSettings}
+                          optionType="button"
+                          buttonStyle="solid"
+                        />
+                      )}
+                  </div>
 
-                    </div>
-
-                  
-<div className="devopsdrpdown-btn">
-                  <a className="sequnce-title">  Sequence By: </a>   <Select
-                         disabled= {dataAfterSave?.length > 0 &&
-                          checkFinalMappingStatus(dataAfterSave, "fieldMapping") &&
-                          checkFinalMappingStatus(dataAfterSave, "isCorrectlyMapped") &&
-                          configureSettings == "devopsGenerator" ? true :false}
-                         style={{width:200}}
-                         defaultValue={sequenceBy ? sequenceOption?.find((element:any) => element?.value == sequenceBy)?.label : "None"}
-                         onChange={handleSelectedSequence}
-                         options={sequenceOption}
-                       /></div>
+                  <div className="devopsdrpdown-btn">
+                    <a className="sequnce-title"> Sequence By: </a>{" "}
+                    <Select
+                      disabled={
+                        dataAfterSave?.length > 0 &&
+                        checkFinalMappingStatus(
+                          dataAfterSave,
+                          "fieldMapping"
+                        ) &&
+                        checkFinalMappingStatus(
+                          dataAfterSave,
+                          "isCorrectlyMapped"
+                        ) &&
+                        configureSettings == "devopsGenerator"
+                          ? true
+                          : false
+                      }
+                      style={{ width: 200 }}
+                      defaultValue={
+                        sequenceBy
+                          ? sequenceOption?.find(
+                              (element: any) => element?.value == sequenceBy
+                            )?.label
+                          : "None"
+                      }
+                      onChange={handleSelectedSequence}
+                      options={sequenceOption}
+                    />
+                  </div>
                 </div>
 
                 <h3 className="sub-title mt-20">
@@ -1595,7 +1686,19 @@ const sequenceOption = [
           </div>
         </Spin>
       ) : (
-        <DevopsTree guid={guId} defaultGuid={defaultGuId} language={language} currentSequence = {sequenceBy ?  sequenceOption?.find((element:any) => element?.value == sequenceBy)?.label : "None"} />
+        <DevopsTree
+          guid={guId}
+          defaultGuid={defaultGuId}
+          language={language}
+          currentSequence={
+            sequenceBy
+              ? sequenceOption?.find(
+                  (element: any) => element?.value == sequenceBy
+                )?.label
+              : "None"
+          }
+          tempProjectData ={tempProjectData}
+        />
       )}
     </div>
   );

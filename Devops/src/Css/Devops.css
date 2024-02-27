@@ -9,8 +9,8 @@
 
 .devops-container .button-form {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  justify-content: flex-end;
+  align-items: center;
   height: 100%;
 }
 
@@ -203,7 +203,7 @@
 }
 
 .devops-container .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled) {
-  color: #ffffff;
+  color: #ffffff !important;
   border-color:#00AEA7 !important;
   background-color: #00AEA7 !important;
 }
@@ -253,7 +253,7 @@
 .devops-container .bg-wrap {
   background: white;
   padding: 30px;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
 }
 
 .devops-container .flex-end-wrap {
@@ -276,12 +276,16 @@
 }
 
 .work-item-summary .multi-select-dropdown {
-  width :  283px;
+  box-shadow: none !important;
+  width: 100%;
   height: 35px;
-  padding: 0 15px; 
+  padding: 0 15px;
   border-radius: 5px;
   gap: 10px;
   text-align: left;
+  outline: none;
+  border: 1px solid #d9d9d9 !important;
+  color: rgba(0, 0, 0, 0.8) !important;
 }
 
 .work-item-summary .multi-select-dropdown .arrow-icon {
@@ -320,9 +324,7 @@
   justify-content: flex-start;
 }
 
-.work-item-summary .workitem-checkbox {
-  margin-left: 38rem;
-}
+
 
 .work-item-summary .collapse-btn {
  color: #00AEA7;
@@ -346,7 +348,7 @@
   line-height: 20px;
 }
 
-.work-item-summary .workitemSummary{
+.devops-container .workitemSummary{
   font-size: 25px;
   font-weight: 700;
   letter-spacing: 0em;
@@ -356,18 +358,18 @@
   margin-top: 0;
 }
 
-.work-item-summary .heading{
+.devops-container .heading{
   display: flex;
   align-items: center;
   margin-bottom: 30px;
 }
 
-.work-item-summary .list-img {
+.devops-container .list-img {
   margin-right: 5px;
   margin-bottom: 0;
 }
 
-.work-item-summary .ant-tree-list-holder {
+.devops-container .ant-tree-list-holder {
   padding: 20px 10px;
 }
 .show-workItem-checkbox {
@@ -403,13 +405,12 @@ font: bold;
 }
 
 .devop-btn-group{
-
             margin: 0;
             padding: 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            
+           margin-top: 20px;
 }
  .devopsdrpdown-btn {
   
@@ -424,4 +425,20 @@ font: bold;
 }
 .inner-select-drpdown{
   width: 5rem;
+}
+.selectAll-tree-checkbox{
+  margin-left: 10px;
+ 
+}
+
+.connection-btn{
+  margin-left: 10px;
+}
+.flex{
+  display: flex;
+  align-items: center;
+}
+
+.show-new-workitem{
+  margin-left: 10px;
 }

@@ -333,15 +333,15 @@ const TableComponent: React.FC<CommonTableProps> = ({
     const checkMappedStatus = () => {
       if (isModelopen) {
         if (record?.isPickListComplete) {
-          return "/blue-link.png";
+          return "/green-linked-icon.png";
         } else {
-          return "/black-link.png";
+          return "/red-linked-icon.png";
         }
       } else {
         if (record?.fieldMapping) {
-          return "/blue-link.png";
+          return "/green-linked-icon.png";
         } else {
-          return "/black-link.png";
+          return "/red-linked-icon.png";
         }
       }
     };

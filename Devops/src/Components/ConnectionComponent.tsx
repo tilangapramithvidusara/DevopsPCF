@@ -36,7 +36,7 @@ const handleConnection = (values:any,url:any) => {
         description:"You have successfully connected to DevOps project!"
       }); 
       localStorage.setItem('items',JSON.stringify(values));
-      console.log("res........!!!", res);
+      console.log("saveConnectiondata", res);
       saveConnectingDetails(values);
       setWorkItemData(res);
       setLoader(false)
@@ -112,7 +112,16 @@ const confirm = (values:any,url:any) => {
         <Col span={12}>
         <span className='label'>
         <Trans>DevOpsConfiguration_DevOpsProjectTitle</Trans></span>
-          <Form.Item className="custom-form-wrap" name="projectName" rules={[{ required: true, message: 'Please enter DevOps Project' }]}>
+          <Form.Item className="custom-form-wrap" name="projectName"  rules={[
+    {
+      required: true,
+      message: 'Please enter DevOps Project',
+    },
+    {
+      pattern: /^[^.,;':~\\/|?"&%$!+=()[\]{}<>]+$/, // Exclude specified special characters
+      message: 'Special characters are not allowed',
+    },
+  ]} >
             <Input />
           </Form.Item>
         </Col>
@@ -123,12 +132,22 @@ const confirm = (values:any,url:any) => {
           </Form.Item>
         </Col>
       </Row>
-        <div className="button-form">
-          <Form.Item>
+        <div className="button-form" >
+        <Form.Item>
+            <Button   className="ant-btn-default cancel-btn"  htmlType="button" onClick={()=> {
+                window.history.back();
+            }}>
+            <Trans>DevOpsConfiguration_CancelButton</Trans>
+            </Button>
+          </Form.Item>
+          
+          <Form.Item className='connection-btn'>
             <Button type="primary" htmlType="submit" onClick={handleFormSubmit}>
             <Trans>DevOpsConfiguration_ConnectButton</Trans>
             </Button>
           </Form.Item>
+
+         
         </div>
     </Form>
     {contextHolder}
