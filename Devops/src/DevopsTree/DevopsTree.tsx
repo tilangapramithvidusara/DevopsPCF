@@ -193,79 +193,53 @@ const DevopsTree: React.FC<TreeView> = ({
       checkedKeys
     );
     setSelectedNodes(info?.checkedNodes);
+    const  getAllKeys = (obj :any) =>{
+      const keys :any= [];
+      
+      function traverse(obj:any) {
+        for (let key in obj) {
+          if (key === 'key' && obj[key] !== null) {
+            keys.push(obj[key]);
+          } else if (typeof obj[key] === 'object' && obj[key] !== null) {
+            traverse(obj[key]);
+          }
+        }
+      } 
+      traverse(obj);
+      return keys;
+    }
     let checkedKeysNode: any = checkedKeys;
     const checkedKeysResult = checkedKeysNode?.checked;
-    const filterCheckNodes =
-      info?.checked === false
-        ? checkedKeysResult?.filter((item: any) => item !== info?.node?.key)
-        : checkedKeysResult;
-
-    // setSelectedKeys(filterCheckNodes);
-    const handleParentLevel = (treeData: any) => {
-      return treeData
-        ?.map((item: any) => {
-          console.log("item223", item);
-
-          return filterNodesByCheckedKeys(
-            item,
-            filterCheckNodes,
-            genericFilterFunction
-          );
-        })
-        .filter(Boolean);
-    };
-    const filterNodesByCheckedKeys = (
-      node: any,
-      checkedKeys: any,
-      filterFunction: any
-    ) => {
-      const isNodeIncluded = filterFunction(node, checkedKeys);
-      console.log("isNodeIncluded", isNodeIncluded, node);
-      if (isNodeIncluded) {
-        return {
-          ...node,
-          children: node.children
-            ?.map((child: any) =>
-              filterNodesByCheckedKeys(child, checkedKeys, filterFunction)
-            )
-            .filter(Boolean)
-            .flat(Infinity),
-        };
-      }
-      //  else if (!isNodeIncluded && node?.children?.length) {
-      //   return handleParentLevel(node?.children);
-      // } 
-      else {
-        return null;
-      }
-    };
-    const genericFilterFunction = (node: any, checkedKeys: any) => {
-      console.log("node963", node, checkedKeys);
-      return checkedKeys.includes(node.key);
-    };
-
-    const filteredArray = handleParentLevel(treeData);
-    console.log("filteredTree", filteredArray);
-    console.log("setCurrentSelectedNodesUTR", filteredArray.flat(Infinity));
-
-    const updatedArr1 = filteredArray.flat(Infinity).map((item1:any) => {
-      const matchingItem2 = treeData.find((item2:any) => item2.key === item1.key);
+     const childKeys = getAllKeys(info?.node?.children)
     
-      if (matchingItem2) {
-        if(item1?.children?.length){
-            return item1;
-             
-        }else{
-          return { ...item1, children: matchingItem2.children };
-        }
-          
-      } else {
-          return item1;
-      }
-    });
-      console.log("updatedArr1",updatedArr1);
-    handleCheckAll( updatedArr1, true)
-    setCurrentSelectedNodes(updatedArr1);
+    const mergeArr =  info?.checked ? [...childKeys,...checkedKeysResult] : checkedKeysResult?.filter((item:any)=> !childKeys?.includes(item) &&!childKeys?.includes(info?.node?.key))
+
+    const uniqueArray = Array.from(new Set(mergeArr));
+   
+    console.log("uniqueArray",uniqueArray,info?.node?.key);
+    
+    const filterNodes =(treeData :any, checkArr:any) =>{
+      return treeData.reduce((acc:any, node:any) => {
+          if (checkArr.includes(node.key)) {
+              const children = node.children ? filterNodes(node.children, checkArr) : [];
+              acc.push({ ...node, children });
+          } else {
+              const children = node.children ? filterNodes(node.children, checkArr) : [];
+              if (children.length > 0) {
+                  acc.push({ ...node, children });
+              }
+          }
+          return acc;
+      }, []);
+  }
+  
+
+  
+  
+  const filteredTreeData = filterNodes(treeData, uniqueArray);
+    console.log("filteredTreeData",filteredTreeData,checkedKeysResult,treeData);
+    setSelectedKeys(getAllKeys(filteredTreeData))
+    setCurrentSelectedNodes(filteredTreeData)
   };
   const handleMigrateToDevops = async () => {
     console.log("handleMigrateToDevopsx");
@@ -1245,7 +1219,7 @@ console.log("prevData*",savedMappingFieldsData,filteredTreeData);
     console.log("resetData",resetData);
     
     const obj = {
-      "businessSurveyId": cusbSurveyId,
+      "businessSurveyId": cbsId,
       "organizationUri":tempProjectData?.organizationUri,
       "personalAccessToken":tempProjectData?.personalAccessToken,
       "projectName":tempProjectData?.projectName,
@@ -1254,11 +1228,11 @@ console.log("prevData*",savedMappingFieldsData,filteredTreeData);
     const _res = await restDevOpsId(window?.parent?.resetDevopsIdURL,obj)
 
     if(_res?.type =="success"){
-      notification?.success({message:'Devops Id Reseted'})
+      notification?.success({message:'DevOps IDs successfully reseted.!'})
       fetchRequestToGenerateTree();
       hanldeMigratePrograss();
     }else {
-      notification?.error({message:'Devops Id Reseting Faild'})
+      notification?.error({message:'Devops IDs Reseting Faild'})
     }
 
   }
