@@ -1,45 +1,89 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Row, Col, notification, } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Form, Input, Button, Row, Col, notification, Modal} from 'antd';
 import { fetchWorkItemTypesFromDevops } from '../Api/devopsApis';
-
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Trans, useTranslation } from "react-i18next";
 interface ConnectionProps {
-  setWorkItemData:any
+  setWorkItemData:any,
+  connectionFetch:any,
+  url:any
+  setLoader:any
+  saveConnectingDetails:any,
+  connectionSaveData:any,
+  language:any
 }
 
- const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData})=> {
+ const ConnectionComponent :React.FC <ConnectionProps> = ({setWorkItemData, connectionFetch,url,setLoader,saveConnectingDetails,connectionSaveData,language})=> {
   const [form] = Form.useForm();
   const [error, setError] = useState<boolean>(false);
+  const [modal, contextHolder] = Modal.useModal()
+console.log("AZU",url);
+
+console.log("connectionSaveData",connectionSaveData);
+
 
   const obj = {
-    "organizationUri": "https://dev.azure.com/SEERTEST2",
-    "personalAccessToken": "3pqupxh5t33cupraelsj6aemtox5r5nqyvdlgpvlfhckihnx6bhq",
-    "projectName": "SEETTEST1"
+    "organizationUri": connectionSaveData?.connectionDetails?.gyde_devopsorganizationurl,
+    "projectName": connectionSaveData?.connectionDetails?.gyde_devopsprojectname,
 }
-  const onFinish = (values: any) => {
-    console.log("onFinish", values); // You can handle the form submission here
-   fetchWorkItemTypesFromDevops(values).then((res:any)=>{
+
+const handleConnection = (values:any,url:any) => {
+
+  fetchWorkItemTypesFromDevops(url,values).then((res:any)=>{
     if(res?.status=="success"){
        notification.success({
         message:"Success",
-        description:"Successfully connected..!"
+        description:"You have successfully connected to DevOps project!"
       }); 
       localStorage.setItem('items',JSON.stringify(values));
-      console.log("res........!!!", res);
+      console.log("saveConnectiondata", res);
+      saveConnectingDetails(values);
       setWorkItemData(res);
-    }else{
-      if(res?.data?.StatusCode==500){
-        notification.success({
+      setLoader(false)
+    }else if(res?.status =="error"){
+        notification.error({
           message:"Error",
-          description:"Connection Failed. Try again.."
+          description:`${res?.data}`
         });
-      }else{
-       notification.error({
-        message:"Error",
-        description:res?.data?.Value
-      }) 
-      } 
+        setLoader(false)
     }
    })
+}
+
+const confirm = (values:any,url:any) => {
+  modal.confirm({
+    title: 'Confirm',
+    icon: <ExclamationCircleOutlined/>,
+    content: 'Connection details are being changed compared to the current connection details. Do you wish to proceed?',
+    okText: 'Yes',
+    onOk: () => { // Wrap in an arrow function to access values and url
+      console.log("values", values);
+      handleConnection(values, url);
+    },
+    onCancel() {
+      console.log('User clicked No');
+      setLoader(false)
+    },
+    cancelText: 'No',
+  });
+};
+  const onFinish = (values: any) => {
+    setLoader(true)
+    connectionFetch(false);
+    console.log("onFinish", values,url); // You can handle the form submission here
+
+    if(obj?.organizationUri !== undefined && obj?.projectName !== undefined){
+ console.log("*88888*",obj?.projectName , values?.projectName ,"7", obj?.organizationUri , values?.organizationUri);
+ 
+
+      obj?.projectName !== values?.projectName || obj?.organizationUri !== values?.organizationUri ?  confirm(values,url): handleConnection(values,url)
+
+     
+    }else {
+      handleConnection(values,url)
+    }
+
+  
   };
 
   const handleFormSubmit = () => {
@@ -52,36 +96,62 @@ interface ConnectionProps {
         // message.error('Please fill in all fields.');
       });
   };
+  console.log("objectASYNX",obj);
+  
 
   return (
+    <>
     <Form form={form} initialValues={obj} className='connection-form'>
       <Row gutter={20}>
         <Col span={12}>
-          <Form.Item className="custom-form-wrap" name="organizationUri" label="Organization URL" rules={[{ required: true, message: 'Please enter Organization URL' }]}>
+          <span className='label'> <Trans>DevOpsConfiguration_OrganizationUrlTitle</Trans></span>
+          <Form.Item className="custom-form-wrap" name="organizationUri" label="" rules={[{ required: true, message: 'Please enter Organization URL' }]}>
             <Input />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item className="custom-form-wrap" name="projectName" label="DevOps Project" rules={[{ required: true, message: 'Please enter Devops Project' }]}>
+        <span className='label'>
+        <Trans>DevOpsConfiguration_DevOpsProjectTitle</Trans></span>
+          <Form.Item className="custom-form-wrap" name="projectName"  rules={[
+    {
+      required: true,
+      message: 'Please enter DevOps Project',
+    },
+    {
+      pattern: /^[^.,;':~\\/|?"&%$!+=()[\]{}<>]+$/, // Exclude specified special characters
+      message: 'Special characters are not allowed',
+    },
+  ]} >
             <Input />
           </Form.Item>
         </Col>
-      </Row>
-      <Row gutter={16}>
         <Col span={12}>
-          <Form.Item className="custom-form-wrap mt-20" name="personalAccessToken" label="Authorization Token" rules={[{ required: true, message: 'Please enter Authorization Token' }]}>
+        <span className='label'><Trans>DevOpsConfiguration_AuthorizationTokenTitle</Trans></span>
+          <Form.Item className="custom-form-wrap" name="personalAccessToken" rules={[{ required: true, message: 'Please enter Authorization Token' }]}>
             <Input />
           </Form.Item>
         </Col>
       </Row>
-      <div className="button-form">
+        <div className="button-form" >
         <Form.Item>
-          <Button type="primary" htmlType="submit" onClick={handleFormSubmit}>
-            Connect
-          </Button>
-        </Form.Item>
-      </div>
+            <Button   className="ant-btn-default cancel-btn"  htmlType="button" onClick={()=> {
+                window.history.back();
+            }}>
+            <Trans>DevOpsConfiguration_CancelButton</Trans>
+            </Button>
+          </Form.Item>
+          
+          <Form.Item className='connection-btn'>
+            <Button type="primary" htmlType="submit" onClick={handleFormSubmit}>
+            <Trans>DevOpsConfiguration_ConnectButton</Trans>
+            </Button>
+          </Form.Item>
+
+         
+        </div>
     </Form>
+    {contextHolder}
+    </>
   );
 }
 

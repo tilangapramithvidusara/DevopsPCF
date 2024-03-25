@@ -2361,3 +2361,1173 @@ export const workItems = [
       "url": "https://dev.azure.com/SEERTEST2/43b43251-5566-49ee-add5-a6590af0342d/_apis/wit/workItems/80"
   }
 ]
+
+export const savedMappingData = [
+    {
+        "key": "Feature",
+        "targetTable": "Feature",
+        "value": [
+            {
+                "key": 21,
+                "sourceWorkItem": "Title",
+                "devopsWorkItem": "Title",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": true,
+                "isSelected": true,
+                "fieldReferenceName": "System.Title",
+                "isSavedType": "saved"
+            },
+            {
+                "key": 22,
+                "sourceWorkItem": "Work item type",
+                "devopsWorkItem": "Work item type",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": true,
+                "isSelected": true,
+                "fieldReferenceName": "System.WorkItemType",
+                "isSavedType": "saved"
+            },
+            {
+                "key": 23,
+                "sourceWorkItem": "Parent Work Item",
+                "devopsWorkItem": "Parent Work Item",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": true,
+                "isSelected": true,
+                "fieldReferenceName": "",
+                "isSavedType": "saved"
+            },
+            {
+                "key": 0,
+                "sourceWorkItem": "Description",
+                "devopsWorkItem": "Description",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "System.Description"
+            },
+            {
+                "key": 1,
+                "sourceWorkItem": "Resource",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 2,
+                "sourceWorkItem": "Priority",
+                "devopsWorkItem": "Priority",
+                "dropdown": [],
+                "mapping": "",
+                "enable": true,
+                "defaultOptionList": {
+                    "defaultOptionList": [
+                        {
+                            "crmOption": [
+                                "🟥 1",
+                                "🟧 2",
+                                "🟨 3",
+                                "🟩 4"
+                            ],
+                            "devOpsOption": [
+                                "1",
+                                "2",
+                                "3",
+                                "4"
+                            ]
+                        }
+                    ]
+                },
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": true,
+                "pickListArr": [
+                    2
+                ],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Microsoft.VSTS.Common.Priority"
+            },
+            {
+                "key": 3,
+                "sourceWorkItem": "Module",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 4,
+                "sourceWorkItem": "Design Classification",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 5,
+                "sourceWorkItem": "ISV",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 6,
+                "sourceWorkItem": "GapFit",
+                "devopsWorkItem": "GapFit",
+                "dropdown": [],
+                "mapping": "",
+                "enable": true,
+                "defaultOptionList": {
+                    "defaultOptionList": [
+                        {
+                            "crmOption": [
+                                "Gap",
+                                "Fit",
+                                "Partial",
+                                "ISV"
+                            ],
+                            "devOpsOption": [
+                                "Gap",
+                                "Fit",
+                                "N/A",
+                                "N/A"
+                            ]
+                        }
+                    ]
+                },
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": true,
+                "pickListArr": [
+                    6
+                ],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.GapFit"
+            },
+            {
+                "key": 7,
+                "sourceWorkItem": "Iteration",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 8,
+                "sourceWorkItem": "Build estimate",
+                "devopsWorkItem": "Effort",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Microsoft.VSTS.Scheduling.Effort"
+            },
+            {
+                "key": 9,
+                "sourceWorkItem": "Complexity",
+                "devopsWorkItem": "Risk",
+                "dropdown": [],
+                "mapping": "",
+                "enable": true,
+                "defaultOptionList": {
+                    "defaultOptionList": [
+                        {
+                            "crmOption": [
+                                "1 - Very Low",
+                                "2 - Low",
+                                "3 - Medium",
+                                "4 - High",
+                                "5 - Very High"
+                            ],
+                            "devOpsOption": [
+                                "N/A",
+                                "3 - Low",
+                                "2 - Medium",
+                                "1 - High",
+                                "N/A"
+                            ]
+                        }
+                    ]
+                },
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": true,
+                "pickListArr": [
+                    9
+                ],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Microsoft.VSTS.Common.Risk"
+            },
+            {
+                "key": 10,
+                "sourceWorkItem": "Moscow",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 11,
+                "sourceWorkItem": "Phase",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 12,
+                "sourceWorkItem": "Acceptance Criteria",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 13,
+                "sourceWorkItem": "Free text 1",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 14,
+                "sourceWorkItem": "Free text 2",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 15,
+                "sourceWorkItem": "Business Process ID",
+                "devopsWorkItem": "Business Process ID",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.BusinessProcessID"
+            },
+            {
+                "key": 16,
+                "sourceWorkItem": "Document Output & Partner Notes",
+                "devopsWorkItem": "Document Output and Partner Notes",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.DocumentOutputandPartnerNotes"
+            },
+            {
+                "key": 17,
+                "sourceWorkItem": "Document Output",
+                "devopsWorkItem": "Document Output",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.DocumentOutput"
+            },
+            {
+                "key": 18,
+                "sourceWorkItem": "Partner Notes",
+                "devopsWorkItem": "Partner Notes",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.PartnerNotes"
+            }
+        ]
+    },
+    {
+        "key": "Epic",
+        "targetTable": "Epic",
+        "value": [
+            {
+                "key": 21,
+                "sourceWorkItem": "Title",
+                "devopsWorkItem": "Title",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": true,
+                "isSelected": true,
+                "fieldReferenceName": "System.Title",
+                "isSavedType": "saved"
+            },
+            {
+                "key": 22,
+                "sourceWorkItem": "Work item type",
+                "devopsWorkItem": "Work item type",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": true,
+                "isSelected": true,
+                "fieldReferenceName": "System.WorkItemType",
+                "isSavedType": "saved"
+            },
+            {
+                "key": 23,
+                "sourceWorkItem": "Parent Work Item",
+                "devopsWorkItem": "Parent Work Item",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": true,
+                "isSelected": true,
+                "fieldReferenceName": "",
+                "isSavedType": "saved"
+            },
+            {
+                "key": 0,
+                "sourceWorkItem": "Description",
+                "devopsWorkItem": "Description",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "System.Description"
+            },
+            {
+                "key": 1,
+                "sourceWorkItem": "Resource",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 2,
+                "sourceWorkItem": "Priority",
+                "devopsWorkItem": "Priority",
+                "dropdown": [],
+                "mapping": "",
+                "enable": true,
+                "defaultOptionList": {
+                    "defaultOptionList": [
+                        {
+                            "crmOption": [
+                                "🟥 1",
+                                "🟧 2",
+                                "🟨 3",
+                                "🟩 4"
+                            ],
+                            "devOpsOption": [
+                                "1",
+                                "2",
+                                "3",
+                                "4"
+                            ]
+                        }
+                    ]
+                },
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": true,
+                "pickListArr": [
+                    2
+                ],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Microsoft.VSTS.Common.Priority"
+            },
+            {
+                "key": 3,
+                "sourceWorkItem": "Module",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 4,
+                "sourceWorkItem": "Design Classification",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 5,
+                "sourceWorkItem": "ISV",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 6,
+                "sourceWorkItem": "GapFit",
+                "devopsWorkItem": "GapFit",
+                "dropdown": [],
+                "mapping": "",
+                "enable": true,
+                "defaultOptionList": {
+                    "defaultOptionList": [
+                        {
+                            "crmOption": [
+                                "Gap",
+                                "Fit",
+                                "Partial",
+                                "ISV"
+                            ],
+                            "devOpsOption": [
+                                "Gap",
+                                "Fit",
+                                "N/A",
+                                "N/A"
+                            ]
+                        }
+                    ]
+                },
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": true,
+                "pickListArr": [
+                    6
+                ],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.GapFit"
+            },
+            {
+                "key": 7,
+                "sourceWorkItem": "Iteration",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 8,
+                "sourceWorkItem": "Build estimate",
+                "devopsWorkItem": "Effort",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Microsoft.VSTS.Scheduling.Effort"
+            },
+            {
+                "key": 9,
+                "sourceWorkItem": "Complexity",
+                "devopsWorkItem": "Risk",
+                "dropdown": [],
+                "mapping": "",
+                "enable": true,
+                "defaultOptionList": {
+                    "defaultOptionList": [
+                        {
+                            "crmOption": [
+                                "1 - Very Low",
+                                "2 - Low",
+                                "3 - Medium",
+                                "4 - High",
+                                "5 - Very High"
+                            ],
+                            "devOpsOption": [
+                                "N/A",
+                                "3 - Low",
+                                "2 - Medium",
+                                "1 - High",
+                                "N/A"
+                            ]
+                        }
+                    ]
+                },
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": true,
+                "pickListArr": [
+                    9
+                ],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Microsoft.VSTS.Common.Risk"
+            },
+            {
+                "key": 10,
+                "sourceWorkItem": "Moscow",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 11,
+                "sourceWorkItem": "Phase",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 12,
+                "sourceWorkItem": "Acceptance Criteria",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 13,
+                "sourceWorkItem": "Free text 1",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 14,
+                "sourceWorkItem": "Free text 2",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 15,
+                "sourceWorkItem": "Business Process ID",
+                "devopsWorkItem": "Business Process ID",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.BusinessProcessID"
+            },
+            {
+                "key": 16,
+                "sourceWorkItem": "Document Output & Partner Notes",
+                "devopsWorkItem": "Document Output and Partner Notes",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.DocumentOutputandPartnerNotes"
+            },
+            {
+                "key": 17,
+                "sourceWorkItem": "Document Output",
+                "devopsWorkItem": "Document Output",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.DocumentOutput"
+            },
+            {
+                "key": 18,
+                "sourceWorkItem": "Partner Notes",
+                "devopsWorkItem": "Partner Notes",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.PartnerNotes"
+            }
+        ]
+    },
+    {
+        "key": "User Story",
+        "targetTable": "User Story",
+        "value": [
+            {
+                "key": 21,
+                "sourceWorkItem": "Title",
+                "devopsWorkItem": "Title",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": true,
+                "isSelected": true,
+                "fieldReferenceName": "System.Title",
+                "isSavedType": "saved"
+            },
+            {
+                "key": 22,
+                "sourceWorkItem": "Work item type",
+                "devopsWorkItem": "Work item type",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": true,
+                "isSelected": true,
+                "fieldReferenceName": "System.WorkItemType",
+                "isSavedType": "saved"
+            },
+            {
+                "key": 23,
+                "sourceWorkItem": "Parent Work Item",
+                "devopsWorkItem": "Parent Work Item",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": true,
+                "isSelected": true,
+                "fieldReferenceName": "",
+                "isSavedType": "saved"
+            },
+            {
+                "key": 0,
+                "sourceWorkItem": "Description",
+                "devopsWorkItem": "Description",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "System.Description"
+            },
+            {
+                "key": 1,
+                "sourceWorkItem": "Resource",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 2,
+                "sourceWorkItem": "Priority",
+                "devopsWorkItem": "Priority",
+                "dropdown": [],
+                "mapping": "",
+                "enable": true,
+                "defaultOptionList": {
+                    "defaultOptionList": [
+                        {
+                            "crmOption": [
+                                "🟥 1",
+                                "🟧 2",
+                                "🟨 3",
+                                "🟩 4"
+                            ],
+                            "devOpsOption": [
+                                "1",
+                                "2",
+                                "3",
+                                "4"
+                            ]
+                        }
+                    ]
+                },
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": true,
+                "pickListArr": [
+                    2
+                ],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Microsoft.VSTS.Common.Priority"
+            },
+            {
+                "key": 3,
+                "sourceWorkItem": "Module",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 4,
+                "sourceWorkItem": "Design Classification",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 5,
+                "sourceWorkItem": "ISV",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 6,
+                "sourceWorkItem": "GapFit",
+                "devopsWorkItem": "GapFit",
+                "dropdown": [],
+                "mapping": "",
+                "enable": true,
+                "defaultOptionList": {
+                    "defaultOptionList": [
+                        {
+                            "crmOption": [
+                                "Gap",
+                                "Fit",
+                                "Partial",
+                                "ISV"
+                            ],
+                            "devOpsOption": [
+                                "Gap",
+                                "Fit",
+                                "N/A",
+                                "N/A"
+                            ]
+                        }
+                    ]
+                },
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": true,
+                "pickListArr": [
+                    6
+                ],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.GapFit"
+            },
+            {
+                "key": 7,
+                "sourceWorkItem": "Iteration",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 8,
+                "sourceWorkItem": "Build estimate",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 9,
+                "sourceWorkItem": "Complexity",
+                "devopsWorkItem": "Risk",
+                "dropdown": [],
+                "mapping": "",
+                "enable": true,
+                "defaultOptionList": {
+                    "defaultOptionList": [
+                        {
+                            "crmOption": [
+                                "1 - Very Low",
+                                "2 - Low",
+                                "3 - Medium",
+                                "4 - High",
+                                "5 - Very High"
+                            ],
+                            "devOpsOption": [
+                                "N/A",
+                                "3 - Low",
+                                "2 - Medium",
+                                "1 - High",
+                                "N/A"
+                            ]
+                        }
+                    ]
+                },
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": true,
+                "pickListArr": [
+                    9
+                ],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Microsoft.VSTS.Common.Risk"
+            },
+            {
+                "key": 10,
+                "sourceWorkItem": "Moscow",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 11,
+                "sourceWorkItem": "Phase",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 12,
+                "sourceWorkItem": "Acceptance Criteria",
+                "devopsWorkItem": "Acceptance Criteria",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Microsoft.VSTS.Common.AcceptanceCriteria"
+            },
+            {
+                "key": 13,
+                "sourceWorkItem": "Free text 1",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 14,
+                "sourceWorkItem": "Free text 2",
+                "devopsWorkItem": "N/A",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": ""
+            },
+            {
+                "key": 15,
+                "sourceWorkItem": "Business Process ID",
+                "devopsWorkItem": "Business Process ID",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.BusinessProcessID"
+            },
+            {
+                "key": 16,
+                "sourceWorkItem": "Document Output & Partner Notes",
+                "devopsWorkItem": "Document Output and Partner Notes",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.DocumentOutputandPartnerNotes"
+            },
+            {
+                "key": 17,
+                "sourceWorkItem": "Document Output",
+                "devopsWorkItem": "Document Output",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.DocumentOutput"
+            },
+            {
+                "key": 18,
+                "sourceWorkItem": "Partner Notes",
+                "devopsWorkItem": "Partner Notes",
+                "dropdown": [],
+                "mapping": "",
+                "enable": false,
+                "defaultOptionList": [],
+                "isText": false,
+                "isSelected": true,
+                "isPickListComplete": false,
+                "pickListArr": [],
+                "isSavedType": "saved",
+                "fieldReferenceName": "Custom.PartnerNotes"
+            }
+        ]
+    }
+]
